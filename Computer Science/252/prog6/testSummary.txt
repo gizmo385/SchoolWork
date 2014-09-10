@@ -1,0 +1,76 @@
+==> test01.s <==
+# Test with only one batter and only computes the batting average
+
+==> test02.s <==
+# Test with only one batter and only computes the batting average
+# The batting average should be 0
+
+==> test03.s <==
+# Test with two batters and only computes the batting average
+
+==> test04.s <==
+# Test with only one batter and only computes the slugging percentage
+
+==> test05.s <==
+# Test with only one batter and only computes the slugging percentage
+# The slugging percentage should be 0
+
+==> test06.s <==
+# Test with two batters and only computes the on-base percentage
+
+==> test07.s <==
+# Test with only one batter and only computes the on-base percentage
+
+==> test08.s <==
+# Test with only one batter and only computes the on-base percentage
+# The on-base percentage should be 0
+
+==> test09.s <==
+# Test with two batters and only computes the on-base percentage
+
+==> test10.s <==
+# Test with two batters
+# computes batting average, slugging percentage and on-base percentage
+# for each batter
+# This is the test case from the program description
+
+==> test11.s <==
+# Test with three batters, both average and slugging percentage
+# First batter has no hits, but does have outs
+# Second batter has hits and outs, with realistic values
+# Third hitter has large values for some of the hits and for the
+#    outs. This means the hits and outs *have* to be converted from int's
+#    to float's in order to get the right answer.
+
+==> test12.s <==
+# Tests if $t registers are preserved (if needed) by average.
+# printStats puts values into every $t register.
+
+==> test13.s <==
+# Tests if $a registers used correctly when average calls printStats.
+# printStats changes the contents of $a1, $a2, and $a3 before returning
+
+==> test14.s <==
+# Tests if $s registers are preserved (if needed) by average
+# Main puts various values into $s registers and checks if they are
+#    still present when average returns.
+
+==> test15.s <==
+# Tests if all the registers are preserved as needed.
+# This is a combination of tests 12, 13, and 14
+
+==> test16.s <==
+# Tests if average preserves values in the $f registers (if needed)
+#    printStats puts -1 into $t0, then uses mtc1 to copy those bits into 
+#    each of $f0 through $f31.
+
+==> test17.s <==
+# Changes the $s registers used by main. The average function should be
+#    getting arguments from the $a registers and the stack, and not relying
+#    on what is in the $s registers.
+
+==> test18.s <==
+# printStats puts two values at the top two spots in its stack.  This is where
+#    the number of homeruns and outs were placed when printStats 
+#    is called.  A function is allowed to change its own stack.
+
