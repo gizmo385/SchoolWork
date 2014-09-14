@@ -38,4 +38,8 @@ html += """     </p>
     </body>
 </html>"""
 
+
+with open("index.html", "w") as destination_file:
+    destination_file.write(html)
+
 print html
