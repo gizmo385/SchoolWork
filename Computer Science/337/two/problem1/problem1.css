@@ -66,3 +66,30 @@ article[id*=post] {
 article[id*=post] > p > a {
     color: darkgreen;
 }
+
+/* Part g */
+article[id=post2] {
+    font-size: 0.7em;
+}
+
+/* Part h */
+footer > ul > li > a {
+    color: red;
+}
+
+/* Part i */
+footer > a {
+    font-size: 0.6em;
+}
+
+/* Part j */
+footer > ul > li {
+    display: inline;
+    padding: 10px;
+    float: right;
+}
+
+/* Part k */
+a[target=_blank] {
+    text-decoration: none;
+}
