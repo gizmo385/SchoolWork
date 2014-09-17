@@ -5,3 +5,33 @@
  * when viewed in a web browser.
  */
 
+.first {
+    border: 5px dotted black;
+    color: blue;
+}
+
+.first > p > a {
+    text-decoration: none;
+}
+
+.second {
+    background-color: limegreen;
+}
+
+.second > div {
+    border: 1px solid black;
+    padding: 0px;
+}
+
+.second a {
+    font-style: italic;
+}
+
+.third {
+    padding: 20px;
+    border: thick solid blue;
+}
+
+#fourth > p {
+    font-size: 200%;
+}
