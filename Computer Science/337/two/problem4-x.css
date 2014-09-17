@@ -1,0 +1,39 @@
+/**
+ * problem4-x.css
+ *
+ * You are not allowed to modify this file. All CSS changes must be made in problem4.css
+ */
+
+body {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+ol {
+  margin-bottom: 1em;
+}
+
+#table-contents {
+  color: green;
+}
+
+ol > li > ol > li {
+  font-size: 0.9em;
+}
+
+ol > li > ol > li > ol > li {
+  font-size: 0.8em;
+}
+
+ol > li > ol > li > ol > li > ol > li {
+  font-size: 0.6em;
+}
+
+.costs {
+  color: blue;
+  font-weight: bold;
+}
+
+aside#table-contents li#section3 span.recommended {
+  font-weight: bold;
+  font-size: 1.6em;
+}

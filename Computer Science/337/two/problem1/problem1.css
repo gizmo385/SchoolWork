@@ -1,0 +1,68 @@
+/**
+ * problem1.css
+ *
+ * You will be adding new rules to this file in order to alter the way that problem1.html looks
+ * when viewed in a web browser.  Please add rules for each of the parts to the designated
+ * section. (Add more sections as needed)
+ */
+
+/* Defaults - Leave this section alone. */
+
+article::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.clearfix {
+  clear: both;
+}
+
+
+/* Part a */
+* {
+    font-family: sans-serif;
+}
+
+
+
+
+
+/* Part b */
+header {
+    background-color: lightgray;
+}
+
+
+
+
+
+/* Part c */
+a {
+    font-weight: bold;
+}
+
+
+
+
+
+/* Part d */
+ul[class="blog-options"] > li {
+    display: block;
+    width: 100px;
+    float: left;
+}
+
+
+
+/* Part e */
+article[id*=post] {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Part f */
+article[id*=post] > p > a {
+    color: darkgreen;
+}

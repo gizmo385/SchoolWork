@@ -1,0 +1,81 @@
+/**
+ * problem2.css
+ *
+ * You will NOT be changing this file at all.  Look at the rules defined here, and at the
+ * final image in the assignment, then modify problem2.html as needed to match the final image.
+ */
+
+body {
+  margin: 25px;
+}
+
+header {
+  border: 3px solid #73b6c3;
+  background-color: #84d2e2;
+  text-align: center;
+  -webkit-border-radius: 45px;
+  -moz-border-radius: 45px;
+  border-radius: 45px;
+}
+
+header h1 {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight: 400;
+  font-size: 5em;
+  line-height: 3em;
+}
+
+section {
+  margin-top: 30px;
+  clear: both;
+}
+
+section div {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 2em;
+  line-height: 2em;
+  float: left;
+  text-align: center;
+  line-height: 1.2em;
+}
+
+section.callouts {
+  height: 200px;
+}
+
+section.callouts div {
+  padding-top: 80px;
+  height: 120px;
+  margin-left: 15px;
+  margin-right: 15px;
+  width: 29%;
+  border: 3px solid #5c8727;
+  background-color: #cfe0d8;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  border-radius: 25px;
+}
+
+section.callouts div.three {
+  padding-top: 60px;
+  height: 140px;
+}
+
+section.actions {
+  height: 150px;
+}
+
+section div.action {
+  height: 150px;
+  margin-left: 15px;
+  margin-right: 15px;
+  padding-top: 50px;
+  height: 90px;
+  width: 45.5%;
+  border: 3px solid #05464e;
+  background-color: #076873;
+  color: white;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  border-radius: 25px;
+}
