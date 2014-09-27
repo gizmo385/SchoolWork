@@ -41,7 +41,8 @@ USAGE+=$'[+SEE ALSO?egrep(1), fgrep(1), head(1), tail(1), wc(1)]'
 
 # Default argument values
 num_lines=10
-search_method=
+egrep_enabled=0
+fgrep_enabled=0
 head_or_tail=
 head_or_tail_enabled=0
 wc_enabled=0
@@ -51,9 +52,9 @@ output_file=
 # Parse the command line options
 while getopts "$USAGE" optchar ; do
     case $optchar in
-    e)  search_method="egrep"
+    e)  egrep_enabled=1
         ;;
-    f)  search_method="fgrep"
+    f)  fgrep_enabled=1
         ;;
     w)  wc_enabled=1
         ;;
@@ -103,28 +104,56 @@ num_files=$#
 for (( i = 1; i <= num_files; i+= 1 )) do
     filename="$1"
 
-    # Build the beginning of the command
-    command_to_execute="${search_method} -e ${pattern}"
-    command_to_execute+=" ${filename}"
+    if (( $egrep_enabled == 1 )) ; then
+        # Build the beginning of the command
+        command_to_execute="egrep -e '${pattern}'"
+        command_to_execute+=" ${filename}"
 
-    # Check if head or tail is enabled
-    if (( $head_or_tail_enabled == 1 )) ; then
-        command_to_execute+=" | $head_or_tail -n ${num_lines}"
+        # Check if head or tail is enabled
+        if (( $head_or_tail_enabled == 1 )) ; then
+            command_to_execute+=" | $head_or_tail -n ${num_lines}"
+        fi
+
+        # Check if word count is enabled
+        if (( $wc_enabled == 1 )) ; then
+            command_to_execute+=" | wc"
+        fi
+
+        # Debug output
+        #echo Executing: $command_to_execute
+
+        # Check if output is being piped to a file
+        if (( output_file_enabled == 1 )) ; then
+            eval $command_to_execute >> $output_file
+        else
+            eval $command_to_execute
+        fi
     fi
 
-    # Check if word count is enabled
-    if (( $wc_enabled == 1 )) ; then
-        command_to_execute+=" | wc"
-    fi
+    if (( $fgrep_enabled == 1 )) ; then
+        # Build the beginning of the command
+        command_to_execute="fgrep -e '${pattern}'"
+        command_to_execute+=" ${filename}"
 
-    # Debug output
-    #echo Executing: $command_to_execute
+        # Check if head or tail is enabled
+        if (( $head_or_tail_enabled == 1 )) ; then
+            command_to_execute+=" | $head_or_tail -n ${num_lines}"
+        fi
 
-    # Check if output is being piped to a file
-    if (( output_file_enabled == 1 )) ; then
-        eval $command_to_execute >> $output_file
-    else
-        eval $command_to_execute
+        # Check if word count is enabled
+        if (( $wc_enabled == 1 )) ; then
+            command_to_execute+=" | wc"
+        fi
+
+        # Debug output
+        #echo Executing: $command_to_execute
+
+        # Check if output is being piped to a file
+        if (( output_file_enabled == 1 )) ; then
+            eval $command_to_execute >> $output_file
+        else
+            eval $command_to_execute
+        fi
     fi
 
     shift
