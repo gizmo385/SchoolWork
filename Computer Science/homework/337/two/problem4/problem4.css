@@ -5,3 +5,22 @@
  * when viewed in a web browser.
  */
 
+* {
+    font-size: 1em !important;
+}
+
+ol.costs {
+    font-weight: normal;
+}
+
+ol.costs li {
+    font-weight: bold;
+}
+
+ol.costs li.costs {
+    color: purple;
+}
+
+li#section4 > ol > li + li + li + li{
+    font-weight: bold;
+}
