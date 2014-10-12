@@ -7,6 +7,16 @@
 
 ol.costs {
     margin-bottom: 0;
+* {
+    font-size: 1em !important;
+}
+
+ol.costs {
+    font-weight: normal;
+}
+
+ol.costs li {
+    font-weight: bold;
 }
 
 ol.costs li.costs {
@@ -21,3 +31,6 @@ ol.costs li.costs {
 /*.recommended {*/
     /**/
 /*}*/
+li#section4 > ol > li + li + li + li{
+    font-weight: bold;
+}
