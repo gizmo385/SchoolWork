@@ -1,0 +1,80 @@
+#content_container {
+    width:1000px;
+    margin: 0 auto;
+}
+
+#page_header {
+    width: 1000px;
+    height: 200px;
+    background-image: url("problem1_assets/header.png");
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#page_header h1 {
+    width: 100%;
+
+
+    color: white;
+    font-size: 250%;
+    font-family: "Helvetica Neue", sans-serif;
+
+    position: absolute;
+    bottom: 0;
+}
+
+#sidebar {
+    width: 200px;
+    padding-right: 20px;
+    float: left;
+}
+
+#sidebar .button {
+    width: 190px;
+    background-image: url("problem1_assets/button-background.png");
+
+    padding: 5px;
+    margin-bottom: 10px;
+
+    font-weight: bold;
+    font-family: sans-serif;
+    text-align: center;
+    font-size: 150%;
+}
+
+#main_content {
+    width: 780px;
+    position: relative;
+    float: left;
+    margin-bottom: 20px;
+
+}
+
+#main_content .thumbnail {
+    width: 150px;
+    height: 150px;
+    padding-right: 20px;
+    float: left;
+}
+
+#footer {
+    width: 1000px;
+    margin-top: 440px;
+    padding: 20px;
+    background-color: #84d2e2;
+}
+
+
+#footer ul {
+    position: relative;
+    margin-left: 80px;
+    list-style-type: none;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#footer li {
+    position: relative;
+    top: 0;
+}

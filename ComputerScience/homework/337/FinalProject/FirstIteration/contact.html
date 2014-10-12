@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>UA Friend Scheduler - Contact</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script type="text/javascript">
+        /*
+         * Tells the person clicking the submit button that they can't do that yet :)
+         */
+        function notAvailableYet() {
+
+            var name = document.getElementById("name").value;
+
+            if( name != null && name != "" ) {
+                alert("Hello " + name + "! This feature is not currently available! Please come back later :)");
+            } else {
+                alert("Hello there! This feature is not currently available! Please come back later :)");
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="content_container">
+    <div id="header">
+        <h1>UA Friend Scheduler</h1>
+        <h4>Take the hassle out of scheduling</h4>
+    </div>
+
+    <div id="sidebar">
+        <ul id="navigation">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </div>
+
+    <div id="main_content">
+        <form>
+            <p>Your name: <input type="text" id="name"/></p>
+            <p>Your email: <input type="email"/></p>
+            <p>Your message: <br/><textarea rows="5" cols="80"></textarea></p>
+            <p>
+                <input type="button" value="Submit" onclick="notAvailableYet()"/>
+                <input type="reset" value="Reset form"/>
+            </p>
+        </form>
+    </div>
+
+    <div id="footer">
+        <h6 style="text-align: left; float: left">Created by <a href="http://gizmo385.github.io">Christopher Chapline</a></h6>
+
+        <h6 style="text-align: right">You can contact me <a href="contact.html">here</a></h6>
+    </div>
+</div>
+</body>
+</html>
