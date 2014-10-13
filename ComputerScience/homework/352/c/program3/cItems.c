@@ -30,9 +30,19 @@ void parseCharacterConstant( char currentChar );
  *                      character is encountered, parsing should stop.
  */
 void genericParse( char currentChar, char endParseCharacter) {
+    short escapingNextChar = FALSE;
     do {
+
+        if( !escapingNextChar ) {
+            if( currentChar == '\\' ) {
+                escapingNextChar = TRUE;
+            }
+        } else {
+            escapingNextChar = FALSE;
+        }
+
         printf("%c", currentChar);
-    } while( (currentChar = getchar()) != endParseCharacter);
+    } while( (currentChar = getchar()) != endParseCharacter || escapingNextChar );
 
     printf("%c", currentChar);
 }
@@ -124,16 +134,16 @@ void parseBlockComment( char currentChar ) {
 }
 
 int main( int argc, char *argv[] ) {
-	int totalsEnabled = FALSE;
+	/*int totalsEnabled = FALSE;*/
 
 	// Check if file totals are enabled
 	if( argc > 1 ) {
 		if( strcmp(argv[0], "-t") == 0 ) {
-			totalsEnabled = TRUE;
+			/*totalsEnabled = TRUE;*/
 		}
 	}
 
-	int totals[5] = {0};
+	/*int totals[5] = {0};*/
 
 	char ch = 0;
 
@@ -143,14 +153,14 @@ int main( int argc, char *argv[] ) {
                 parseStringLiteral(ch);
                 break;
             case '\n':
-                printf("\n"); // TODO
+            case '\t':
+                printf("%c", ch);
                 break;
             case '\'':
                 parseCharacterConstant(ch);
                 break;
             case '/':
                 parseComment(ch);
-                /*printf(" "); // TODO*/
                 break;
             default:
                 printf(" ");
@@ -158,5 +168,5 @@ int main( int argc, char *argv[] ) {
         }
     }
 
-    printf("\n");
+    /*printf("\n");*/
 }
