@@ -7,6 +7,7 @@
 #define STRING_LITERAL		2
 #define CHARACTER_CONSTANT	3
 #define BLOCK_COMMENT		4
+#define LINES               5
 
 #define TRUE                1
 #define FALSE               0
@@ -14,11 +15,13 @@
 /*
  * Function Prototypes
  */
-void genericParse( char currentChar, char endParseCharacter );
-void parseStringLiteral( char currentChar );
-void parseSingleLineComment( char currentChar );
-void parseBlockComment( char currentChar );
-void parseCharacterConstant( char currentChar );
+void genericParse( char currentChar, char endParseCharacter, int *totals, int totalsIndex,
+        int lineElements[][5] );
+void parseStringLiteral( char currentChar, int *totals, int lineElements[][5] );
+void parseComment( char currentChar, int *totals, int lineElements[][5] );
+void parseSingleLineComment( char currentChar, int *totals, int lineElements[][5] );
+void parseBlockComment( char currentChar, int *totals, int lineElements[][5] );
+void parseCharacterConstant( char currentChar, int *totals, int lineElements[][5] );
 
 /**
  * A more generic parse method to easily define further parsing functions.
@@ -26,13 +29,20 @@ void parseCharacterConstant( char currentChar );
  * Arguments:
  * --------------
  * currentChar -- The character that the reader is currently on.
- * endParseCharacter -- The character that should end the call. After that
- *                      character is encountered, parsing should stop.
+ * endParseCharacter -- The character that should end the call. After that character is
+ *                      encountered, parsing should stop.
+ * totals -- An array that contains the totals for the different characters being parsed
+ * totalsindex -- The index into totals that is being incremented
+ * lineElements -- Represents whether or not a certain character type is present on a particular
+ *                  line
  */
-void genericParse( char currentChar, char endParseCharacter) {
+void genericParse( char currentChar, char endParseCharacter, int *totals, int totalsIndex,
+        int lineElements[][5] ) {
     short escapingNextChar = FALSE;
-    do {
+    totals[ totalsIndex ]++;
 
+    do {
+        // Handle escape characters
         if( !escapingNextChar ) {
             if( currentChar == '\\' ) {
                 escapingNextChar = TRUE;
@@ -53,9 +63,12 @@ void genericParse( char currentChar, char endParseCharacter) {
  * Arguments:
  * --------------
  * currentChar -- The character that the reader is currently on.
+ * totals -- An array that contains the totals for the different characters being parsed
+ * lineElements -- Represents whether or not a certain character type is present on a particular
+ *                  line
  */
-void parseStringLiteral(char currentChar) {
-    genericParse(currentChar, '"');
+void parseStringLiteral( char currentChar, int *totals, int lineElements[][5] ) {
+    genericParse(currentChar, '"', totals, STRING_LITERAL, lineElements );
 }
 
 /**
@@ -64,9 +77,12 @@ void parseStringLiteral(char currentChar) {
  * Arguments:
  * --------------
  * currentChar -- The character that the reader is currently on.
+ * totals -- An array that contains the totals for the different characters being parsed
+ * lineElements -- Represents whether or not a certain character type is present on a particular
+ *                  line
  */
-void parseCharacterConstant(char currentChar) {
-    genericParse(currentChar, '\'');
+void parseCharacterConstant( char currentChar, int *totals, int lineElements[][5] ) {
+    genericParse( currentChar, '\'', totals, CHARACTER_CONSTANT, lineElements );
 }
 
 /**
@@ -77,16 +93,21 @@ void parseCharacterConstant(char currentChar) {
  * Arguments:
  * --------------
  * currentChar -- The character that the reader is currently on.
+ * totals -- An array that contains the totals for the different characters being parsed
+ * lineElements -- Represents whether or not a certain character type is present on a particular
+ *                  line
  */
-void parseComment(char currentChar) {
+void parseComment(char currentChar, int *totals, int lineElements[][5] ) {
     printf("%c", currentChar);
 
     // Determine what kind of comment has been encountered
     currentChar = getchar();
     if( currentChar == '/' ) {
-        parseSingleLineComment(currentChar);
+        parseSingleLineComment( currentChar, totals, lineElements );
     } else if( currentChar == '*' ) {
-        parseBlockComment(currentChar);
+        parseBlockComment( currentChar, totals, lineElements );
+    } else {
+        printf(" ");
     }
 }
 
@@ -97,9 +118,12 @@ void parseComment(char currentChar) {
  * Arguments:
  * --------------
  * currentChar -- The character that the reader is currently on.
+ * totals -- An array that contains the totals for the different characters being parsed
+ * lineElements -- Represents whether or not a certain character type is present on a particular line
  */
-void parseSingleLineComment(char currentChar) {
-    genericParse(currentChar, '\n');
+void parseSingleLineComment( char currentChar, int *totals, int lineElements[][5] ) {
+    genericParse( currentChar, '\n', totals, ONE_LINE_COMMENT, lineElements);
+    totals[LINES]++;
 }
 
 /**
@@ -110,15 +134,26 @@ void parseSingleLineComment(char currentChar) {
  * Arguments:
  * --------------
  * currentChar -- The character that the reader is currently on.
+ * totals -- An array that contains the totals for the different characters being parsed
+ * lineElements -- Represents whether or not a certain character type is present on a particular line
  */
-void parseBlockComment( char currentChar ) {
+void parseBlockComment( char currentChar, int *totals, int lineElements[][5] ) {
+    // This flag represents whether or not an asterick has been encountered
     short lookingForEnd = FALSE;
-
+    totals[BLOCK_COMMENT]++;
     printf("%c", currentChar);
+
+    // Consume the characters for the block comment
     while( TRUE ) {
         currentChar = getchar();
         printf("%c", currentChar );
 
+        // Increment line counts
+        if( currentChar == '\n' ) {
+            totals[LINES]++;
+        }
+
+        // Check for the end of the block comment
         if( currentChar == '*' ) {
             lookingForEnd = TRUE;
         } else if( currentChar == '/' ) {
@@ -134,33 +169,38 @@ void parseBlockComment( char currentChar ) {
 }
 
 int main( int argc, char *argv[] ) {
-	/*int totalsEnabled = FALSE;*/
+    int totalsEnabled = FALSE;
+    int lineElements[9999][5];
+    /*int currentLine = 0;*/
 
 	// Check if file totals are enabled
-	if( argc > 1 ) {
-		if( strcmp(argv[0], "-t") == 0 ) {
-			/*totalsEnabled = TRUE;*/
-		}
+	if( argc >= 2 ) {
+        if( strcmp(argv[1], "-t") == 0 ) {
+            totalsEnabled = TRUE;
+        }
 	}
 
-	/*int totals[5] = {0};*/
-
+    int totals[6] = {0};
 	char ch = 0;
 
+    // Parse the characters
     while( (ch = getchar()) != EOF ) {
         switch(ch) {
-            case '"':
-                parseStringLiteral(ch);
-                break;
             case '\n':
+                printf("%c", ch);
+                totals[LINES]++;
+                break;
             case '\t':
                 printf("%c", ch);
                 break;
+            case '"':
+                parseStringLiteral(ch, totals, lineElements);
+                break;
             case '\'':
-                parseCharacterConstant(ch);
+                parseCharacterConstant(ch, totals, lineElements);
                 break;
             case '/':
-                parseComment(ch);
+                parseComment(ch, totals, lineElements);
                 break;
             default:
                 printf(" ");
@@ -168,5 +208,44 @@ int main( int argc, char *argv[] ) {
         }
     }
 
-    /*printf("\n");*/
+    // If the totals option has been requested, print the calculated totals and line summary
+    if( totalsEnabled == TRUE ) {
+        printf("The program contains:\n");
+        printf("%10d blank lines\n", totals[BLANKLINE]);
+        printf("%10d string literals\n", totals[STRING_LITERAL]);
+        printf("%10d character constants\n", totals[CHARACTER_CONSTANT]);
+        printf("%10d one line comments\n", totals[ONE_LINE_COMMENT]);
+        printf("%10d block comments\n", totals[BLOCK_COMMENT]);
+        printf("%10d lines\n", totals[LINES]);
+
+        printf("     |   blank   |  string   | character |  1 line   |   block   |\n");
+        printf("line |   line    | litteral  | constant  |  comment  |  comment  |\n");
+        printf("-----|-----------|-----------|-----------|-----------|-----------|\n");
+
+        char *present    = "    XXX    ";
+        char *notPresent = "           ";
+
+        for( int i = 0; i < totals[LINES]; i++ ) {
+            printf("%4d |", i + 1);
+
+            if( lineElements[i][BLANKLINE] == TRUE ) {
+                printf("%s|           |           |           |           |\n", present);
+                continue;
+            } else {
+                printf("%s|", notPresent);
+            }
+
+            for( int j = 0; j < 4; j++ ) {
+                if( lineElements[i][j] == TRUE ) {
+                    printf("%s|", present);
+                } else {
+                    printf("%s|", notPresent);
+                }
+            }
+
+            printf("\n");
+        }
+    }
+
+    return 0;
 }
