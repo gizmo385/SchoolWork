@@ -12,8 +12,12 @@
 #define NORMAL_ORDER        3
 #define BOTH                4
 
+/* Convinience definitions */
+#define TRUE                1
+#define FALSE               0
+
 /* Debug options */
-#define DEBUG               1
+#define DEBUG               TRUE
 
 /* Global variables */
 int debugEnabled = 0;
@@ -75,14 +79,49 @@ void processFile( char *filename ) {
     debug( "Processing file: %s\n", filename);
     // Open our file
     FILE *file = fopen(filename, "r");
+    int MAX_LINES = 12000;
 
     if( file != NULL ) {
-        // Read the file
+        char *lines[MAX_LINES];
+        int currentLine = 0;
+
+        // Read until the end of the file
+        while( !feof(file) ) {
+            int currentLineLength = 201;
+            char *line = malloc( currentLineLength * sizeof(char) );
+
+            // Parse lines until we don't wish to read them anymore
+            while( currentLine < MAX_LINES ) {
+                fgets(line, currentLineLength, file);
+
+                if( line[ currentLineLength ] == '\n' ) {
+                    // If we've reached the end of the line, add the line to the array of lines
+                    debug( "Reached the end of the line. Length = %d", currentLineLength );
+                    lines[currentLine] = line;
+                    currentLine++;
+                } else {
+                    currentLineLength += 200;
+                    line = realloc( line, currentLineLength );
+
+                    debug( "Resizing line length. Length is now %d", currentLineLength );
+                }
+            }
+
+            // Exit the loop if we've read the first 12,000 lines
+            if( currentLine >= MAX_LINES ) {
+                break;
+            }
+        }
+
+        free( lines );
     } else {
         // Report errors
+        debug( "Could not locate file with the name \"%s\"", filename);
+        exit(1);
     }
 
     // Close our file handle
+    //
     fclose( file );
 }
 
@@ -123,6 +162,7 @@ int main(int argc, char *argv[]) {
         switch( ch ) {
             case 'r':
                 debug( "Setting line sort mode to be reverse.\n");
+                sortOrder = REVERSE_ORDER;
                 break;
             case 'i':
                 compare = strcasecmp;
@@ -130,6 +170,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 'b':
                 debug( "Line sort will now sort reversed and non-reversed.\n");
+                sortOrder = BOTH;
                 break;
             case 'd':
                 debugEnabled = DEBUG;
@@ -147,6 +188,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // Shift argv so that the parsed arguments are no longer reachable
     argc -= optind;
     argv += optind;
 
