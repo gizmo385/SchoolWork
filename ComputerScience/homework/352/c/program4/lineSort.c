@@ -298,22 +298,15 @@ struct option longopts[] = {
     {NULL,          0,              NULL,  0 }
 };
 
-int main(int argc, char *argv[]) {
-    char *progName = argv[0];
-
-    // The function that will be used to compare strings
-    int (*compare)(const char *, const char *) = strcmp;
-
-    // Determines whether or not we are sorting in normal order, reverse order, or both
-    int sortOrder = NORMAL_ORDER;
-
+void parseArguments( char *argv[], int argc, int (*compare)(const char *, const char *),
+        int *sortOrder, char *progName ) {
     // Parse command line arguments
     char ch = 0;
     while(( ch = getopt_long(argc, argv, "irbd", longopts, NULL)) != -1 ) {
         switch( ch ) {
             case 'r':
                 debug( "Setting line sort mode to be reverse.\n");
-                sortOrder = REVERSE_ORDER;
+                *sortOrder = REVERSE_ORDER;
                 break;
             case 'i':
                 compare = strcasecmp;
@@ -321,7 +314,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 'b':
                 debug( "Line sort will now sort reversed and non-reversed.\n");
-                sortOrder = BOTH;
+                *sortOrder = BOTH;
                 break;
             case 'd':
                 debugEnabled = DEBUG;
@@ -338,6 +331,20 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
+}
+
+int main(int argc, char *argv[]) {
+    char *progName = argv[0];
+
+    // The function that will be used to compare strings
+    int (*compare)(const char *, const char *) = strcmp;
+
+    // Determines whether or not we are sorting in normal order, reverse order, or both
+    int sortOrder = NORMAL_ORDER;
+
+    parseArguments( argv, argc, compare, &sortOrder,  progName );
+    debug("sortOrder = %d\n", sortOrder );
+    debug("argc = %d\n", argc );
 
     // Shift argv so that the parsed arguments are no longer reachable
     argc -= optind;
