@@ -15,12 +15,108 @@ int debugEnabled = 0;
  * processOpts.h
  *
  * Arguments:
- * argv  -- The list of command line arguments provided to main
- * argc  -- The number of command line arguments provided to main
- * flags -- The destination array for the flags to be set in
+ * argv     -- The list of command line arguments provided to main
+ * argc     -- The number of command line arguments provided to main
+ * progName -- The name of the program
+ * flags    -- The destination array for the flags to be set
  */
-void processOpts( char *argv[], int argc, int *flags ) {
-    debug( "Testing debug!" );
+void processOpts( char *argv[], int argc, char *progName, int *flags ) {
+    char ch = -1;
+
+    int seedEncountered = 0;
+
+    while( (ch = getopt_long(argc, argv, "us::pPhH:d", longopts, NULL)) != -1 ) {
+        switch(ch) {
+            case 's':
+                seedEncountered = 1;
+
+                // Parse the required argument for this option
+                if( optarg == NULL ) {
+                    usage( progName, stderr );
+                } else {
+                    if( *optarg == '=' ) {
+                        optarg++;
+                    }
+
+                    flags[ SEED_INDEX ] = atoi(optarg);
+                    debug( "Seed set to: %d", flags[ SEED_INDEX ] );
+                }
+                break;
+            case 'p':
+                debug( "Dealing for Poker" );
+                flags[ GAME_INDEX ] = POKER;
+                break;
+            case 'P':
+                debug( "Dealing for Pinochle" );
+                flags[ GAME_INDEX ] = PINOCHLE;
+                break;
+            case 'h':
+                debug( "Dealing for Hearts" );
+                flags[ GAME_INDEX ] = HEARTS;
+                break;
+            case 'H':
+
+                // Handle the optional argument for this option
+                if( optarg == NULL ) {
+                    flags[ HAND_SIZE_INDEX ] = DEFAULT_HAND_SIZE;
+                } else {
+                    if( *optarg == '=' ) {
+                        optarg++;
+                    }
+
+                    flags[ HAND_SIZE_INDEX ] = atoi(optarg);
+                }
+
+                debug( "Dealing %d hands!", flags[ HAND_SIZE_INDEX ] );
+                break;
+            case 'd':
+                debugEnabled = DEBUG;
+                debug( "Debug output enabled!\n" );
+                break;
+            case 'u':
+                usage( progName, stdout );
+                break;
+            case '?':
+                usage( progName, stderr );
+                break;
+            default:
+                fprintf( stderr, "main: reached default\n");
+                break;
+        }
+    }
+
+    // Ensure that we encountered a seed
+    if( ! seedEncountered ) {
+        usage( progName, stderr );
+    }
+}
+
+/*
+ * Prints the usage information for this program to the specified file
+ * descriptor.
+ *
+ * Arguments:
+ * progName -- The name of the program being executed
+ * file     -- The file descriptor to write usage information to
+ *
+ * Exit Status:
+ * 1 -- If the file descriptor is stderr, exit status will be 1
+ * 0 -- If the file descriptor is stdout, exit status will be 0
+ */
+void usage( char *progName, FILE *file) {
+    fprintf( file, "Usage: %s -s=# [-p] [-P] [-h] [-H[=#]]\n", progName );
+    fprintf( file, "--usage       print this information and exit\n" );
+    fprintf( file, "-s --seed     initialize random number generator (required argument)\n" );
+    fprintf( file, "-p --poker    deal 5-card poker hands\n" );
+    fprintf( file, "-P --pinochle deal pinochle hands\n" );
+    fprintf( file, "-h --hearts   deal cards for hearts\n" );
+    fprintf( file, "-H --hands    number of hands to deal  (optional argument)\n" );
+    fprintf( file, "              Number of hands defaults to 4\n" );
+
+    // Exit from the usage information
+    file == stdout ?
+        exit(0) :
+        exit(1);
 }
 
 /*
