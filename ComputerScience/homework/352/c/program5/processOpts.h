@@ -1,45 +1,22 @@
+/* INCLUDES */
+#include <getopt.h>
+#include <stdio.h>
+
 /* FLAG INDICES */
 #define SEED_INDEX          0
-#define GAME_INDEX          1
-#define HAND_SIZE_INDEX     2
-
-#define NUMBER_OF_FLAGS     3
+#define HAND_SIZE_INDEX     1
+#define POKER_FLAG          2
+#define PINOCHLE_FLAG       3
+#define HEARTS_FLAG         4
+#define NUMBER_OF_FLAGS     5
 
 /* CONSTANT DEFINITIONS */
-#define POKER               1
-#define PINOCHLE            2
-#define HEARTS              3
 #define DEFAULT_HAND_SIZE   4
 
+/* DEBUG OPTIONS */
 #define DEBUG               1
-
 extern int debugEnabled;
 
-/*
- * Option Summary:
- *
- * Usage: cardDealer -s=# [-p] [-P] [-h] [-H[=#]]
- * --usage       print this information and exit
- * -s --seed     initialize random number generator (required argument)
- * -p --poker    deal 5-card poker hands
- * -P --pinochle deal pinochle hands
- * -h --hearts   deal cards for hearts
- * -H --hands    number of hands to deal  (optional argument)
- *               Number of hands defaults to 4
- */
-struct option longopts[] = {
-    // User facing options
-    {"usage",       no_argument,        NULL, 'u'},
-    {"seed",        required_argument,  NULL, 's'},
-    {"poker",       no_argument,        NULL, 'p'},
-    {"pinochle",    no_argument,        NULL, 'P'},
-    {"hearts",      no_argument,        NULL, 'h'},
-    {"hands",       optional_argument,  NULL, 'H'},
-
-    // Transparent options
-    {"debug",       no_argument,    NULL, 'd'},
-    {NULL,          0,              NULL,  0 }
-};
 
 /*
  * Processes the command line arguments and returns an array of flags that represent the various
@@ -65,7 +42,7 @@ extern void processOpts( char *argv[], int argc, char *progName, int *flags );
  */
 extern void debug( const char *format, ... );
 
-/*
+    /*
  * Prints the usage information for this program to the specified file
  * descriptor.
  *

@@ -9,6 +9,7 @@
 
 int debugEnabled = 0;
 
+
 /*
  * Processes the command line arguments and returns an array of flags that represent the various
  * settings for the program. The organization of the flags follows the constants defined in
@@ -21,8 +22,28 @@ int debugEnabled = 0;
  * flags    -- The destination array for the flags to be set
  */
 void processOpts( char *argv[], int argc, char *progName, int *flags ) {
-    char ch = -1;
 
+    // Set defaults for flags
+    flags[ HAND_SIZE_INDEX ]    = 4;
+    flags[ POKER_FLAG ]         = 0;
+    flags[ PINOCHLE_FLAG ]      = 0;
+    flags[ HEARTS_FLAG ]        = 0;
+
+    struct option longopts[] = {
+        // User facing options
+        {"usage",       no_argument,        NULL, 'u'},
+        {"seed",        required_argument,  NULL, 's'},
+        {"poker",       no_argument,        NULL, 'p'},
+        {"pinochle",    no_argument,        NULL, 'P'},
+        {"hearts",      no_argument,        NULL, 'h'},
+        {"hands",       optional_argument,  NULL, 'H'},
+
+        // Transparent options
+        {"debug",       no_argument,    NULL, 'd'},
+        {NULL,          0,              NULL,  0 }
+    };
+
+    char ch = -1;
     int seedEncountered = 0;
 
     while( (ch = getopt_long(argc, argv, "us::pPhH:d", longopts, NULL)) != -1 ) {
@@ -39,23 +60,22 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
                     }
 
                     flags[ SEED_INDEX ] = atoi(optarg);
-                    debug( "Seed set to: %d", flags[ SEED_INDEX ] );
+                    debug( "Seed set to: %d\n", flags[ SEED_INDEX ] );
                 }
                 break;
             case 'p':
-                debug( "Dealing for Poker" );
-                flags[ GAME_INDEX ] = POKER;
+                debug( "Dealing for Poker\n" );
+                flags[ POKER_FLAG ] = 1;
                 break;
             case 'P':
-                debug( "Dealing for Pinochle" );
-                flags[ GAME_INDEX ] = PINOCHLE;
+                debug( "Dealing for Pinochle\n" );
+                flags[ PINOCHLE_FLAG ] = 1;
                 break;
             case 'h':
-                debug( "Dealing for Hearts" );
-                flags[ GAME_INDEX ] = HEARTS;
+                debug( "Dealing for Hearts\n" );
+                flags[ HEARTS_FLAG ] = 1;
                 break;
             case 'H':
-
                 // Handle the optional argument for this option
                 if( optarg == NULL ) {
                     flags[ HAND_SIZE_INDEX ] = DEFAULT_HAND_SIZE;
@@ -67,7 +87,7 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
                     flags[ HAND_SIZE_INDEX ] = atoi(optarg);
                 }
 
-                debug( "Dealing %d hands!", flags[ HAND_SIZE_INDEX ] );
+                debug( "Dealing %d hands!\n", flags[ HAND_SIZE_INDEX ] );
                 break;
             case 'd':
                 debugEnabled = DEBUG;

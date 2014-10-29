@@ -1,44 +1,46 @@
 #include "cardDealer.h"
+#include "processOpts.h"
+#include "shuffle.h"
 
-void dealPoker( /* appropriate formal parameters here */ );
-void dealHearts( /* appropriate formal parameters here */ );
-void dealPinochle( /* appropriate formal parameters here */ );
+/* Function prototypes */
+void dealPoker();
+void dealHearts();
+void dealPinochle();
 
-
-void
-deal( /* put here the formal parameters for deal, they will be the arrays for
-       * the cards and the flags from processOpts that tell what to do */)
-{
+/*
+ * Deals the appropriate hands that are desired by the user
+ *
+ * Arguments:
+ * flags -- The list of flags for the program
+ */
+void deal( int *flags ) {
    // initialize the random number generator
-   initShuffle( seed );
-   
-   if ( pokerFlag ) {
-      dealPoker( /* appropriate actual parameters here */ );
+   initShuffle( flags[SEED_INDEX] );
+
+   if ( flags[ POKER_FLAG ] ) {
+      dealPoker();
    }
 
-   if ( heartsFlag ) {
-      dealHearts( /* appropriate actual parameters here */ );
-   }
-   
-   if ( pinochleFlag ) {
-      dealPinochle( /* appropriate actual parameters here */ );
+   if ( flags[ HEARTS_FLAG ] ) {
+      dealHearts();
    }
 
-} /* deal */
+   if ( flags[ PINOCHLE_FLAG ] ) {
+      dealPinochle();
+   }
 
-void
-dealPoker( /* appropriate formal parameters here */ )
-{
-} /* dealPoker */
+}
+
+void dealPoker( /* appropriate formal parameters here */ ) {
+
+}
 
 
-void
-dealHearts( /* appropriate formal parameters here */ )
-{
-} /* dealHearts */
-   
+void dealHearts( /* appropriate formal parameters here */ ) {
 
-void
-dealPinochle( /* appropriate formal parameters here */ )
-{
-} /* dealPinochle */
+}
+
+
+void dealPinochle( /* appropriate formal parameters here */ ) {
+
+}
