@@ -37,4 +37,4 @@ extern void dealHearts( int numberOfHands );
  */
 extern void dealPinochle( int numberOfHands );
 
-extern char *getSuit( int cardValue );
+extern char *getSuit( int cardValue, int numFaces );

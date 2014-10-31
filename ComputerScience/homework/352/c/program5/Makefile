@@ -22,8 +22,8 @@ processOpts.o: processOpts.c processOpts.h
 	${CC} ${CFLAGS} -c processOpts.c
 
 # Add a target for deal.o
-deal.o: deal.c deal.h processOpts.h shuffle.h
-	${CC} ${CFLAGS} -c deal.c
+deal.o: deal.c deal.h processOpts.h
+	${CC} ${CFLAGS} -c deal.c -L${LDFLAGS} -l${INCLUDE}/shuffle.h
 
 # Add a clean target that removes the .o files
 clean:

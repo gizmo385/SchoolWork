@@ -1,4 +1,5 @@
 #include <string.h>
+#include <math.h>
 #include "processOpts.h"
 #include "shuffle.h"
 #include "deal.h"
@@ -19,10 +20,16 @@ void deal( int *flags ) {
     }
 
     if ( flags[ HEARTS_FLAG ] ) {
+        if( flags[ POKER_FLAG ] ) {
+            printf("\n");
+        }
         dealHearts(numberOfHands);
     }
 
     if ( flags[ PINOCHLE_FLAG ] ) {
+        if( flags[ HEARTS_FLAG ] || flags[ POKER_FLAG ] ) {
+            printf("\n");
+        }
         dealPinochle(numberOfHands);
     }
 }
@@ -78,10 +85,7 @@ void printCards( char *faces[], int numFaces, int handSize, int numberOfHands,
                 int cardValue = hands[ hand + handBlock ][ cardInHand ];
                 char card[20];
 
-                sprintf( card, "%s of %s", faces[ cardValue % numFaces ], getSuit( cardValue ));
-                /*strcpy( card, faces[cardValue % numFaces] );*/
-                /*strcat( card, " of " );*/
-                /*strcat( card, getSuit( cardValue ) );*/
+                sprintf( card, "%s of %s", faces[ cardValue % numFaces ], getSuit( cardValue, numFaces));
                 printf( "%-17s ", card );
             }
 
@@ -111,21 +115,12 @@ void dealPoker( int numberOfHands ) {
                       "Six",    "Five",   "Four",     "Three",
                       "Two" };
 
-    int deck[POKER_DECK_SIZE];
-    debug("BEFORE SHUFFLE\n");
+    int cards[POKER_DECK_SIZE];
     for( int i = 0; i < POKER_DECK_SIZE; i++ ) {
-        debug( "In Poker deck - (%d) %s of %s\n", i, faces[ i % 13 ], getSuit(i) );
-        deck[i] = i;
+        cards[i] = i;
     }
 
-    shuffleCards( deck, POKER_DECK_SIZE );
-    debug("AFTER SHUFFLE\n");
-
-    for( int i = 0; i < POKER_DECK_SIZE; i++ ) {
-        int cardValue = deck[i];
-        debug( "In Poker deck - (%d) %s of %s\n", i, faces[ cardValue % 13 ], getSuit( cardValue ) );
-    }
-
+    shuffleCards( cards, POKER_DECK_SIZE );
 
     int hands[ numberOfHands ][5]; // A poker hand has 5 cards in it
     int currentCard = 0;
@@ -133,7 +128,7 @@ void dealPoker( int numberOfHands ) {
     // Deal the cards
     for( int currentCardInHand = 0; currentCardInHand < 5; currentCardInHand++ ) {
         for( int currentHand = 0; currentHand < numberOfHands; currentHand++ ) {
-            hands[ currentHand ][ currentCardInHand ] = deck[currentCard];
+            hands[ currentHand ][ currentCardInHand ] = cards[currentCard];
             currentCard++;
         }
     }
@@ -154,6 +149,9 @@ void dealPoker( int numberOfHands ) {
  */
 void dealHearts( int numberOfHands ) {
     debug( "Dealing %d %s of Hearts\n.", numberOfHands, numberOfHands == 1 ? "hand" : "hands" );
+    if( numberOfHands > 4 ) {
+        numberOfHands = 4;
+    }
 
     // Initialize and shuffle our card deck
     char *faces[] = { "Ace",    "King",   "Queen",    "Jack",
@@ -163,33 +161,34 @@ void dealHearts( int numberOfHands ) {
 
     int cards[HEARTS_DECK_SIZE];
     for( int i = 0; i < HEARTS_DECK_SIZE; i++ ) {
-        debug( "In Hearts deck - (%d) %s of %s\n", i, faces[ i % 13 ], getSuit(i) );
         cards[i] = i;
     }
 
     shuffleCards( cards, HEARTS_DECK_SIZE );
 
-    int hands[numberOfHands + 1][ HEARTS_DECK_SIZE / numberOfHands ];
+    int handSize = numberOfHands == 2 ?
+        17 :
+        HEARTS_DECK_SIZE / numberOfHands;
+    int hands[numberOfHands + 1][ handSize ];
     int currentCard = 0;
 
     // Deal the cards
-    for( int currentHand = 0; currentHand < numberOfHands; currentHand++ ) {
-        if( (currentCard + numberOfHands) >= HEARTS_DECK_SIZE ) {
-            break;
-        }
-
-        for( int currentCardInHand = 0; currentCardInHand < 5; currentCardInHand++ ) {
+    for( int currentCardInHand = 0; currentCardInHand < handSize; currentCardInHand++ ) {
+        for( int currentHand = 0; currentHand < numberOfHands; currentHand++ ) {
             hands[ currentHand ][ currentCardInHand ] = cards[currentCard];
             currentCard++;
+
+            if( numberOfHands == 2 && (currentHand + 1) == numberOfHands ) {
+                currentCard++;
+            }
         }
     }
 
-    printf("-----------\n");
-    printf("| Hearts: |\n");
-    printf("-----------\n\n");
-    printCards( faces, 13, HEARTS_DECK_SIZE / numberOfHands, numberOfHands, hands );
+        printf("-----------\n");
+        printf("| Hearts: |\n");
+        printf("-----------\n\n");
+        printCards( faces, 13, handSize, numberOfHands, hands );
 }
-
 
 /*
  * Deals the specified number of Pinochle hands from a shuffled deck of 48 cards
@@ -199,26 +198,57 @@ void dealHearts( int numberOfHands ) {
  */
 void dealPinochle( int numberOfHands ) {
     debug( "Dealing %d %s of Pinochle.\n", numberOfHands, numberOfHands == 1 ? "hand" : "hands" );
+    if( numberOfHands > 4 ) {
+        numberOfHands = 4;
+    }
 
     // Initialize and shuffle our card deck
-    /*char *suits[] = { "Spades", "Hearts", "Diamonds", "Clubs" };*/
-    /*char *faces[] = { "Ace", "King", "Queen", "Jack", "Ten", "Nine"};*/
+    char *faces[] = { "Ace", "King", "Queen", "Jack", "Ten", "Nine"};
 
     int cards[PINOCHLE_DECK_SIZE];
-    for( int i = 0; i < PINOCHLE_DECK_SIZE; i++ ) {
-        cards[i] = i;
+    int currentCardIndex = 0;
+
+    int handSize = numberOfHands == 2 ?
+        16 :
+        PINOCHLE_DECK_SIZE / numberOfHands;
+    int hands[numberOfHands + 1][ handSize ];
+
+    for( int currentSuit = 0; currentSuit < 4; currentSuit++ ) {
+        for( int currentFace = 0; currentFace < 6; currentFace++ ) {
+            cards[currentCardIndex] = (currentSuit * 6) + currentFace;
+            cards[currentCardIndex + 1] = (currentSuit * 6) + currentFace;
+            currentCardIndex += 2;
+        }
     }
 
     shuffleCards( cards, PINOCHLE_DECK_SIZE );
-    /*printCards( faces, suits, 0, numberOfHands, hands );*/
+
+    int currentCard = 0;
+
+    // Deal the cards
+    for( int currentCardInHand = 0; currentCardInHand < handSize; currentCardInHand++ ) {
+        for( int currentHand = 0; currentHand < numberOfHands; currentHand++ ) {
+            hands[ currentHand ][ currentCardInHand ] = cards[currentCard];
+            currentCard++;
+
+            if( numberOfHands == 2 && (currentHand + 1) == numberOfHands ) {
+                currentCard++;
+            }
+        }
+    }
+
+    printf("-------------\n");
+    printf("| Pinochle: |\n");
+    printf("-------------\n\n");
+    printCards( faces, 6, handSize, numberOfHands, hands );
 }
 
-char *getSuit( int cardValue ) {
-    if( cardValue < 13 ) {
+char *getSuit( int cardValue, int numFaces ) {
+    if( cardValue < numFaces) {
         return "Spades";
-    } else if( cardValue < 26 ) {
+    } else if( cardValue < (2 * numFaces) ) {
         return "Hearts";
-    } else if( cardValue < 39 ) {
+    } else if( cardValue < (3 * numFaces) ) {
         return "Clubs";
     } else {
         return "Diamonds";
