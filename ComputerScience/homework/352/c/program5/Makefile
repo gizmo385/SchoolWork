@@ -14,7 +14,7 @@ cardDealer: cardDealer.o processOpts.o deal.o \
 	${CC} ${CFLAGS} -o cardDealer cardDealer.o processOpts.o deal.o \
 		-L${LDFLAGS} -l${LIBS}
 
-cardDealer.o: cardDealer.c processOpts.o processOpts.h
+cardDealer.o: cardDealer.c deal.h processOpts.o processOpts.h
 	${CC} ${CFLAGS} -c cardDealer.c
 
 # Add a target for processOpts.o
@@ -22,7 +22,7 @@ processOpts.o: processOpts.c processOpts.h
 	${CC} ${CFLAGS} -c processOpts.c
 
 # Add a target for deal.o
-deal.o: deal.c cardDealer.h processOpts.h shuffle.h
+deal.o: deal.c deal.h processOpts.h shuffle.h
 	${CC} ${CFLAGS} -c deal.c
 
 # Add a clean target that removes the .o files

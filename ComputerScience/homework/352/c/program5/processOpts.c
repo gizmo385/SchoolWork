@@ -24,7 +24,7 @@ int debugEnabled = 0;
 void processOpts( char *argv[], int argc, char *progName, int *flags ) {
 
     // Set defaults for flags
-    flags[ HAND_SIZE_INDEX ]    = 4;
+    flags[ NUMBER_OF_HANDS ]    = 4;
     flags[ POKER_FLAG ]         = 0;
     flags[ PINOCHLE_FLAG ]      = 0;
     flags[ HEARTS_FLAG ]        = 0;
@@ -46,21 +46,18 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
     char ch = -1;
     int seedEncountered = 0;
 
-    while( (ch = getopt_long(argc, argv, "us::pPhH:d", longopts, NULL)) != -1 ) {
+    while( (ch = getopt_long(argc, argv, "us:pPhH::d", longopts, NULL)) != -1 ) {
         switch(ch) {
             case 's':
                 seedEncountered = 1;
 
                 // Parse the required argument for this option
-                if( optarg == NULL ) {
-                    usage( progName, stderr );
-                } else {
-                    if( *optarg == '=' ) {
+                if( optarg != NULL ) {
+                    if( *optarg == '-' )
                         optarg++;
-                    }
-
-                    flags[ SEED_INDEX ] = atoi(optarg);
-                    debug( "Seed set to: %d\n", flags[ SEED_INDEX ] );
+                    flags[SEED_INDEX] = atoi(optarg);
+                } else {
+                    usage(progName, stderr);
                 }
                 break;
             case 'p':
@@ -78,16 +75,22 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
             case 'H':
                 // Handle the optional argument for this option
                 if( optarg == NULL ) {
-                    flags[ HAND_SIZE_INDEX ] = DEFAULT_HAND_SIZE;
+                    flags[ NUMBER_OF_HANDS ] = DEFAULT_HAND_SIZE;
                 } else {
                     if( *optarg == '=' ) {
                         optarg++;
                     }
 
-                    flags[ HAND_SIZE_INDEX ] = atoi(optarg);
+                    int argValue = atoi(optarg);
+                    if( argValue < 2 ) {
+                        flags[NUMBER_OF_HANDS] = 2;
+                    } else {
+                        flags[NUMBER_OF_HANDS] = argValue;
+                    }
                 }
 
-                debug( "Dealing %d hands!\n", flags[ HAND_SIZE_INDEX ] );
+                debug( "Dealing %d %s!\n", flags[ NUMBER_OF_HANDS ],
+                        flags[ NUMBER_OF_HANDS ] == 1 ? "hand" : "hands");
                 break;
             case 'd':
                 debugEnabled = DEBUG;
@@ -107,6 +110,7 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
 
     // Ensure that we encountered a seed
     if( ! seedEncountered ) {
+        fprintf(stderr, "Required argument -s missing\n");
         usage( progName, stderr );
     }
 }
@@ -125,13 +129,13 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
  */
 void usage( char *progName, FILE *file) {
     fprintf( file, "Usage: %s -s=# [-p] [-P] [-h] [-H[=#]]\n", progName );
-    fprintf( file, "--usage       print this information and exit\n" );
-    fprintf( file, "-s --seed     initialize random number generator (required argument)\n" );
-    fprintf( file, "-p --poker    deal 5-card poker hands\n" );
-    fprintf( file, "-P --pinochle deal pinochle hands\n" );
-    fprintf( file, "-h --hearts   deal cards for hearts\n" );
-    fprintf( file, "-H --hands    number of hands to deal  (optional argument)\n" );
-    fprintf( file, "              Number of hands defaults to 4\n" );
+    fprintf( file, "  --usage       print this information and exit\n" );
+    fprintf( file, "  -s --seed     initialize random number generator (required argument)\n" );
+    fprintf( file, "  -p --poker    deal 5-card poker hands\n" );
+    fprintf( file, "  -P --pinochle deal pinochle hands\n" );
+    fprintf( file, "  -h --hearts   deal cards for hearts\n" );
+    fprintf( file, "  -H --hands    number of hands to deal  (optional argument)\n" );
+    fprintf( file, "                Number of hands defaults to 4\n" );
 
     // Exit from the usage information
     file == stdout ?

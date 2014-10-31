@@ -4,7 +4,7 @@
 
 /* FLAG INDICES */
 #define SEED_INDEX          0
-#define HAND_SIZE_INDEX     1
+#define NUMBER_OF_HANDS     1
 #define POKER_FLAG          2
 #define PINOCHLE_FLAG       3
 #define HEARTS_FLAG         4
