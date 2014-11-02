@@ -1,0 +1,122 @@
+html{
+    min-height:100%;/* make sure it is at least as tall as the viewport */
+    position:relative
+}
+body{
+    height:100% /* force the BODY element to match the height of the HTML element */
+}
+
+#content_container {
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    min-height: 100%;
+    margin: 0 auto;
+
+    background-color: rgb(230, 227, 217);
+}
+
+#header {
+    position: relative;
+    height: 5%;
+    padding: 2%;
+    background-color: rgb(99, 0, 11);
+    color: white;
+    font-family: "Helvetica Neue", sans-serif;
+}
+
+#header h1 {
+    font-weight: bold;
+    font-size: 250%;
+    position: absolute;
+    bottom: 0;
+}
+
+#header form {
+    position: absolute;
+    right: 3%;
+    bottom: 0;
+    margin: 10px;
+}
+
+#header form * {
+    margin: 5px;
+}
+
+#sidebar {
+    width: 10%;
+    height: 100%;
+    display: block;
+    float: left;
+}
+
+
+#navigation li {
+    list-style-type: none;
+}
+
+#navigation a {
+    text-decoration: none;
+    color: black;
+}
+
+#navigation a:hover {
+    text-decoration: underline;
+    color: blue;
+}
+
+#footer {
+    height: 5%;
+    width: 96%;
+    display: block;
+    padding: 2%;
+    color: white;
+
+    background-color: rgb(99, 0, 11);
+    position: absolute;
+    bottom: 0;
+}
+
+#footer a {
+    text-decoration: none;
+    color: white;
+}
+
+#footer a:hover {
+    font-size: 120%;
+    text-decoration: underline;
+}
+
+.tabbed_content {
+    width: 700px;
+    min_height = 200px;
+    margin: 0 auto;
+    border: 2px solid black;
+}
+
+.tab {
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    background-color: rgb(230, 227, 217);
+}
+
+.selected_tab  {
+    width: 100%;
+    height: 100%;
+    visibility: visible;
+    background-color: rgb(230, 227, 217);
+}
+
+.tab_selectors {
+    margin: auto;
+    width: 500px;
+    list-style-type: none;
+}
+
+.tab_selector {
+    padding: 50px;
+    display: inline;
+}
