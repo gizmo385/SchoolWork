@@ -5,20 +5,17 @@ INCLUDE=/home/cs352/fall14/assign10
 
 all:	skipping
 
-skipping: skipping.o iterative.o recursive.o list.o
-	${CC} ${CFLAGS} -o skipping skipping.o
+skipping: skipping.o list.o processOpts.o
+	${CC} ${CFLAGS} -o skipping skipping.o processOpts.o list.o
 
-skipping.o: skipping.c skipping.h
+skipping.o: skipping.c
 	${CC} ${CFLAGS} -c skipping.c
-
-iterative.o: iterative.c iterative.h
-	${CC} ${CFLAGS} -c iterative.c
-
-recursive.o: recursive.c recursive.h
-	${CC} ${CFLAGS} -c recursive.c
 
 list.o: list.c list.h
 	${CC} ${CFLAGS} -c list.c
+
+processOpts.o: processOpts.c processOpts.h
+	${CC} ${CFLAGS} -c processOpts.c
 
 # Add a clean target that removes the .o files
 clean:
