@@ -42,12 +42,15 @@ void iterative_forwards( char *filename, int *flags ) {
     int currentSkipCounter = 1;
     int skipValue = flags[LINE_SKIP];
 
-    while( !feof(file) ) {
-        char buffer[120];
-        fgets( buffer, 120, file );
+    while( ! feof(file) ) {
+        char buffer[121];
+        fgets( buffer, 121, file );
 
         if( currentSkipCounter == skipValue || skipValue < 1 ) {
-            fprintf( output_file, "%s", buffer );
+            if( ! feof(file ) ) {
+                fprintf( output_file, "%s", buffer );
+            }
+
             currentSkipCounter = 1;
         } else {
             currentSkipCounter++;
@@ -69,16 +72,19 @@ void iterative_backwards( char *filename, int *flags ) {
     FILE *file = fopen( filename, "r" );
     char *output_filename = strcat( filename, ".out");
     FILE *output_file = fopen( output_filename, "w" );
+
     struct node *list = createList();
 
     while( !feof(file) ) {
-        char buffer[120];
+        char *buffer;
+        buffer = malloc( sizeof( char ) * 121 );
         fgets( buffer, 120, file );
 
         push( buffer, list );
     }
 
     fclose( file );
+
     int currentSkipCounter = 1;
     int skipValue = flags[ LINE_SKIP ];
 
@@ -92,10 +98,9 @@ void iterative_backwards( char *filename, int *flags ) {
         } else {
             currentSkipCounter++;
         }
-
-        /*free( word );*/
     }
 
+    free( list );
     fclose( output_file );
 }
 
@@ -111,7 +116,7 @@ void recursive_backwards( char *filename, int *flags ) {
     char *output_filename = strcat( filename, ".out");
     FILE *output_file = fopen( output_filename, "w" );
 
-    recursive_backwards_helper( file, output_file, flags[ LINE_SKIP ], 0 );
+    recursive_backwards_helper( file, output_file, flags[ LINE_SKIP ], 1 );
     fclose( file );
     fclose( output_file );
 }
@@ -120,14 +125,15 @@ void recursive_backwards( char *filename, int *flags ) {
  * A helper function for the recursive solution to printing a file backwards
  *
  * Arguments:
- * filename    -- The file that will be openned and printed
- * output_file -- The file that is being written
- * skipValue   -- The number of lines that should be printed
+ * filename           -- The file that will be openned and printed
+ * output_file        -- The file that is being written
+ * skipValue          -- The number of lines that should be printed
+ * currentSkipCounter -- The current skip value
  */
 void recursive_backwards_helper( FILE *file, FILE *output_file, int skipValue, int currentSkipCounter ) {
     if( ! feof(file) ) {
-        char buffer[120];
-        fgets( buffer, 120, file );
+        char buffer[121];
+        fgets( buffer, 121, file );
 
         if( currentSkipCounter == skipValue || skipValue < 1 ) {
             recursive_backwards_helper( file, output_file, skipValue, 1 );

@@ -103,9 +103,9 @@ char *peek( struct node *list ) {
 char *pop( struct node *list ) {
     char *word = NULL;
 
-    if( list->word != NULL ) {
+    if( list != NULL && list->word != NULL ) {
         word = list->word;
-        removeWord( word, list );
+        removeWord( word );
     }
 
     return word;
@@ -132,5 +132,5 @@ void push( char *wordToPush, struct node *list ) {
  * A null node which represents an empty list.
  */
 struct node *createList() {
-    return createList( NULL, NULL );
+    return createNode( NULL, NULL );
 }
