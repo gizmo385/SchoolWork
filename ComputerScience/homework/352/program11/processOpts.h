@@ -1,3 +1,6 @@
+#ifndef PROCESSOPTS_H
+#define PROCESSOPTS_H
+
 /* INCLUDES */
 #include <getopt.h>
 #include <stdio.h>
@@ -52,3 +55,5 @@ extern void debug( const char *format, ... );
  * 0 -- If the file descriptor is stdout, exit status will be 0
  */
 extern void usage( char *progName, FILE *file);
+
+#endif

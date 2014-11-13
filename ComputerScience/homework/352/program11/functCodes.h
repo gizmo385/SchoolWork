@@ -69,6 +69,3 @@ struct functCodes FunctCodes[] = {
       { 62, ""},
       { 63, ""}
 };
-
-
-

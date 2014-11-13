@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "processOpts.h"
+#include "parser.h"
 
 int main( int argc, char *argv[] ) {
     char *progName = argv[0];
@@ -14,4 +15,11 @@ int main( int argc, char *argv[] ) {
     debug( "Processing J-Format Instructions: %s\n", flags[J_FORMAT_INDEX] == 1 ? "Yes" : "No" );
     debug( "Processing I-Format Instructions: %s\n", flags[I_FORMAT_INDEX] == 1 ? "Yes" : "No" );
     debug( "--------------\n\n" );
+
+    argc -= optind;
+    argv += optind;
+
+    for( int i = 0; i < argc; i++ ) {
+        parseFile( argv[i] );
+    }
 }
