@@ -23,4 +23,4 @@ registers.o: registers.c registers.h
 
 # Add a clean target that removes the .o files
 clean:
-	rm *.o disAssemble
+	@rm *.o disAssemble 2> /dev/null || true

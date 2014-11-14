@@ -2,17 +2,17 @@
 
 /*
  * There are 32 registers in the MIPS architecture:
- * 1 zero register
- * 1 register reserved for the assembler
- * 2 function result registers
- * 4 argument registers
+ *  1 zero register
+ *  1 register reserved for the assembler
+ *  2 function result registers
+ *  4 argument registers
  * 10 temporary registers
- * 8 "saved registers"
- * 2 registers reserved for the kernel
- * 1 global area pointer register
- * 1 stack pointer register
- * 1 frame pointer register
- * 1 return address register
+ *  8 "saved registers"
+ *  2 registers reserved for the kernel
+ *  1 global area pointer register
+ *  1 stack pointer register
+ *  1 frame pointer register
+ *  1 return address register
  *
  * The registers in this array are organized numerically as they are organized in the MIPS
  * archiecture. That is to say, the 0th-31st registers can have their associated names accessed by

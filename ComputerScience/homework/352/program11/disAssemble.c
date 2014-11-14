@@ -20,6 +20,6 @@ int main( int argc, char *argv[] ) {
     argv += optind;
 
     for( int i = 0; i < argc; i++ ) {
-        parseFile( argv[i] );
+        parseFile( argv[i], flags );
     }
 }

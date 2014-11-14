@@ -7,8 +7,8 @@
 #include "registers.h"
 
 /* Function definitions */
-extern void parseFile( char *srcFilename );
-extern void parseInstruction( Instruction *instruction );
+extern void parseFile( char *srcFilename, int *flags  );
+extern void parseInstruction( Instruction *instruction, int programCounter, int *flags );
 extern Instruction *readInstruction( FILE *instructionValue );
 
 #endif
