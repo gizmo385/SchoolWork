@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>UA Friend Scheduler - Home</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    </head>
+<body>
+<div id="content_container">
+    <div id="header">
+        <h1>UA Friend Scheduler</h1>
+
+        <form>
+          Username <input type="text">
+          Password <input type="password">
+          <input type="button" value="Login"> <input type="reset">
+        </form>
+    </div>
+
+    <div id="sidebar">
+        <ul id="navigation">
+            <li><a href="#">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+
+    <div id="main_content">
+        <p>
+            <img src="images/preview.png" alt="coming-soon">
+
+            We believe that meeting up with friends outside of class shouldn't be a hassle. Frequently after class, you
+            find yourself sitting around wondering if any of your friends are available to meet up. Well wait no longer!
+            It is as simple as creating an account, laying out your schedule, and adding your friends. UA Friend Scheduler
+            will allow you to find out who is currently available and when your friends are going to available, based on
+            their class and work schedule.
+        </p>
+
+        <p>
+            <div class="tabbed_content">
+              <div class="selected_tab" id="enable_tab">
+                We want to enable individuals, friends, and groups to be able to organize. We want
+                people to be able to organize meetups without having to jump through hoops.
+              </div>
+
+              <div class="tab" id="simplify_tab">
+                We want to simply the organizational process for meetups and groups of friends.
+              </div>
+
+              <div class="selected_tab" id="change_tab">
+                We want to overhaul the process - remove the red tape and unnecessary complication
+                involved organizing groups.
+              </div>
+
+            </div>
+            <ul class="tab_selectors">
+              <li class="tab_selector" id="enable">Enable</li>
+              <li class="tab_selector" id="simplify">Simplify</li>
+              <li class="tab_selector" id="change">Change</li>
+            </ul>
+
+        </p>
+
+    </div>
+
+    <div id="footer">
+        <h6 style="text-align: left; float: left">Created by <a href="http://gizmo385.github.io">Christopher Chapline</a></h6>
+
+        <h6 style="text-align: right">You can contact me <a href="contact.html">here</a></h6>
+    </div>
+</div>
+<script type="text/javascript">
+      var simplifyTab = document.getElementById("simplify_tab");
+      var enableTab   = document.getElementById("enable_tab");
+      var changeTab = document.getElementById("change_tab");
+
+      var simplifyTabSelector = document.getElementById("simplify");
+      var enableTabSelector   = document.getElementById("enable");
+      var changeTabSelector   = document.getElementById("change");
+
+      simplifyTabSelector.addEventListener("click", function() {
+        console.log("Changing to simplifyTab");
+
+        enableTab.className = "tab";
+        changeTab.className = "tab";
+        simplifyTab.className = "selected_tab";
+      });
+
+      enableTabSelector.addEventListener("click", function() {
+        console.log("Changing to enableTab");
+
+        changeTab.className = "tab";
+        enableTab.className = "tab";
+        enableTab.className = "selected_tab";
+      });
+
+      changeTabSelector.addEventListener("click", function() {
+        console.log("Changing to changeTab");
+
+        enableTab.className = "tab";
+        changeTab.className = "tab";
+        changeTab.className = "selected_tab";
+      });
+
+    </script>
+
+</body>
+</html>
