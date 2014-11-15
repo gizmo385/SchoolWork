@@ -19,7 +19,13 @@ int main( int argc, char *argv[] ) {
     argc -= optind;
     argv += optind;
 
+    if( argc == 0 ) {
+        fprintf( stderr, "Missing file name\n" );
+        usage( progName, stderr );
+    }
+
     for( int i = 0; i < argc; i++ ) {
-        parseFile( argv[i], flags );
+        printf( "File \'%s\' contains:\n", argv[i] );
+        parseFile( progName, argv[i], flags );
     }
 }

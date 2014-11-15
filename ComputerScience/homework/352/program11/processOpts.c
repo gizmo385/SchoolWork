@@ -94,12 +94,12 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
  * 0 -- If the file descriptor is stdout, exit status will be 0
  */
 void usage( char *progName, FILE *file) {
-    fprintf( file,"Usage: %s [-r] [-i] [-j] [-a] file [file ...]\n", progName );
-    fprintf( file,"--usage       print this information and exit\n" );
-    fprintf( file,"-r --Rformat  disassemble R-format instructions\n" );
-    fprintf( file,"-i --Iformat  disassemble I-format instructions\n" );
-    fprintf( file,"-j --Jformat  disassemble J-format instructions\n" );
-    fprintf( file,"-a --all      disassemble all instructions\n" );
+    fprintf( file, "Usage: %s [-r] [-i] [-j] [-a] file [file ...]\n", progName );
+    fprintf( file, "  --usage       print this information and exit\n" );
+    fprintf( file, "  -r --Rformat  disassemble R-format instructions\n" );
+    fprintf( file, "  -i --Iformat  disassemble I-format instructions\n" );
+    fprintf( file, "  -j --Jformat  disassemble J-format instructions\n" );
+    fprintf( file, "  -a --all      disassemble all instructions\n" );
 
     // Exit from the usage information
     file == stdout ?
