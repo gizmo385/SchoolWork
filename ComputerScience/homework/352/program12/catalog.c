@@ -45,31 +45,38 @@ int main( int argc, char *argv[] ) {
         for( int i = 0; i < argc; i++ ) {
             debug( E_INFO, "File argument: %s\n", argv[i] );
 
+            // Create the intial list and load the titles from the .txt file
             List *titles = createList( comparisonFunction, flags[ORDER_INDEX] );
             loadTitlesFromFile( argv[i], titles );
-            char *commandsFilename = strcat( argv[i], ".commands" );
 
-            parseFile( commandsFilename, titles );
+            // Parse the commands file
+            parseFile( argv[i], titles );
         }
     }
 }
 
 void loadTitlesFromFile( char *filename, List *titles ) {
-    char *titlesFilename = strcat( filename, ".txt" );
+    char *titlesFilename = calloc( strlen(filename) + strlen(".txt"), sizeof(char) );
+    strcpy( titlesFilename, filename );
+    strcat( titlesFilename, ".txt" );
+
     FILE *file = fopen( titlesFilename, "r" );
 
     if( file == NULL ) {
-        debug( E_ERROR, "Error openning \'%s\' for reading!\n", filename );
+        debug( E_ERROR, "Error openning \'%s\' for reading!\n", titlesFilename);
     } else {
         int prefixLength = strlen( "Title:  " );
 
         while( !feof(file) ) {
             char *nextTitle = processLine(file);
-            char *actualTitle = calloc( strlen(nextTitle) - prefixLength + 1, sizeof(char) );
-            strncpy( actualTitle, nextTitle + prefixLength, strlen(nextTitle) - prefixLength + 1 );
+            char *actualTitle = strdup( nextTitle + prefixLength );
+
+            /*debug( E_DEBUG, "Inserting '%s' into titles\n", actualTitle );*/
             insertElement( actualTitle, titles );
 
             free( nextTitle );
         }
     }
+
+    free( titlesFilename );
 }

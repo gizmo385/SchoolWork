@@ -40,17 +40,22 @@ void title( char *title, List *titles ) {
  * titles   -- The list of titles to operate on
  */
 void saveTitles( char *filename, List *titles ) {
-    char *outputFilename = strcat( filename, ".save" );
+    char *outputFilename = calloc( strlen(filename) + strlen(".save") + 1, sizeof(char) );
+    strcpy(outputFilename, filename);
+    strcat(outputFilename, ".save" );
     FILE *outputFile = fopen( outputFilename, "w" );
 
     // Handle the case where the output file could not be opened
     if( outputFile == NULL ) {
+        debug( E_ERROR, "There was an error while opening output file %s\n", outputFilename );
         return;
     }
 
+    debug( E_DEBUG, "Saving titles to file: %s\n", outputFilename );
+
     // Iterate over all title nodes and write the titles to the output file
     Node *current = titles->head;
-    while( current->next != NULL ) {
+    while( current->next != NULL && current->title != NULL ) {
         fprintf( outputFile, "Title:  %s\n", current->title );
         current = current->next;
     }
@@ -91,8 +96,11 @@ void deleteTitle( char *command, List *titles ) {
  * titles   -- The current list of titles
  */
 void parseFile( char *filename, List *titles ) {
-    debug( E_DEBUG, "Parsing file: %s\n", filename );
-    FILE *commandFile = fopen( filename, "r" );
+    char *commandsFilename = calloc(strlen(filename) + strlen(".commands") + 1, sizeof(char));
+    strcpy( commandsFilename, filename );
+    strcat( commandsFilename, ".commands" );
+
+    FILE *commandFile = fopen( commandsFilename, "r" );
 
     // Handle the case where the command file could not be openned
     if( commandFile == NULL ) {
@@ -103,11 +111,14 @@ void parseFile( char *filename, List *titles ) {
     while( !feof(commandFile) ) {
         char *line = processLine( commandFile );
         // Parse the command
+        debug( E_INFO, "Command: %s\n", line );
 
         if( startsWith(line, "TITLE ") ) {
             // Find the title
+            title( line + strlen("TITLE "), titles );
         } else if( startsWith(line, "SAVE-TITLES") ) {
             // Save the titles to a file
+            saveTitles( filename, titles );
         } else if( startsWith(line, "ADD ") ) {
             // Add the title to the list of titles
         } else if( startsWith(line, "DELETE-TITLE ") ) {
@@ -119,6 +130,7 @@ void parseFile( char *filename, List *titles ) {
         free( line );
     }
 
+    free( commandsFilename );
     fclose( commandFile );
 }
 
@@ -145,5 +157,10 @@ char *processLine( FILE * file ) {
 }
 
 int startsWith( char *string, const char *substring ) {
+    debug( E_DEBUG, "Looking for '%s' in '%s'", substring, string );
+    if( strlen(substring) > strlen(string) ) {
+        return 0;
+    }
+
     return strncmp( string, substring, strlen(substring) );
 }
