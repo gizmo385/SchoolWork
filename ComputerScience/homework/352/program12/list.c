@@ -31,10 +31,10 @@ Node *createNode( char *title, Node *next ) {
  * Returns:
  * The node containing the desired title. If the title was not found, this will return the NULL node.
  */
-Node *find( char *titleToFind, Node *list ) {
-    Node *currentNode = list;
+Node *find( char *titleToFind, List *list ) {
+    Node *currentNode = list->head;
 
-    while( currentNode->next != NULL && currentNode->title < titleToFind ) {
+    while( currentNode->next != NULL && currentNode->title != titleToFind ) {
         currentNode = currentNode->next;
     }
 
@@ -48,8 +48,18 @@ Node *find( char *titleToFind, Node *list ) {
  * titleToInsert -- The title that you would like to insert into the list
  * list         -- The list that you would like to insert the element into
  */
-void insertElement( char *titleToInsert, Node *list ) {
-    Node *currentNode = find( titleToInsert, list );
+void insertElement( char *titleToInsert, List *list ) {
+    Node *currentNode = list->head;
+
+    if( ! list->reversed ) {
+        while( currentNode->next != NULL && currentNode->title < titleToInsert ) {
+            currentNode = currentNode->next;
+        }
+    } else {
+        while( currentNode->next != NULL && currentNode->title > titleToInsert ) {
+            currentNode = currentNode->next;
+        }
+    }
 
     Node *tempNode = createNode( currentNode->title, currentNode->next );
 
@@ -67,7 +77,7 @@ void insertElement( char *titleToInsert, Node *list ) {
  * Returns:
  * The head of the list with the element removed.
  */
-void removeTitle( char *titleToRemove, Node *list ) {
+void removeTitle( char *titleToRemove, List *list ) {
     Node *currentNode = find( titleToRemove, list );
     Node *tempNode = currentNode->next;
 
@@ -83,12 +93,14 @@ void removeTitle( char *titleToRemove, Node *list ) {
  * Returns:
  * A null node which represents an empty list.
  */
-List *createList( int (*comparisonFunction)(char *, char *) ) {
+List *createList( int (*comparisonFunction)(const char *, const char *),
+        int reverseList ) {
     List *list = (List *) malloc( sizeof(List) );
     Node *head = createNode(NULL, NULL);
 
     list->head = head;
     list->comparisonFunction = comparisonFunction;
+    list->reversed = reverseList;
 
     return list;
 }

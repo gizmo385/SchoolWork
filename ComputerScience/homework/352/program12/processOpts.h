@@ -6,11 +6,11 @@
 #include <stdio.h>
 
 /* OPTION FLAGS */
+#define NORMAL_ORDER        0
 #define REVERSE_ORDER       1
-#define NORMAL_ORDER        2
 
-#define CASE_SENSITIVE      1
-#define CASE_INSENSITIVE    2
+#define CASE_SENSITIVE      0
+#define CASE_INSENSITIVE    1
 
 /* FLAG INDICES */
 #define CASE_INDEX          0

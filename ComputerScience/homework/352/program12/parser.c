@@ -9,8 +9,6 @@
 
 #define READ_LENGTH 201
 
-char *processLine( FILE * file );
-int startsWith( char *string, const char *substring );
 
 /*
  * The title command searches the list for the desired title.
@@ -90,12 +88,15 @@ void deleteTitle( char *command, List *titles ) {
  *
  * Arguments:
  * filename -- The name of the file to parse
+ * titles   -- The current list of titles
  */
-void parseFile( char *filename, int *flags ) {
+void parseFile( char *filename, List *titles ) {
+    debug( E_DEBUG, "Parsing file: %s\n", filename );
     FILE *commandFile = fopen( filename, "r" );
 
     // Handle the case where the command file could not be openned
     if( commandFile == NULL ) {
+        debug( E_ERROR, "Error opening \'%s\' for reading!\n", filename );
         return;
     }
 
@@ -104,13 +105,17 @@ void parseFile( char *filename, int *flags ) {
         // Parse the command
 
         if( startsWith(line, "TITLE ") ) {
-
+            // Find the title
         } else if( startsWith(line, "SAVE-TITLES") ) {
-
+            // Save the titles to a file
+        } else if( startsWith(line, "ADD ") ) {
+            // Add the title to the list of titles
+        } else if( startsWith(line, "DELETE-TITLE ") ) {
+            // Remove the title from the list
         } else {
             // Invalid command
         }
-        // This free will be removed
+
         free( line );
     }
 

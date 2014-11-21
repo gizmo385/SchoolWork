@@ -76,7 +76,7 @@ void processOpts( char *argv[], int argc, char *progName, int *flags ) {
  * 0 -- If the file descriptor is stdout, exit status will be 0
  */
 void usage( char *progName, FILE *file) {
-    fprintf( file, "Usage: %s [-r] [-i] [-j] [-a] file [file ...]\n", progName );
+    fprintf( file, "Usage: %s [-r] [-i] file [file ...]\n", progName );
     fprintf( file, "  --usage           print this information and exit\n" );
     fprintf( file, "  -r --reverse      reverse alphabetic order\n" );
     fprintf( file, "  -i --insensitive  case insensitive order\n" );

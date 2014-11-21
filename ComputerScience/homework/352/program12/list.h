@@ -8,18 +8,19 @@ typedef struct node {
 
 typedef struct list {
     Node *head;
-    int (*comparisonFunction)(char *, char *);
+    int (*comparisonFunction)(const char *, const char *);
+    int reversed;
 } List;
 
 
 extern Node *createNode( char *title, Node *next );
 
-extern Node *find( char *titleToFind, Node *list );
+extern Node *find( char *titleToFind, List *list );
 
-extern void insertElement( char *titleToInsert, Node *list );
+extern void insertElement( char *titleToInsert, List *list );
 
-extern void removeTitle( char *titleToRemove, Node *list );
+extern void removeTitle( char *titleToRemove, List *list );
 
-extern List *createList( int (*comparisonFunction)(char *, char *) );
+extern List *createList( int (*comparisonFunction)(const char *, const char *), int reversed );
 
 #endif
