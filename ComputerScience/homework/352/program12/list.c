@@ -52,11 +52,11 @@ void insertElement( char *titleToInsert, List *list ) {
     Node *currentNode = list->head;
 
     if( ! list->reversed ) {
-        while( currentNode->next != NULL && currentNode->title < titleToInsert ) {
+        while( currentNode->next != NULL && list->comparisonFunction(currentNode->title, titleToInsert) < 0 ) {
             currentNode = currentNode->next;
         }
     } else {
-        while( currentNode->next != NULL && currentNode->title > titleToInsert ) {
+        while( currentNode->next != NULL && list->comparisonFunction(currentNode->title, titleToInsert) > 0 ) {
             currentNode = currentNode->next;
         }
     }
@@ -78,7 +78,18 @@ void insertElement( char *titleToInsert, List *list ) {
  * The head of the list with the element removed.
  */
 void removeTitle( char *titleToRemove, List *list ) {
-    Node *currentNode = find( titleToRemove, list );
+    Node *currentNode = list->head;
+
+    if( ! list->reversed ) {
+        while( currentNode->next != NULL && list->comparisonFunction(currentNode->title, titleToRemove) < 0 ) {
+            currentNode = currentNode->next;
+        }
+    } else {
+        while( currentNode->next != NULL && list->comparisonFunction(currentNode->title, titleToRemove) > 0 ) {
+            currentNode = currentNode->next;
+        }
+    }
+
     Node *tempNode = currentNode->next;
 
     currentNode->title = tempNode->title;

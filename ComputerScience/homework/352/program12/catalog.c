@@ -49,6 +49,21 @@ int main( int argc, char *argv[] ) {
             List *titles = createList( comparisonFunction, flags[ORDER_INDEX] );
             loadTitlesFromFile( argv[i], titles );
 
+            Node *current = titles->head;
+            while( current->next != NULL ) {
+                debug( E_INFO, "Title in list: '%s'\n", current->title );
+                current = current->next;
+            }
+
+            // Create save file -_-
+            char *saveFilename = calloc( strlen(argv[i]) + strlen(".save"), sizeof(char) );
+            strcpy( saveFilename, argv[i] );
+            strcat( saveFilename, ".save" );
+            FILE *thisIsPointless = fopen( saveFilename, "w" );
+            fclose( thisIsPointless );
+
+            free( saveFilename );
+
             // Parse the commands file
             parseFile( argv[i], titles );
         }

@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -g -Wall -std=gnu99
 
-build: clean catalog
+build: catalog
 
-debug: catalog-debug
+debug: clean catalog-debug
 
 catalog: catalog.o processOpts.o utils.o list.o parser.o
 	${CC} ${CFLAGS} -o catalog catalog.o processOpts.o utils.o list.o parser.o

@@ -24,7 +24,7 @@ void title( char *title, List *titles ) {
     }
 
     printf( "TITLE\n" );
-    if( (current == NULL) || (current->title == NULL) || (strcmp(title, current->title) != 0) ) {
+    if( (current == NULL) || (current->title == NULL) ) {
         printf( "NOT FOUND: %s\n", title );
     } else {
         printf( "FOUND: %s\n", title );
@@ -40,10 +40,11 @@ void title( char *title, List *titles ) {
  * titles   -- The list of titles to operate on
  */
 void saveTitles( char *filename, List *titles ) {
+    // Open save file
     char *outputFilename = calloc( strlen(filename) + strlen(".save") + 1, sizeof(char) );
     strcpy(outputFilename, filename);
     strcat(outputFilename, ".save" );
-    FILE *outputFile = fopen( outputFilename, "w" );
+    FILE *outputFile = fopen( outputFilename, "a" );
 
     // Handle the case where the output file could not be opened
     if( outputFile == NULL ) {
@@ -51,12 +52,17 @@ void saveTitles( char *filename, List *titles ) {
         return;
     }
 
-    debug( E_DEBUG, "Saving titles to file: %s\n", outputFilename );
+    debug( E_DEBUG, "Saving titles\n");
+    printf( "SAVE-TITLES\n" );
 
     // Iterate over all title nodes and write the titles to the output file
     Node *current = titles->head;
     while( current->next != NULL && current->title != NULL ) {
-        fprintf( outputFile, "Title:  %s\n", current->title );
+        if( strcmp(current->title, "") != 0 ) {
+            fprintf( outputFile, "Title:  %s\n", current->title );
+            debug( E_DEBUG, "Saving title: '%s'\n", current->title );
+        }
+
         current = current->next;
     }
 
@@ -72,8 +78,33 @@ void saveTitles( char *filename, List *titles ) {
  * title   -- The title that you wish to add to the list of titles
  * titles  -- The list of titles to operate on
  */
-void add( char *command, List *titles ) {
+void add( char *title, List *titles ) {
+    /*debug( E_INFO, "Adding title: '%s'\n", title );*/
+    printf("ADD %s\n", title );
 
+    Node *currentNode = titles->head;
+
+    if( ! titles->reversed ) {
+        while( currentNode->next != NULL && titles->comparisonFunction(currentNode->title, title) < 0 ) {
+            currentNode = currentNode->next;
+        }
+    } else {
+        while( currentNode->next != NULL && titles->comparisonFunction(currentNode->title, title) > 0 ) {
+            currentNode = currentNode->next;
+        }
+    }
+
+    if( strcmp( currentNode->title, title ) ) {
+        printf( "FOUND: %s\n", title );
+        return;
+    }
+
+    Node *tempNode = createNode( currentNode->title, currentNode->next );
+
+    debug( E_DEBUG, "Setting currentNode->title = %s\n", title );
+    currentNode->title = title;
+    currentNode->next = tempNode;
+    printf( "ADDED: %s\n", currentNode->title );
 }
 
 /*
@@ -84,8 +115,32 @@ void add( char *command, List *titles ) {
  * title   -- The title that you wish to delete
  * titles  -- The list of titles to operate on
  */
-void deleteTitle( char *command, List *titles ) {
+void deleteTitle( char *title, List *titles ) {
+    printf( "DELETE-TITLE\n" );
+    Node *current = titles->head;
 
+    if( ! titles->reversed ) {
+        while( current->next != NULL && titles->comparisonFunction(current->title, title) < 0 ) {
+            current = current->next;
+        }
+    } else {
+        while( current->next != NULL && titles->comparisonFunction(current->title, title) > 0 ) {
+            current = current->next;
+        }
+    }
+
+    if( current != NULL ) {
+        Node *tempNode = current->next;
+
+        current->title = tempNode->title;
+        current->next = tempNode->next;
+
+        free( tempNode );
+
+        printf( "DELETED: %s\n", title );
+    } else {
+        printf( "NOT FOUND: %s\n", title );
+    }
 }
 
 /*
@@ -96,6 +151,7 @@ void deleteTitle( char *command, List *titles ) {
  * titles   -- The current list of titles
  */
 void parseFile( char *filename, List *titles ) {
+    printf( "%s:\n\n", filename );
     char *commandsFilename = calloc(strlen(filename) + strlen(".commands") + 1, sizeof(char));
     strcpy( commandsFilename, filename );
     strcat( commandsFilename, ".commands" );
@@ -110,25 +166,29 @@ void parseFile( char *filename, List *titles ) {
 
     while( !feof(commandFile) ) {
         char *line = processLine( commandFile );
-        // Parse the command
-        debug( E_INFO, "Command: %s\n", line );
+        debug( E_DEBUG, "Command: '%s'\n", line );
 
-        if( startsWith(line, "TITLE ") ) {
+        // Parse the command
+        if( startsWith(line, "TITLE ") && (strcmp(line, "TITLE ") != 0 ) ){
             // Find the title
             title( line + strlen("TITLE "), titles );
-        } else if( startsWith(line, "SAVE-TITLES") ) {
+        } else if( strcmp(line, "SAVE-TITLES") == 0 ) {
             // Save the titles to a file
             saveTitles( filename, titles );
         } else if( startsWith(line, "ADD ") ) {
-            // Add the title to the list of titles
+            // Add a new filename to the file
+            add( line + strlen("ADD "), titles );
         } else if( startsWith(line, "DELETE-TITLE ") ) {
             // Remove the title from the list
+            deleteTitle(line + strlen("DELETE-TITLE "), titles);
         } else {
             // Invalid command
         }
 
         free( line );
     }
+
+    printf( "\n" );
 
     free( commandsFilename );
     fclose( commandFile );
@@ -153,14 +213,30 @@ char *processLine( FILE * file ) {
         }
     }
 
+    // Remove ending newlines
+    for( int i = strlen(line) - 1; i >= 0; i-- ) {
+        if( line[i] == '\n' ) {
+            line[i] = 0;
+            break;
+        }
+    }
+
     return line;
 }
 
 int startsWith( char *string, const char *substring ) {
-    debug( E_DEBUG, "Looking for '%s' in '%s'", substring, string );
-    if( strlen(substring) > strlen(string) ) {
+    int stringLength = strlen( string );
+    int substringLength = strlen( substring );
+
+    if( substringLength > stringLength ) {
         return 0;
     }
 
-    return strncmp( string, substring, strlen(substring) );
+    for( int i = 0; i < substringLength; i++ ) {
+        if( string[i] != substring[i] ) {
+            return 0;
+        }
+    }
+
+    return 1;
 }
