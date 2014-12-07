@@ -1,0 +1,20 @@
+.position {
+    width: 100px;
+    height: 100px;
+    border: solid black 2px;
+}
+
+#position1, #position3, #position5, #position7, #position9 {
+    background-color: red;
+}
+
+#position2, #position4, #position6, #position8 {
+    background-color: blue;
+}
+
+#messages {
+    display: block;
+    height: 300px;
+    width: 60%;
+    border: inset 5px black;
+}
