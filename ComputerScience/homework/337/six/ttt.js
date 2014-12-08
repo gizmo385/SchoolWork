@@ -79,7 +79,6 @@ function gotMyGame(response) {
 function gotOpenGames(response) {
     // remove all existing game nodes from the #openGames div
     openGamesDiv = document.getElementById('openGames');
-
     while (openGamesDiv.firstChild) {
         openGamesDiv.removeChild(openGamesDiv.firstChild);
     }
@@ -179,15 +178,19 @@ function updateGameState(game) {
     }
 
     // Did someone win? If so display the winner and return. No further processing.
+    currentGame = document.getElementById( "currentGame" );
     if( game.winner ) {
-        currentGame.innerHTML = "<img src=\"" + game.winner + "\" class=\"ttt_icon\"> wins!";
-        updateMessage( game.winner + " wins!" );
+        if( game.winner.player_id == playerID ) {
+            currentGame.innerHTML = "<h1>YOU WON!!</h1>";
+        } else {
+            currentGame.innerHTML = "<h1>YOU LOST :(</h1>";
+        }
+        //currentGame.innerHTML = "<img src=\"" + game.winner + "\" class=\"ttt_icon\"> wins!";
         return;
     }
 
     // Are you X or O?
     var playerType = game.you.player_type;
-    currentGame = document.getElementById( "currentGame" );
     currentGame.innerHTML = "You are <img src=\"" + playerType + ".png\" class=\"ttt_icon\">";
 
     // Who's turn is it?
