@@ -5,11 +5,42 @@
 }
 
 #position1, #position3, #position5, #position7, #position9 {
-    background-color: red;
+    background-color: rgba(255, 0, 0, 0.5);
 }
 
 #position2, #position4, #position6, #position8 {
-    background-color: blue;
+    background-color: rgba(0, 0, 255, 0.5);
+}
+
+.ttt_icon {
+    width: 100px;
+    height: 100px;
+}
+
+#openGames {
+    max-height: 120px;
+    max-width: 330px;
+    overflow-y: scroll;
+}
+
+.openGameButton {
+    /* Display multiple buttons on the same line */
+    display: inline-block;
+
+    /* Set the button size */
+    width: 95px;
+    height: 30px;
+
+    /* Center the text */
+    text-align: center;
+    vertical-align: middle;
+
+    /* Border the text */
+    border: 1px solid black;
+
+    /* Space the buttons out */
+    margin-bottom: 10px;
+    margin-right: 5px;
 }
 
 #messages {

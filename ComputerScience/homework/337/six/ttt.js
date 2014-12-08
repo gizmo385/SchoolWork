@@ -41,16 +41,37 @@ function setup() {
     }
 
     // Add a click event handler to the new game button
-    newGameButton = document.getElementById("newgGame").addEventListener("click", event);
-    // See if we're part of a game already by making an ajas call to the myGame command, and handling the result
-    // See if there are any existing games by making an ajas call to the getGames command, and handling the result
+    newGameButton = document.getElementById("newGame").addEventListener("click", newGame);
+
+    // See if we're part of a game already by making an ajax call to the myGame command, and handling the result
+    ajax( "cmd=myGame", gotMyGame );
+
+    // See if there are any existing games by making an ajax call to the getGames command, and handling the result
+    ajax( "cmd=getGames", gotOpenGames );
+
     // Start a board refresh timer with a two second interval (2000ms), set refreshBoardTimer as the callback
+    setTimeout( refreshBoardTimer, 2000 );
 }
 
 function gotMyGame(response) {
     // See if we got a game state from our response
     // If the game_state property is 'open', display a message saying we're waiting for another player to join.
     // If the game_state is set to 'playing' or 'complete', update the game board state by calling updateGameState()
+    if( response.data ) {
+        var game = response.data;
+        gameID = game.game_id;
+
+        // Determine the game state
+        var gameState = game.game_state;
+        if( gameState == "open" ) {
+            updateMessage( "Waiting for additional player..." );
+        } else if( gameState == "playing" || gameState == "complete" ) {
+            updateGameState(game);
+        } else {
+            console.log( "gameState = " + gameState );
+        }
+    }
+
 }
 
 // Handle Open Games Response
@@ -65,60 +86,125 @@ function gotOpenGames(response) {
     // Add new elements to the #openGames div for each game reported in the response.
     // Make each new element respond to a 'click' event, and set joinGame as a callback.
     // Attach the game_id to the new element. Remember we can just make up new properties!
+    for( var i = 0; i < response.data.length; i++ ) {
+        var game = response.data[i];
+
+        // Create a new div and add the event listener
+        var openGameElement = document.createElement("div");
+        openGameElement.className = "openGameButton";
+        openGameElement.innerHTML = game.game_id;
+        openGameElement.addEventListener( "click", joinGame );
+
+        // Add the element to the list of elements
+        openGamesDiv.appendChild( openGameElement );
+    }
 }
 
 // Callback function for the click event on the new game button.
 function newGame() {
     // Send an AJAX command to create a new game
+    ajax( "cmd=newGame", newGameResult );
 }
 
 function newGameResult(response) {
     // Handle the display of any information from the response to our newGame command
+    updateMessage( response.message );
+    gameID=response.gameID;
 }
 
 // Event handler attached to each game to join
 function joinGame(event) {
     // the 'this' variable should be a given TD HTMLElement. Retrieve the game_id we set earlier
+    var gameToJoin =  this.innerHTML;
+
     // Send a new AJAX command to join the given gameID, and set joinGameResult as the callback
+    ajax( "cmd=joinGame&gameID=" + gameToJoin, joinGameResult );
 }
 
 // Handle the response from joining a game
 function joinGameResult(response) {
     // Store the game ID in our global gameID variable for later use.
+    var data = response.data;
+    gameID = data.game_id;
+
     // Update the message field with the new message from this response.
+    updateMessage( response.message );
 }
 
 // Event handler attached to teach TD position element.
 function positionClick(event) {
     // Send a new AJAX command to record a new move. Pass gotMoveResult as the callback
+    var positionNumber = this.id.substr( this.id.length - 1 );
+
+    if( gameID ) {
+        ajax( "cmd=move&gameID=" + gameID + "&position=" + positionNumber, gotMoveResult );
+    }
 }
 
 // Handle result from a move
 function gotMoveResult(response) {
     // Update the message field
+    if( response.message != undefined ) {
+        updateMessage( response.message );
+    } else if( response.error != undefined ) {
+        updateMessage( response.error );
+    }
+
     // Update the game board with the new game state returned
+    updateGameState( response.data );
 }
 
 // Update the game board with a given game state
 function updateGameState(game) {
     // Update each position on the Board
+    var gameBoard = game.board;
+    for( var i = 0; i < gameBoard.length; i++ ) {
+        var boardPosition = gameBoard[i];
+
+        document.getElementById( "position" + (i + 1) );
+
+        if( boardPosition == "X" ) {
+            boardPosition.innerHTML = "<img src=\"X.png\" class=\"ttt_icon\">";
+        } else if( boardPosition == "X" ) {
+            boardPosition.innerHTML = "<img src=\"O.png\" class=\"ttt_icon\">";
+        } else {
+            console.log( "@ i = " + i + ", boardPosition =  " + boardPosition );
+        }
+    }
+
     // Did someone win? If so display the winner and return. No further processing.
+
     // Are you X or O?
+    var playerType = game.you.player_type;
+    console.log( "playerType = " + playerType );
+    currentGame = document.getElementById( "currentGame" );
+    currentGame.innerHTML = "You are <img src=\"" + playerType + ".png\" class=\"ttt_icon\">";
+
     // Who's turn is it?
 }
 
 // Callback from our refresh timeout
 function refreshBoardTimer() {
     // Send a new AJAX call for myGame, set gotMyGame as the callback
+    ajax( "cmd=myGame", gotMyGame );
+
     // Send a new AJAX call for getGames, set gotOpenGames as the callback
+    ajax( "cmd=getGames", gotOpenGames);
+
     // Set a new timeout for 2 seconds with refreshBoardTimer as the callback again
+    setTimeout( refreshBoardTimer, 2000 );
 }
 
 // Update the message text on the screen
-function updateMessage(text) {
-    // Update the #messages element with the new text
+function updateMessage(message) {
+    // Determine the current time (hours:minutes:seconds)
+    var dateObject = new Date();
+    var currentTime = (dateObject.getHours() % 12) + ":" + dateObject.getMinutes() + ":" +
+        dateObject.getSeconds();
+
+    // Update the #messages element with the new text and a timestamp
     var messages = document.getElementById("messages");
-    messages.innerHTML += message + "<br>";
+    messages.value = messages.value + "<" + currentTime + "> " + message + "\n";
 }
 
 // A basic wrapper for our AJAX Calls.
@@ -143,9 +229,12 @@ function ajax(url, callback) {
         // Upon completion of the request, call the callback() function passed in with the decoded
         // JSON of the response.
         if( req.readyState == 4 ) {
-            callback( JSON.parse(req.responseText) );
-        } else {
-            console.log( "Request response = \"" + req.responseText + "\"" );
+            // 200 is an HTTP OK response
+            if( req.status == 200 ) {
+                callback( JSON.parse(req.responseText) );
+            } else {
+                console.log( "Request response = \"" + req.responseText + "\"" );
+            }
         }
     }
 
