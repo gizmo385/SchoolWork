@@ -192,6 +192,7 @@ function updateGameState(game) {
     // Are you X or O?
     var playerType = game.you.player_type;
     currentGame.innerHTML = "You are <img src=\"" + playerType + ".png\" class=\"ttt_icon\">";
+    currentGame.innerHTML += " and it <strong>IS " + (myTurn ? "" : "NOT ") + "</strong>your turn.";
 
     // Who's turn is it?
     if( game.you.player_id == game.player_turn.player_id ) {
@@ -222,7 +223,7 @@ function updateMessage(message) {
 
     // Update the #messages element with the new text and a timestamp
     var messages = document.getElementById("messages");
-    messages.value = messages.value + "<" + currentTime + "> " + message + "\n";
+    messages.value = "<" + currentTime + "> " + message + "\n" + messages.value;
 }
 
 // A basic wrapper for our AJAX Calls.
