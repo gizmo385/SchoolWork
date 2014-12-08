@@ -1,0 +1,3 @@
+Minor custom styling for the board
+
+Messages have been reformated into a textarea rather than a div and contain timestamps
