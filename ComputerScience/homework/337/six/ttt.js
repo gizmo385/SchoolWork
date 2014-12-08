@@ -4,6 +4,7 @@ var currentGame;
 var newGameButton;
 var leaveGameButton;
 var openGamesDiv;
+var myTurn;
 
 /**
  * Load Event Listener
@@ -137,7 +138,11 @@ function positionClick(event) {
     var positionNumber = this.id.substr( this.id.length - 1 );
 
     if( gameID ) {
-        ajax( "cmd=move&gameID=" + gameID + "&position=" + positionNumber, gotMoveResult );
+        if( myTurn ) {
+            ajax( "cmd=move&gameID=" + gameID + "&position=" + positionNumber, gotMoveResult );
+        } else {
+            alert( "It isn't your turn!" );
+        }
     }
 }
 
@@ -158,29 +163,39 @@ function gotMoveResult(response) {
 function updateGameState(game) {
     // Update each position on the Board
     var gameBoard = game.board;
-    for( var i = 0; i < gameBoard.length; i++ ) {
+    console.log( gameBoard );
+    for( var i = 1; i <= 9; i++ ) {
         var boardPosition = gameBoard[i];
 
-        document.getElementById( "position" + (i + 1) );
+        var element = document.getElementById( "position" + (i) );
 
         if( boardPosition == "X" ) {
-            boardPosition.innerHTML = "<img src=\"X.png\" class=\"ttt_icon\">";
-        } else if( boardPosition == "X" ) {
-            boardPosition.innerHTML = "<img src=\"O.png\" class=\"ttt_icon\">";
+            element.innerHTML = "<img src=\"X.png\" class=\"ttt_icon\">";
+        } else if( boardPosition == "O" ) {
+            element.innerHTML = "<img src=\"O.png\" class=\"ttt_icon\">";
         } else {
-            console.log( "@ i = " + i + ", boardPosition =  " + boardPosition );
+            element.innerHTML = "";
         }
     }
 
     // Did someone win? If so display the winner and return. No further processing.
+    if( game.winner ) {
+        currentGame.innerHTML = "<img src=\"" + game.winner + "\" class=\"ttt_icon\"> wins!";
+        updateMessage( game.winner + " wins!" );
+        return;
+    }
 
     // Are you X or O?
     var playerType = game.you.player_type;
-    console.log( "playerType = " + playerType );
     currentGame = document.getElementById( "currentGame" );
     currentGame.innerHTML = "You are <img src=\"" + playerType + ".png\" class=\"ttt_icon\">";
 
     // Who's turn is it?
+    if( game.you.player_id == game.player_turn.player_id ) {
+        myTurn = true;
+    } else {
+        myTurn = false;
+    }
 }
 
 // Callback from our refresh timeout
