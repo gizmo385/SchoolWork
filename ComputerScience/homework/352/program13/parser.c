@@ -8,7 +8,7 @@
 
 #define READ_LENGTH 201
 
-void writeTitlesHelper( BSTNode *currentNode, FILE *outputFile );
+void writeTitlesHelper( BSTNode *currentNode, int flags[], FILE *outputFile );
 
 /*
  * The title command searches the list for the desired title.
@@ -36,7 +36,7 @@ void title( char *title, BST *titles ) {
  * filename -- The name of the file to store the saved titles in
  * titles   -- The list of titles to operate on
  */
-void saveTitles( char *filename, BST *titles ) {
+void saveTitles( char *filename, int flags[], BST *titles ) {
     // Open save file
     char *outputFilename = calloc( strlen(filename) + strlen(".save") + 1, sizeof(char) );
     strcpy(outputFilename, filename);
@@ -52,23 +52,31 @@ void saveTitles( char *filename, BST *titles ) {
     debug( E_DEBUG, "Saving titles\n");
     printf( "SAVE-TITLES\n" );
 
-    writeTitlesHelper( titles->root, outputFile );
+    writeTitlesHelper( titles->root, flags, outputFile );
 
     // Close the output file and free the filename
     fclose( outputFile );
     free( outputFilename );
 }
 
-void writeTitlesHelper( BSTNode *currentNode, FILE *outputFile ) {
+void writeTitlesHelper( BSTNode *currentNode, int flags[], FILE *outputFile ) {
     if( currentNode ) {
-        writeTitlesHelper( currentNode->left, outputFile );
+        if( flags[ORDER_INDEX] == REVERSE_ORDER ) {
+            writeTitlesHelper( currentNode->right, flags, outputFile );
+        } else {
+            writeTitlesHelper( currentNode->left, flags, outputFile );
+        }
 
         char *title = currentNode->data;
         if( title && strlen(title) != 0 ) {
             fprintf( outputFile, "Title:  %s\n", title );
         }
 
-        writeTitlesHelper( currentNode->right, outputFile );
+        if( flags[ORDER_INDEX] == REVERSE_ORDER ) {
+            writeTitlesHelper( currentNode->left, flags, outputFile );
+        } else {
+            writeTitlesHelper( currentNode->right, flags, outputFile );
+        }
     }
 }
 
@@ -124,9 +132,10 @@ void deleteTitle( char *title, BST *titles ) {
  *
  * Arguments:
  * filename -- The name of the file to parse
+ * flags    -- The settings for the execution of the program
  * titles   -- The current list of titles
  */
-void parseFile( char *filename, BST *titles ) {
+void parseFile( char *filename, int flags[], BST *titles ) {
     printf( "%s:\n\n", filename );
     char *commandsFilename = calloc(strlen(filename) + strlen(".commands") + 1, sizeof(char));
     strcpy( commandsFilename, filename );
@@ -151,7 +160,7 @@ void parseFile( char *filename, BST *titles ) {
             title( line + strlen("TITLE "), titles );
         } else if( strcmp(line, "SAVE-TITLES") == 0 ) {
             // Save the titles to a file
-            saveTitles( filename, titles );
+            saveTitles( filename, flags, titles );
         } else if( startsWith(line, "ADD ") ) {
             // Add a new filename to the file
             char *title = strdup( line + strlen("ADD ") );
@@ -161,6 +170,7 @@ void parseFile( char *filename, BST *titles ) {
             deleteTitle(line + strlen("DELETE-TITLE "), titles);
         } else {
             // Invalid command
+            debug( E_WARNING, "Encountered an invalid command: '%s'\n", line );
         }
 
         free( line );

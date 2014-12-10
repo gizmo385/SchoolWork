@@ -60,7 +60,7 @@ int main( int argc, char *argv[] ) {
             free( saveFilename );
 
             // Parse the commands file
-            parseFile( argv[i], titles );
+            parseFile( argv[i], flags, titles );
 
             bstFree(titles);
         }
@@ -84,10 +84,14 @@ void loadTitlesFromFile( char *filename, BST *titles ) {
             char *actualTitle = strdup( nextTitle + prefixLength );
 
             debug( E_DEBUG, "Inserting '%s' into titles\n", actualTitle );
+
+            if( bstFind(titles, actualTitle) ) {
+                free( actualTitle );
+                free( nextTitle );
+                continue;
+            }
+
             bstInsert( titles, actualTitle );
-
-            debug( E_DEBUG, "Result after insert: %s\n", (char *)bstFind(titles, actualTitle) );
-
             free( nextTitle );
         }
     }
