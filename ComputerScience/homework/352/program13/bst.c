@@ -55,6 +55,7 @@ BST *newBST( ComparisonFunction comparisonFunction ) {
         bst->root = NULL;
         bst->comparisonFunction = comparisonFunction;
         bst->size = 0;
+        bst->usePredecessor = 0;
 
         return bst;
     } else {
@@ -156,9 +157,11 @@ void *removeHelper( BST *bst, BSTNode *node, void *data ) {
 
             if( left && right ) {
                 // Node with both children
-                BSTNode *successorNode = successor( node );
-                node->data = successorNode->data;
-                removeHelper( bst, successorNode, successorNode->data );
+                BSTNode *succPred = bst->usePredecessor ? predecessor(node) :
+                                                          successor(node);
+                bst->usePredecessor = !(bst->usePredecessor);
+                node->data = succPred->data;
+                removeHelper( bst, succPred, succPred->data );
             } else if( left ) {
                 // Node with only a left child
                 replaceNodeInParent(bst, node, left);

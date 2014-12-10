@@ -25,6 +25,7 @@ typedef struct BST {
     BSTNode *root;
     ComparisonFunction comparisonFunction;
     int size;
+    int usePredecessor;
 } BST;
 
 /*
