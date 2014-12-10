@@ -11,7 +11,7 @@
 void printTitle( char *title );
 
 int main( int argc, char *argv[] ) {
-    setDebuggingLevel( E_ALL );
+    /*setDebuggingLevel( E_ALL );*/
 
     char *progName = argv[0];
     int flags[ NUMBER_OF_FLAGS ];
@@ -28,13 +28,13 @@ int main( int argc, char *argv[] ) {
     argc -= optind;
     argv += optind;
 
-    int (*comparisonFunction)(const char *, const char *);
+    ComparisonFunction comparisonFunction;
 
     // Determine which comparison function to use
     if( flags[ CASE_INDEX ] == CASE_SENSITIVE ) {
-        comparisonFunction = strcmp;
+        comparisonFunction = (ComparisonFunction) strcmp;
     } else {
-        comparisonFunction = strcasecmp;
+        comparisonFunction = (ComparisonFunction) strcasecmp;
     }
 
     if( argc < 1 ) {
@@ -51,7 +51,7 @@ int main( int argc, char *argv[] ) {
             bstInOrder( titles, (ElementConsumer) printTitle );
 
             // Create save file -_-
-            char *saveFilename = calloc( strlen(argv[i]) + strlen(".save"), sizeof(char) );
+            char *saveFilename = calloc( strlen(argv[i]) + strlen(".save") + 1, sizeof(char) );
             strcpy( saveFilename, argv[i] );
             strcat( saveFilename, ".save" );
             FILE *thisIsPointless = fopen( saveFilename, "w" );
@@ -61,14 +61,16 @@ int main( int argc, char *argv[] ) {
 
             // Parse the commands file
             parseFile( argv[i], titles );
+
+            bstFree(titles);
         }
     }
 }
 
 void loadTitlesFromFile( char *filename, BST *titles ) {
-    char *titlesFilename = calloc( strlen(filename) + strlen(".txt"), sizeof(char) );
+    char *titlesFilename = calloc( strlen(filename) + strlen(".txt") + 1, sizeof(char) );
     strcpy( titlesFilename, filename );
-    strcat( titlesFilename, ".txt" );
+    strcat( titlesFilename, ".txt\0" );
 
     FILE *file = fopen( titlesFilename, "r" );
 
@@ -81,16 +83,21 @@ void loadTitlesFromFile( char *filename, BST *titles ) {
             char *nextTitle = processLine(file);
             char *actualTitle = strdup( nextTitle + prefixLength );
 
-            /*debug( E_DEBUG, "Inserting '%s' into titles\n", actualTitle );*/
+            debug( E_DEBUG, "Inserting '%s' into titles\n", actualTitle );
             bstInsert( titles, actualTitle );
+
+            debug( E_DEBUG, "Result after insert: %s\n", (char *)bstFind(titles, actualTitle) );
 
             free( nextTitle );
         }
     }
 
+    fclose( file );
     free( titlesFilename );
 }
 
 void printTitle( char *title ) {
-    debug( E_INFO, "Title in list: '%s'\n", title );
+    if( title && strlen(title) != 0 ) {
+        debug( E_DEBUG, "Title in list: '%s'\n", title );
+    }
 }

@@ -327,7 +327,7 @@ void bstPreOrder( BST *bst, ElementConsumer consumer ) {
  */
 void preOrderHelper(BSTNode *node, ElementConsumer consumer ) {
     if( node != NULL ) {
-        consumer( node );
+        consumer( node->data );
         preOrderHelper( node->left, consumer );
         preOrderHelper( node->right, consumer );
     }
@@ -369,9 +369,9 @@ void bstReverseOrder( BST *bst, ElementConsumer consumer ) {
  */
 void reverseOrderHelper(BSTNode *node, ElementConsumer consumer ) {
     if( node != NULL ) {
-        inOrderHelper( node->left, consumer );
-        consumer(node);
-        inOrderHelper( node->left, consumer );
+        reverseOrderHelper( node->right, consumer );
+        consumer(node->data);
+        reverseOrderHelper( node->left, consumer );
     }
 }
 
@@ -385,7 +385,7 @@ void reverseOrderHelper(BSTNode *node, ElementConsumer consumer ) {
 void inOrderHelper(BSTNode *node, ElementConsumer consumer ) {
     if( node != NULL ) {
         inOrderHelper( node->left, consumer );
-        consumer(node);
+        consumer(node->data);
         inOrderHelper( node->left, consumer );
     }
 }
@@ -414,7 +414,7 @@ void postOrderHelper(BSTNode *node, ElementConsumer consumer ) {
     if( node != NULL ) {
         postOrderHelper( node->left, consumer );
         postOrderHelper( node->right, consumer );
-        consumer( node );
+        consumer( node->data );
     }
 }
 

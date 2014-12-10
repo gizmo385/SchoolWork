@@ -22,9 +22,9 @@ void title( char *title, BST *titles ) {
 
     printf( "TITLE\n" );
     if( foundElement ) {
-        printf( "NOT FOUND: %s\n", title );
-    } else {
         printf( "FOUND: %s\n", title );
+    } else {
+        printf( "NOT FOUND: %s\n", title );
     }
 }
 
@@ -60,9 +60,16 @@ void saveTitles( char *filename, BST *titles ) {
 }
 
 void writeTitlesHelper( BSTNode *currentNode, FILE *outputFile ) {
-    writeTitlesHelper( currentNode->left, outputFile );
-    fprintf( outputFile, "Title: %s\n", (char *) currentNode->data );
-    writeTitlesHelper( currentNode->left, outputFile );
+    if( currentNode ) {
+        writeTitlesHelper( currentNode->left, outputFile );
+
+        char *title = currentNode->data;
+        if( title && strlen(title) != 0 ) {
+            fprintf( outputFile, "Title:  %s\n", title );
+        }
+
+        writeTitlesHelper( currentNode->right, outputFile );
+    }
 }
 
 /*
@@ -73,12 +80,17 @@ void writeTitlesHelper( BSTNode *currentNode, FILE *outputFile ) {
  * titles  -- The list of titles to operate on
  */
 void add( char *title, BST *titles ) {
-    /*debug( E_INFO, "Adding title: '%s'\n", title );*/
-    printf("ADD %s\n", title );
+    if( strlen(title) == 0 ) {
+        free( title );
+        return;
+    }
+
+    printf("ADD\n");
     void *foundElement = bstFind( titles, title );
 
     if( foundElement ) {
         printf( "FOUND: %s\n", title );
+        free( title );
         return;
     }
 
@@ -142,7 +154,8 @@ void parseFile( char *filename, BST *titles ) {
             saveTitles( filename, titles );
         } else if( startsWith(line, "ADD ") ) {
             // Add a new filename to the file
-            add( line + strlen("ADD "), titles );
+            char *title = strdup( line + strlen("ADD ") );
+            add( title, titles );
         } else if( startsWith(line, "DELETE-TITLE ") ) {
             // Remove the title from the list
             deleteTitle(line + strlen("DELETE-TITLE "), titles);
