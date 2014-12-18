@@ -176,37 +176,6 @@ This graph is:
     \item NOT traversible (4 vertices degree 3)
 \end{itemize}
 
-\section{Problem 2}
-
-\begin{tikzpicture}
-    \tikzstyle{vertex}=[draw=black!25,shape=circle, edge=black!25,minimum size=20pt,inner sep=0pt]
-    \tikzstyle{edge} = [draw,thick,-]
-    \tikzstyle{arrow} =[draw,thick,->]
-    \tikzstyle{weight} = [draw=none,fill=white,inner sep=2pt,font=\scriptsize]
-
-    \node[vertex] (1) at (0, 2) {$v_1$};
-    \node[vertex] (2) at (0, 4) {$v_2$};
-    \node[vertex] (3) at (2, 2) {$v_3$};
-    \node[vertex] (4) at (2, 4) {$v_4$};
-    \node[vertex] (5) at (2, 0) {$v_5$};
-    \node[vertex] (6) at (0, 0) {$v_6$};
-
-    \path[edge] (2) -- node[weight] {10} (4);
-    \path[edge] (2) -- node[weight] {4} (1);
-    \path[edge] (2) -- node[weight] {9} (3);
-    \path[edge] (1) -- node[weight] {1} (6);
-    \path[edge] (1) -- node[weight] {10} (3);
-    \path[edge] (1) -- node[weight] {2} (4);
-    \path[edge] (3) -- node[weight] {2} (4);
-    \path[edge] (3) -- node[weight] {4} (5);
-    \path[edge] (3) -- node[weight] {3} (6);
-    \path[edge] (6) -- node[weight] {8} (5);
-\end{tikzpicture}
-
-\subsection{Part A}
-\subsection{Part B}
-\subsection{Part C}
-
 \section{Problem 3}
 
 \subsection{Part A}
@@ -257,6 +226,7 @@ We can define a mapping function between $C_4$ and $K_2$ to show that they are i
          (2, 1) & :v = 4
      \end{array}
    \right.
+   \textrm{, }v \in V(C_4)
 \end{displaymath}
 
 \subsection{Part B}
@@ -271,8 +241,7 @@ We can define a mapping function between $C_4$ and $K_2$ to show that they are i
     $2^1 = 2$ \checkmark
 
     $(1)2^0 = 1$ \checkmark \\ \\
-    For the inductive case, we will assume that $Q_n$ has $2^n$ vertices and $n2^{n-1}$ edges and we must show that $Q_{n+1}$ has $2^{n+1}$ vertices and $(n+1)2^n$ edges. We know that $Q_{n+1} = K_2 \times Q_n$. The cartesian product between $K_2$ and $Q_n$ will have a vertex set equal to $V(Q_n) \times V(K_2)$. This set will have all of the elements from $V(Q_n)$ two separate times (once for each element in $V(K_2)$, yielding a final vertex set with $2^{n+1}$ elements. We know that there are $n2^{n-1}$ edges in $Q_n$. The number of edges present in $Q_{n+1}$ will be equal to the number of edges in $Q_n$ multiplied by $n + 1$, which is the current
-
+    For the inductive case, we will assume that $Q_n$ has $2^n$ vertices and $n2^{n-1}$ edges and we must show that $Q_{n+1}$ has $2^{n+1}$ vertices and $(n+1)2^n$ edges. We know that $Q_{n+1} = K_2 \times Q_n$. The cartesian product between $K_2$ and $Q_n$ will have a vertex set equal to $V(Q_n) \times V(K_2)$. This set will have all of the elements from $V(Q_n)$ two separate times (once for each element in $V(K_2)$, yielding a final vertex set with $2^{n+1}$ elements. We know that there are $n2^{n-1}$ edges in $Q_n$. The number of edges present in $Q_{n+1}$ will be equal to the number of edges in $Q_n$ multiplied by $n + 1$, which is the current dimension of $Q$ plus $1$.\\ \\
     Therefore, the hypercube $Q_{n+1}$ will have $2^{n+1}$ vertices and $(n+1)2^n$ edges.
 \end{proof}
 
@@ -285,6 +254,22 @@ $6g \geq 2 + 2E - 2V - F$ \\
 $4g \geq n2^{n-1} - 2^n$ \\
 $g \geq n2^{n-3} - 2^{n-2}$ \\ \\
 Couldn't quite get there.
+
+\section{Problem 4}
+
+\subsection{Part A}
+The function $\Phi:E \to \{1\}$ yields the usual graph Laplacian. This assigns the weight of every edge within the graph to be equal to 1. The definition of the graph Laplacian is: $L = A - D$ where $A$ is the adjacency matrix. In the adjacency matrix, a 1 is present if two vertices are adjacent with one another, wheras in the weighted adjacency matrix, $\Phi(v_i, v_j)$ is present if $v_i$ and $v_j$ are adjacent. If $\Phi(v_i, v_j) = 1$ for all $i$ and $j$, then the weighted adjacency matrix is equal to the usual adjacency matrix. Since the matrix D is not determined by $\Phi$, as long as the adjacency matrices are eqaul, the Laplacians are equal.
+
+\subsection{Part B}
+Since we have numbered the vertices $v_1, \ldots, v_p$, we can view $f$ as a vector such that $f_i = f(v_i)$, $1 \leq i \leq p$. Because $L_\Phi$ is a matrix and $f$ is a vector, $L_\Phi f$ is a vector that is the result of the multicplication of $L_\Phi \cdot f$. The matrix $L_\Phi$ has dimensions $p$ x $p$, and the vector $f$ has dimensions $p$ x $1$, so we know that our multiplication is defined. The multiplication of $L_\Phi$ and $f$ can then be represented as such: \\
+
+$(L_\Phi f)_{i} = \sum\limits_{j=1}^{p}\Phi(v_iv_j)f(v_j - f(v_i))$ \\ \\
+Because we know that entries where $v_i$ and $v_j$ are not adjacent will be zero, we can remove those entries from the sum.\\
+
+$(L_\Phi f)_{i} = \sum\limits_{j}^{v_iv_j \in E}\Phi(v_iv_j)f(v_j - f(v_i))$ \\ \\
+
+\subsection{Part C}
+We note first that $-L_\Phi = D - A$. Because the matrix is symmetric, when computing the determinant, the values that from the weighted adjacency matrix will cancel each other out, as will the degrees. This means that det$(-L_\Phi) = 0$.
 
 \section{Problem 5}
 \subsection{Part A}
