@@ -1,0 +1,32 @@
+Why Study Finite Automata?
+
+* String matching and searching
+    - Regular expressions are closely related to finite automata
+
+* Lexical Analysis in Compilers
+
+* Software Verification
+
+* Communication Protocols
+
+
+
+Why Study Context Free Grammars:
+
+* Conventions:
+    - Capital letters for non-terminals; e.g. E, T, F
+    - Lower case letters and symbols for terminals; e.g., id, +, *
+    - Group productions for the same nonterminal; e.g.,
+      write:
+        E -> E + T | T
+
+      for:
+        E -> E + T
+        E -> T
+
+
+Intractible and Undecidable Problems
+
+* Intractible Problems:
+    - The Traveling Salesman Problem
+    - Combinatorial Testing
