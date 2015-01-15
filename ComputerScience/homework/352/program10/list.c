@@ -105,7 +105,7 @@ char *pop( struct node *list ) {
 
     if( list != NULL && list->word != NULL ) {
         word = list->word;
-        removeWord( word );
+        removeWord( word, list);
     }
 
     return word;
