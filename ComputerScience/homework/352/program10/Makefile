@@ -22,4 +22,4 @@ printer.o: printer.c printer.h
 
 # Add a clean target that removes the .o files
 clean:
-	rm *.o
+	rm *.o skipping
