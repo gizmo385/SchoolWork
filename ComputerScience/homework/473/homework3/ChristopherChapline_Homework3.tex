@@ -1,0 +1,120 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=latex2.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\begin{document}
+
+\title{Homework 3}
+
+
+\author{Christopher Chapline}
+\maketitle
+
+\section{Exercise 3.1}
+
+\subsection{Part a}
+$\Sigma*gc\Sigma*$
+
+\subsection{Part b}
+$(\Sigma*(g + \epsilon)(\Sigma - c))*$
+
+\subsection{Part c}
+$(g + c + (t((aa) + (ata) + (tt))*)*)$
+
+\subsection{Part d}
+$(c + a + t + (g(c(g + c + t + \epsilon) + \epsilon) + \epsilon))*$
+
+\section{Exercise 3.2}
+
+\subsection{Part a}
+$([A-Z] + [a-z])([A-Z] + [a-z] + [0-9])*$
+
+\subsection{Part b}
+$[0-9]*.[0-9][0-9]*$
+
+\subsection{Part c}
+$\Sigma \Sigma*.\Sigma \Sigma*.((com) + (org) + (edu))$
+
+\subsection{Part d}
+$({\ } + \setminus t + \setminus n)*$ where {\_}
+
+\section{Exercise 3.3}
+First we need to find instances in which there are multiple newline characters. These are paragraph separations and should be
+marked. We mark them by assigning them a special character sequence (\&\& in this case): \\
+
+replace("\setminus n \setminus n", "\&\&") \\
+
+\noindent Now we replace singular newlines with a whitespace. This will condense simple line breaks into sentences: \\
+
+replace("\setminus n", "{\ }") \\
+
+\noindent Lastly, we replace the previously substituted paragraph breaks with actual newline characters \\
+
+replace("\&\&", "\setminus n \setminus n") \\
+
+\section{Exercise 3.4}
+
+\subsection{Part a}
+$[A-Z][a-z]*'{\ }'([A-Z](. + [a-z]*)'{\ }' + \epsilon)[A-Z][a-z]*('{\ }'Jr + \epsilon)$
+
+\subsection{Part b}
+$[A-Z][a-z]*,[A-Z][a-z]*(('{\ }'[A-Z](. + [a-z]*)) + \epsilon)$
+
+\subsection{Part c}
+$([0-9]([0-9] + \epsilon)'{\ }'[A-Z][a-z]*'{\ }'[0-9][0-9][0-9][0-9]) +$ \\
+$([A-Z][a-z]*'{\ }'[0-9]([0-9] + \epsilon)'{\ }'[0-9][0-9][0-9][0-9]) +$ \\
+$([[0-9][0-9][0-9][0-9]'{\ }'[A-Z][a-z]*'{\ }'[0-9]([0-9] + \epsilon))$
+
+
+\section{Exercise 3.5}
+
+\subsection{Part a}
+replace("{\ }or{\ }", "{\ }\&\&{\ }") \\
+replace("or{\ }", "our{\ }") \\
+replace("\&\&", "or") \\
+
+\noindent replace("{\ }er{\ }", "{\ }\&\&{\ }") \\
+replace("er{\ }", "re{\ }") \\
+replace("\&\&", "er") \\
+
+\subsection{Part b}
+For the "or" $\rightarrow$ "our" mapping, this conflicts with words like "floor" and "moor". For the "er" $\rightarrow$ "re"
+mapping, flayer and computer conflict. These could all be handled by replacing them with custom strings prior to the primary
+replace calls. These custom strings would be changed back afterwards. This is similar to how the words "or" and "our" were handled.
+
+\end{document}
