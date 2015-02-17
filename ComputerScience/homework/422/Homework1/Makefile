@@ -3,9 +3,7 @@ CFLAGS = -g -Wall -std=gnu99
 
 # Primary targets
 
-build: catalog
-
-debug: clean catalog-debug
+build: sortSeq sortProcess
 
 # Executable targets
 sortSeq: sortSeq.o quicksort.o
@@ -14,10 +12,19 @@ sortSeq: sortSeq.o quicksort.o
 sortProcess: sortProcess.o quicksort.o
 	${CC} ${CFLAGS} -o sortProcess sortProcess.o quicksort.o
 
-sortThreads: sortThreads.o quicksort.o
-	${CC} ${CFLAGS} -o sortThreads sortSeq.o quicksort.o
+sortThread: sortThread.o quicksort.o
+	${CC} ${CFLAGS} -o sortThread sortThread.o quicksort.o -lpthread
 
 # Utility targets
+sortThread.o: sortThread.c
+	${CC} ${CFLAGS} -c sortThread.c
+
+sortProcess.o: sortProcess.c
+	${CC} ${CFLAGS} -c sortProcess.c
+
+sortSeq.o: sortSeq.c
+	${CC} ${CFLAGS} -c sortSeq.c
+
 quicksort.o: quicksort.c quicksort.h
 	${CC} ${CFLAGS} -c quicksort.c
 

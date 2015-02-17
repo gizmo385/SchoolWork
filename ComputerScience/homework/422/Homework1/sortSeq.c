@@ -30,7 +30,7 @@ int main( int argc, char *argv[] ) {
         printf("%s", lines[i]);
     }
 
-    printf( "runtime: %d seconds, %f microseconds\n", seconds, microseconds  );
+    fprintf( stderr, "runtime: %d seconds, %f microseconds\n", seconds, microseconds  );
 
     // Free the memory used by the program
     for( int i = 0; i < length; i++ ) {

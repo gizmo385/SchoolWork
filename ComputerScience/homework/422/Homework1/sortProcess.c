@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <time.h>
 
-#include <unistd.h>      // to use fork, getpid, sleep
-#include <sys/mman.h>    // to use shared memory
-#include <sys/wait.h>    // wait functions
-#include <errno.h>       // to print error messages
+#include <unistd.h>     // to use fork, getpid, sleep
+#include <sys/mman.h>   // to use shared memory
+#include <sys/wait.h>   // wait functions
+#include <string.h>     // memcpy function
 
 #include "quicksort.h"
 
@@ -48,10 +48,10 @@ int main( int argc, char *argv[] ) {
             // Call quicksort on each process with 1/(numProcesses) of the elements
             // Then exit
 
-            if( procNum == numProcesses ) {
-                quicksort(lines + (procNum * elementsPerProc),
+            if( (procNum + 1) == numProcesses ) {
+                quicksort( lines + (procNum * elementsPerProc),
                         elementsPerProc + remainingElements);
-            } else {
+            }else {
                 quicksort( lines + (procNum * elementsPerProc), elementsPerProc);
             }
 
@@ -60,11 +60,11 @@ int main( int argc, char *argv[] ) {
     }
 
     // Wait for all of the children to finish executing
-    int kid_status;
+    int sortKidPID;
     for( int procNum = 0; procNum < numProcesses; procNum++ ) {
-        wait(&kid_status);
+        wait(&sortKidPID);
 
-        if( WIFEXITED(kid_status) ) {
+        if( WIFEXITED(sortKidPID) ) {
             // The process has successfully exited
             // This means that a portion of the array has been sorted
         } else {
@@ -72,8 +72,12 @@ int main( int argc, char *argv[] ) {
         }
     }
 
+    // Merge all of the sorted sub-arrays
     int numMergeProcesses = numProcesses / 2;
     while( numMergeProcesses > 0 ) {
+        int numElements = length / numMergeProcesses;
+        int remainder = length % numMergeProcesses;
+
         // Fork into processes to start merge
         for( int procNum = 0; procNum < numMergeProcesses; procNum++ ) {
             pid_t kidpid = fork();
@@ -82,18 +86,37 @@ int main( int argc, char *argv[] ) {
                 fprintf(stderr, "Fork failed!\n");
                 exit(1);
             } else if( kidpid == 0 ) {
+                int start = 2 * procNum;
 
+                /*char **res = merge(lines + (start * numElements), numElements,*/
+                        /*lines + ((start + 1) * numElements), numElements);*/
+
+                /*memcpy(lines + start, res, numElements * 2);*/
+
+                quicksort(lines + (start * numElements), 2 * numElements + remainder );
+
+                exit(getpid());
             }
         }
 
         // Wait for merge processes for finish
-        for( int numCompleted = 0; numCompleted < numMergeProcesses; numCompleted++ ) {
+        int mergeKidPID;
+        for( int procNum = 0; procNum < numProcesses; procNum++ ) {
+            wait(&mergeKidPID);
 
+            if( WIFEXITED(mergeKidPID) ) {
+                // The process has successfully exited
+                // This means that a portion of the array has been sorted
+            } else {
+                // One of the children died without calling exit
+            }
         }
 
-        // Cut the number of merge processes in half
-        mergeProcesses /= 2;
+        numMergeProcesses /= 2;
     }
+
+    /*char **result = merge( lines, length / 2, lines + (length / 2), (length / 2) + (length % 2));*/
+    /*memcpy(lines, result, length);*/
 
     double microseconds = ((double) (clock() - start) / CLOCKS_PER_SEC * 1000000 );
 
@@ -104,13 +127,13 @@ int main( int argc, char *argv[] ) {
         printf("%s", lines[i]);
     }
 
-    printf( "runtime: %d seconds, %f microseconds\n", seconds, microseconds  );
+    fprintf( stderr, "runtime: %d seconds, %f microseconds\n", seconds, microseconds  );
 
     // Free the memory used by the program
-    for( int i = 0; i < length; i++ ) {
-        free(lines[i]);
-    }
+    /*for( int i = 0; i < length; i++ ) {*/
+        /*free(lines[i]);*/
+    /*}*/
 
-    munmap( lines, (MAX_LINES * LINE_LENGTH * (sizeof (char *))) );
-    fclose( file );
+    /*munmap( lines, (MAX_LINES * LINE_LENGTH * (sizeof (char *))) );*/
+    /*fclose( file );*/
 }

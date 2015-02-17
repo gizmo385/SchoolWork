@@ -38,36 +38,26 @@ inline int min( int a, int b ) {
     return a < b ? a : b;
 }
 
-char **merge( char *first[], int firstLength, char *second[], int secondLength) {
+char **merge( char *first[], int firstLength, char *second[], int secondLength ) {
     char **result = calloc( sizeof(char *), firstLength + secondLength );
-    int firstIndex = 0, secondIndex = 0, resultIndex = 0;
+    int firstIndex = 0, secondIndex = 0;
 
-    while( firstIndex < firstLength && secondIndex < secondLength ) {
-        if( strcmp( first[firstIndex], second[secondIndex] ) < 1 ) {
-            result[ resultIndex ] = first[firstIndex];
-
-            resultIndex++;
+    for( int i = 0; i < firstLength + secondLength; i++ ) {
+        if( i < firstLength && i < secondLength ) {
+            if( strcmp(first[firstIndex], second[secondIndex]) < 0 ) {
+                result[i] = first[firstIndex];
+                firstIndex++;
+            } else {
+                result[i] = second[secondIndex];
+                secondIndex++;
+            }
+        } else if( i < firstLength ) {
+            result[i] = first[firstIndex];
             firstIndex++;
-        } else {
-            result[ resultIndex ] = second[secondIndex];
-
-            resultIndex++;
+        } else if( i < secondLength ) {
+            result[i] = second[secondIndex];
             secondIndex++;
         }
-    }
-
-    // Add remaining elements in first
-    while( firstIndex < firstLength ) {
-        result[resultIndex] = first[firstIndex];
-        resultIndex++;
-        firstIndex++;
-    }
-
-    // Add remaining elements in second
-    while( secondIndex < secondLength ) {
-        result[resultIndex] = second[secondIndex];
-        resultIndex++;
-        secondIndex++;
     }
 
     return result;
