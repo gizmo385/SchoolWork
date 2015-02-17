@@ -38,7 +38,7 @@ inline int min( int a, int b ) {
     return a < b ? a : b;
 }
 
-char **merge( char *first[], int firstLength, char *second[], int secondLength ) {
+char **merge( char *first[], int firstLength, char *second[], int secondLength) {
     char **result = calloc( sizeof(char *), firstLength + secondLength );
     int firstIndex = 0, secondIndex = 0, resultIndex = 0;
 

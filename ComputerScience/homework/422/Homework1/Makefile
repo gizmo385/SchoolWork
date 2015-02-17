@@ -7,11 +7,12 @@ build: catalog
 
 debug: clean catalog-debug
 
+# Executable targets
 sortSeq: sortSeq.o quicksort.o
 	${CC} ${CFLAGS} -o sortSeq sortSeq.o quicksort.o
 
-sortProcesses: sortProcesses.o quicksort.o
-	${CC} ${CFLAGS} -o sortProcesses sortSeq.o quicksort.o
+sortProcess: sortProcess.o quicksort.o
+	${CC} ${CFLAGS} -o sortProcess sortProcess.o quicksort.o
 
 sortThreads: sortThreads.o quicksort.o
 	${CC} ${CFLAGS} -o sortThreads sortSeq.o quicksort.o
@@ -22,4 +23,4 @@ quicksort.o: quicksort.c quicksort.h
 
 # Add a clean target that silently removes the .o files
 clean:
-	@rm *.o catalog 2> /dev/null || true
+	@rm *.o sort{Seq,Process,Thread} 2> /dev/null || true
