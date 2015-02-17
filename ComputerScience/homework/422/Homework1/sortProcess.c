@@ -6,10 +6,8 @@
 #include <sys/mman.h>    // to use shared memory
 #include <sys/wait.h>    // wait functions
 #include <errno.h>       // to print error messages
-#include <string.h>
 
 #include "quicksort.h"
-
 
 int main( int argc, char *argv[] ) {
     // Read command line arguments
@@ -20,7 +18,6 @@ int main( int argc, char *argv[] ) {
     FILE *file = fopen(filename, "r");
     char **lines = mmap(NULL, (MAX_LINES * LINE_LENGTH * (sizeof (char *))),
             PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-    /*char **lines = calloc( MAX_LINES, sizeof(char *)  );*/
     int length = 0;
 
     // Read lines from the file
@@ -38,12 +35,10 @@ int main( int argc, char *argv[] ) {
 
     // Sort the lines
     clock_t start = clock();
-    /*pid_t children[numProcesses];*/
 
     // Create children processes for sorting
     for( int procNum = 0; procNum < numProcesses; procNum++ ) {
         pid_t kidpid = fork();
-        /*children[procNum] = kidpid;*/
 
         if( kidpid < 0 ) {
             fprintf(stderr, "Fork failed!\n");
@@ -54,7 +49,8 @@ int main( int argc, char *argv[] ) {
             // Then exit
 
             if( procNum == numProcesses ) {
-                quicksort(lines + (procNum * elementsPerProc), elementsPerProc + remainingElements);
+                quicksort(lines + (procNum * elementsPerProc),
+                        elementsPerProc + remainingElements);
             } else {
                 quicksort( lines + (procNum * elementsPerProc), elementsPerProc);
             }
@@ -76,44 +72,28 @@ int main( int argc, char *argv[] ) {
         }
     }
 
-    // Once we've gotten through the for loop, all children have finished executing.
-    // Now we will fork to merge the arrays
-    // TODO
-    int mergeProcesses = numProcesses / 2;
-    while( mergeProcesses != 0 ) {
-        int elementsPerArray = length / mergeProcesses;
-        int remainder = length % mergeProcesses;
-
-        for( int procNum = 0; procNum < mergeProcesses; procNum++ ) {
-            // Fork and merge the arrays
+    int numMergeProcesses = numProcesses / 2;
+    while( numMergeProcesses > 0 ) {
+        // Fork into processes to start merge
+        for( int procNum = 0; procNum < numMergeProcesses; procNum++ ) {
             pid_t kidpid = fork();
 
             if( kidpid < 0 ) {
                 fprintf(stderr, "Fork failed!\n");
                 exit(1);
             } else if( kidpid == 0 ) {
-                printf("procNum = %d/%d\n", procNum + 1, mergeProcesses);
 
-                exit(getpid());
             }
         }
 
-        // Wait for all of the merge processes to finish before continuing
-        for( int procNum = 0; procNum < mergeProcesses; procNum++ ) {
-            wait(&kid_status);
+        // Wait for merge processes for finish
+        for( int numCompleted = 0; numCompleted < numMergeProcesses; numCompleted++ ) {
 
-            if( WIFEXITED(kid_status) ) {
-                // The process has successfully exited
-                // This means that a portion of the array has been sorted
-            } else {
-                // One of the children died without calling exit
-            }
         }
 
         // Cut the number of merge processes in half
         mergeProcesses /= 2;
     }
-
 
     double microseconds = ((double) (clock() - start) / CLOCKS_PER_SEC * 1000000 );
 
