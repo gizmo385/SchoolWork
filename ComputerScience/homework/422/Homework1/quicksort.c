@@ -56,5 +56,19 @@ char **merge( char *first[], int firstLength, char *second[], int secondLength) 
         }
     }
 
+    // Add remaining elements in first
+    while( firstIndex < firstLength ) {
+        result[resultIndex] = first[firstIndex];
+        resultIndex++;
+        firstIndex++;
+    }
+
+    // Add remaining elements in second
+    while( secondIndex < secondLength ) {
+        result[resultIndex] = second[secondIndex];
+        resultIndex++;
+        secondIndex++;
+    }
+
     return result;
 }
