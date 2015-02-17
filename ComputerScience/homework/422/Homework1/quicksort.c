@@ -34,10 +34,42 @@ void quicksort( char *words[], int length ) {
     }
 }
 
-inline int min( int a, int b ) {
+static inline int min( int a, int b ) {
     return a < b ? a : b;
 }
 
+char **merge( char *first[], int firstLength, char *second[], int secondLength ) {
+    char **result = calloc( sizeof(char *), firstLength + secondLength );
+    int firstIndex = 0, secondIndex = 0, resultIndex = 0;
+
+    while( firstIndex < firstLength && secondIndex < secondLength ) {
+        if( strcmp(first[firstIndex], second[secondIndex]) <= 0 ) {
+            result[resultIndex] = first[firstIndex];
+            resultIndex++;
+            firstIndex++;
+        } else {
+            result[resultIndex] = second[secondIndex];
+            resultIndex++;
+            secondIndex++;
+        }
+    }
+
+    while( firstIndex < firstLength ) {
+        result[resultIndex] = first[firstIndex];
+        resultIndex++;
+        firstIndex++;
+    }
+
+    while( secondIndex < secondLength ) {
+        result[resultIndex] = second[secondIndex];
+        resultIndex++;
+        secondIndex++;
+    }
+
+    return result;
+}
+
+#if 0
 char **merge( char *first[], int firstLength, char *second[], int secondLength ) {
     char **result = calloc( sizeof(char *), firstLength + secondLength );
     int firstIndex = 0, secondIndex = 0;
@@ -62,3 +94,4 @@ char **merge( char *first[], int firstLength, char *second[], int secondLength )
 
     return result;
 }
+#endif

@@ -46,6 +46,7 @@
 \section{Problem 1}
 
 \subsection{Part a}
+
 \subsection{Part b}
 
 \section{Problem 2}
@@ -66,15 +67,17 @@ $\forall i : 1 \leq i \leq m, \exists j : 1 \leq j \leq n : a[i] = b[j]$
 
 \subsection{Part a}
 
-While it is possible that it could stop, it is highly unlikely that it will. For it to stop, the scheduler must stop the process executing the while
-loop immediately when $x=10$ and it must start the process that checks for $x==0$ before it restarts the while loop process. While possible, this is
-improbable
+While it is possible that it could stop, it is highly unlikely that it will. For it to stop, the scheduler must stop the process executing the while loop immediately when $x=10$ and it must start the process that checks for $x==0$ before it restarts the while loop process. While possible, this is improbable
 
 \subsection{Part b}
 
-In the case that the scheduling is strongly fair,
+In the case that the scheduling is strongly fair, the program would not terminate. The first process would not get a chance to run because it is not infinitely often true.
 
 \subsection{Part c.a}
+The addition of the third arm would cause the program to eventually terminate. This is because whenever the $x$ value fell below 0, the third arm would automatically reset its value to be 10. Eventually, it will fall into the case where it stops at $x=0$ and $c$ gets set to false.
+
 \subsection{Part c.b}
+
+Similarly to c.a, this would eventually terminate because it would fall into the $x=0$ case.
 
 \end{document}

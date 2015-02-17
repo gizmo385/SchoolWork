@@ -61,7 +61,7 @@ int main( int argc, char *argv[] ) {
 
     // Wait for all of the children to finish executing
     int sortKidPID;
-    for( int procNum = 0; procNum < numProcesses; procNum++ ) {
+    for( int sortProcNum = 0; sortProcNum < numProcesses; sortProcNum++ ) {
         wait(&sortKidPID);
 
         if( WIFEXITED(sortKidPID) ) {
@@ -75,8 +75,8 @@ int main( int argc, char *argv[] ) {
     // Merge all of the sorted sub-arrays
     int numMergeProcesses = numProcesses / 2;
     while( numMergeProcesses > 0 ) {
-        int numElements = length / numMergeProcesses;
-        int remainder = length % numMergeProcesses;
+        int numElements = length / (2 * numMergeProcesses);
+        int remainder = length % (2 * numMergeProcesses);
 
         // Fork into processes to start merge
         for( int procNum = 0; procNum < numMergeProcesses; procNum++ ) {
@@ -86,13 +86,14 @@ int main( int argc, char *argv[] ) {
                 fprintf(stderr, "Fork failed!\n");
                 exit(1);
             } else if( kidpid == 0 ) {
-                int start = 2 * procNum;
+                /*int start = numElements * procNum;*/
 
-                /*char **res = merge(lines + (start * numElements), numElements,*/
-                        /*lines + ((start + 1) * numElements), numElements);*/
+                /*char **res = merge(lines + (procNum * numElements), numElements,*/
+                        /*lines + ((procNum + 1) * numElements), numElements + remainder);*/
 
                 /*memcpy(lines + start, res, numElements * 2);*/
 
+                int start = 2 * procNum;
                 quicksort(lines + (start * numElements), 2 * numElements + remainder );
 
                 exit(getpid());
