@@ -43,11 +43,11 @@ static inline void *SortingWorker( void *args ) {
     SortingArguments *sa = args;
     char **lines = sa->lines;
     int length = sa->size;
-    int id = sa->id;
+    /*int id = sa->id;*/
 
-    printf( "Sorting worker:\n");
-    printf( "(id = %d) - Lines = %p\n", id, lines );
-    printf( "(id = %d) - Length = %d\n", id, length);
+    /*printf( "Sorting worker:\n");*/
+    /*printf( "(id = %d) - Lines = %p\n", id, lines );*/
+    /*printf( "(id = %d) - Length = %d\n", id, length);*/
 
     quicksort( lines, length );
 
@@ -59,29 +59,29 @@ static inline void *MergeWorker( void *args ) {
     MergeArguments *ma = args;
     char **lines = ma->lines;
     int start = ma->start;
-    int id = ma->id;
+    /*int id = ma->id;*/
 
-    printf("\n\n(id = %d) - Values in first:\n", id);
-    for( int i = 0; i < ma->firstLength; i++ ) {
-        printf("(id = %d) - %s", id, ma->first[i]);
-    }
+    /*printf("\n\n(id = %d) - Values in first:\n", id);*/
+    /*for( int i = 0; i < ma->firstLength; i++ ) {*/
+        /*printf("(id = %d) - %s", id, ma->first[i]);*/
+    /*}*/
 
-    printf("\n---\n");
+    /*printf("\n---\n");*/
 
-    printf("(id = %d) - Values in second:\n", id);
-    for( int i = 0; i < ma->secondLength; i++ ) {
-        printf("(id = %d) - %s", id, ma->second[i]);
-    }
+    /*printf("(id = %d) - Values in second:\n", id);*/
+    /*for( int i = 0; i < ma->secondLength; i++ ) {*/
+        /*printf("(id = %d) - %s", id, ma->second[i]);*/
+    /*}*/
 
-    printf("\n---\n");
+    /*printf("\n---\n");*/
 
     // Merge the lines
     char **res = merge(ma->first, ma->firstLength, ma->second, ma->secondLength);
 
-    printf( "(id = %d) - Merge results:\n", id);
-    for( int i = 0; i < ma->firstLength + ma->secondLength; i++ ) {
-        printf( "(id = %d) %s\n", id, res[i] );
-    }
+    /*printf( "(id = %d) - Merge results:\n", id);*/
+    /*for( int i = 0; i < ma->firstLength + ma->secondLength; i++ ) {*/
+        /*printf( "(id = %d) %s\n", id, res[i] );*/
+    /*}*/
 
     memcpy( lines + start, res, ma->firstLength + ma->secondLength );
 
@@ -125,9 +125,13 @@ int main( int argc, char *argv[] ) {
         args->size = numElements;
         args->id = id;
 
-        printf( "Creating sorting thread:\n");
-        printf( "(id = %d) - Lines = %p\n", id, lines + (id * numElements) );
-        printf( "(id = %d) - Length = %d\n", id, numElements);
+        if( (id + 1) == numThreads ) {
+            args->size += (length % numThreads);
+        }
+
+        /*printf( "Creating sorting thread:\n");*/
+        /*printf( "(id = %d) - Lines = %p\n", id, lines + (id * numElements) );*/
+        /*printf( "(id = %d) - Length = %d\n", id, numElements);*/
 
         int result = pthread_create( &workers[id], &attr, &SortingWorker, (void *)args );
 
@@ -142,12 +146,12 @@ int main( int argc, char *argv[] ) {
         pthread_join(workers[id], NULL);
     }
 
-    printf("After sort, before merge:\n");
-    for( int i = 0; i < length; i++ ) {
-        printf( "%s", lines[i]);
-    }
+    /*printf("After sort, before merge:\n");*/
+    /*for( int i = 0; i < length; i++ ) {*/
+        /*printf( "%s", lines[i]);*/
+    /*}*/
 
-    printf("\n\n");
+    /*printf("\n\n");*/
 
     // Create merge threads
     numThreads /= 2;
@@ -171,13 +175,13 @@ int main( int argc, char *argv[] ) {
                 args->secondLength += remainder;
             }
 
-            printf( "Creating merging thread:\n");
-            printf( "(id = %d) - Start = %d\n", id, args->start );
-            printf( "(id = %d) - Lines = %p\n", id, args->lines );
-            printf( "(id = %d) - First = %p\n", id, args->first );
-            printf( "(id = %d) - FirstLength = %d\n", id, args->firstLength );
-            printf( "(id = %d) - Second = %p\n", id, args->second );
-            printf( "(id = %d) - secondLength = %d\n", id, args->secondLength );
+            /*printf( "Creating merging thread:\n");*/
+            /*printf( "(id = %d) - Start = %d\n", id, args->start );*/
+            /*printf( "(id = %d) - Lines = %p\n", id, args->lines );*/
+            /*printf( "(id = %d) - First = %p\n", id, args->first );*/
+            /*printf( "(id = %d) - FirstLength = %d\n", id, args->firstLength );*/
+            /*printf( "(id = %d) - Second = %p\n", id, args->second );*/
+            /*printf( "(id = %d) - secondLength = %d\n", id, args->secondLength );*/
 
             // Create a thread to merge 2 array segments
             int result = pthread_create( &mergeWorkers[id], &attr, &MergeWorker, (void *)args );
@@ -199,7 +203,7 @@ int main( int argc, char *argv[] ) {
     // Print the lines and the information about the sorted data
     int seconds = (int)(microseconds / CLOCKS_PER_SEC);
 
-    printf("\nAfter merge:\n");
+    /*printf("\nAfter merge:\n");*/
     for( int i = 0; i < length; i++ ) {
         printf("%s", lines[i]);
     }

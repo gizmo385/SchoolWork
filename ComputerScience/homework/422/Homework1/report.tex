@@ -1,0 +1,76 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=latex2.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\begin{document}
+
+\title{Testing Report - Homework 1}
+\author{Christopher Chapline}
+\maketitle
+
+\section{Sequential Version Testing}
+
+My approach towards testing the sequential version involved coming up with data sets that would be quick to check by hand, quick to sort, and something that would allow me to easily determine where errors were occuring in my sorting algorithm. One of my initial data sets involved a scrambled selection of numbers from 1 to 10. For example:
+
+$\{3, 4, 6, 7, 8, 2, 5, 9, 10, 1\}$
+
+\noindent was one of my original data sets. \\
+
+These data sets allowed me to easily compare the output from sortSeq to the output from the Unix sort utility. This helped me first and foremost verify that my quicksort code was correct and functioning properly. Alongside the easy to digest data sets, I also used the following command to identify where my output differed from the output of the Unix sort utility:
+
+vimdiff \textless (sort file.txt) \textless (./sortSeq file.txt)
+
+\noindent Lastly, once I was confident that my sorting algorithm was functioning properly, I wanted to make sure that the files worked for larger inputs. This was achieved by utilizing automatically generated files of random numbers, the largest of which was over 100,000 lines. These helped me ensure that my approach did not become immediately crippled when presented with reasonably large input.
+
+\section{Testing the Process Version}
+
+While testing the version of the program that utilized processes, one of my primary concerns was to ensure that the processes were being created, performing their tasks, and exiting properly. Throughout the course of writing the implementation, one of the most helpful things during the debugging and testing process was the insertion of debug statements through different segments of my code that were going to be encountered by my processes. My general approach was to insert print statements that would identify a process and then explain its current state (i.e if it had just finished merging two blocks of input).
+
+\section{Testing the Threaded Version}
+
+Simiar to the version with processes, my primary concern with this version was the creation and destruction of the threads. Alongside the debug statements, I also passed information inside my argument structs that was not necessarily needed by my sorting/merging algorithms. This allowed me to transfer debugging information between threads and contexts in the simplest manner possible. The addition of print statements that would leverage this debug data helped me to identify many bugs in my program.
+
+\section{General Project Notes}
+
+The merging of sections proved to be the most difficult aspect of this assignment for the threaded and process-based implementations. For the threaded version, I was unable to get a version of the merge working beyond 2 processes. For the process-based version, I was unable to find any solution, so I replaced the merge step in the my source code with subsequent calls to quicksort that take place in process forks.
+
+\section{Notes about Performance}
+
+The biggest trend that I noticed over the course of this project was that the efficiency of processes appears to taper off rather quickly. An increase in the number of processes generally didn't have a very large amount of impact on the overall solution, and actually negatively impacted performance in some circumstances. With the threaded version, while the performance seemed to definitely plateau, it was not as severe and did not take as hefty of a nose dive when the number of processes grew larger.
+
+\end{document}

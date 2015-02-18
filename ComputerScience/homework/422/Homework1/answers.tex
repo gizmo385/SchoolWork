@@ -46,8 +46,13 @@
 \section{Problem 1}
 
 \subsection{Part a}
+In the case that $x=5$ the program will terminate. This is because upon start, it will execute $x-2$ and $x-3$ in some order, which will complete the first and second arms of the process. Then, since $x=0$, it will activate and terminate the third arm, which leaves the final value of $x$ to be 0.
+
+\noindent It will also terminate for $x=5$. In this case, the third arm will immediately activate, followed by the first and second arm in some order. In this second case, $x=0$ will be the final value.
 
 \subsection{Part b}
+The program might terminate for the values $x=2$ and $x=3$. In the first case, if the first arm executes, then the third arm, and finally the second arm; the program will terminate with a final value of $x=3$. Similarly, when $x=3$, if the second arm executes, then the third arm, then the first arm; then the program will terminate with a final value of $x=2$.
+
 
 \section{Problem 2}
 

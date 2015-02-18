@@ -30,4 +30,4 @@ quicksort.o: quicksort.c quicksort.h
 
 # Add a clean target that silently removes the .o files
 clean:
-	@rm *.o sort{Seq,Process,Thread} 2> /dev/null || true
+	@rm *.o sortSeq sortProcess sortThread 2> /dev/null || true
