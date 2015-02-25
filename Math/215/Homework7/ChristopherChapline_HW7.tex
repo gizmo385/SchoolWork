@@ -37,11 +37,13 @@
 \newtheorem{solution}[theorem]{Solution}
 \newtheorem{summary}[theorem]{Summary}
 \newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
-\begin{document}
 
-\title{Homework 7}
-\author{Christopher Chapline}
-\maketitle
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Math 215 - Homework 7}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
 
 \section{Chapter 1.9}
 
@@ -177,25 +179,23 @@ matrix $A$ augmented by
 \\
 
 \noindent \begin{bmatrix}
-    1 & 1 & 3 \\
-    4 & 5 & 8
+    1 & 1 & \vline & 3 \\
+    4 & 5 & \vline & 8
 \end{bmatrix}
 \backsim
 \begin{bmatrix}
-    1 & 1 & 3 \\
-    0 & 1 & -4
+    1 & 1 & \vline & 3 \\
+    0 & 1 & \vline & -4
 \end{bmatrix} $R_2 -= 4R_1$
 \backsim
 \begin{bmatrix}
-    1 & 0 & 7 \\
-    0 & 1 & -4
+    1 & 0 & \vline & 7 \\
+    0 & 1 & \vline & -4
 \end{bmatrix} $R_1 -= R_2$ \\
 \\
 
-\noindent Therefore, $T\vec{x}$ = \begin{bmatrix} 3 \\ 8 \end{bmatrix} is consistent when $\vec{x} = \begin{bmatrix} 7 \\ -4 \end{bmatrix}$
+\noindent Therefore, $T\vec{x}$ = \begin{bmatrix} 3 \\ 8 \end{bmatrix} is consistent when $\vec{x} = \begin{bmatrix} 7 \\ -4 \end{bmatrix}$.
 
-
-\clearpage
 \section{Chapter 2.1}
 \subsubsection{Problem 2}
 Let:
@@ -220,22 +220,109 @@ $D = $
     -1 & 4
 \end{bmatrix}, \\
 \\
-
 and $E = $
 \begin{bmatrix}
     -5 \\
     3
-\end{bmatrix}
+\end{bmatrix}\\
+\\[0.3in]
+$A + 3B =$
+\begin{bmatrix}
+    2 & 0 & -1 \\
+    4 & -5 & 2
+\end{bmatrix} +
+\begin{bmatrix}
+    21 & -15 & 3 \\
+    3 & -12 & -9
+\end{bmatrix} =
+\begin{bmatrix}
+    23 & -15 & 2 \\
+    7 & -17 & -7
+\end{bmatrix}\\
+\\[0.2in]
+$2C - 3E$ is not defined because $C$ and $E$ are different sizes.\\
+\\[0.2in]
+$DB =$
+\begin{bmatrix}
+    (21 + 5) & -15 - 20 & (3 - 15) \\
+    (-7 + 4) &  5 - 16 & (-1 - 12)
+\end{bmatrix} =
+\begin{bmatrix}
+    26 & -35 & -12 \\
+    -3 & -11 & -13
+\end{bmatrix}\\
+\\[0.2in]
+$EC$ is not defined because $E$ has 1 column and $C$ has 2 rows.
 
 \subsubsection{Problem 4}
 
+Let $A=$
+\begin{bmatrix}
+    5 & -1 & 3 \\
+    -4 & 3 & -6 \\
+    -3 & 1 & 2
+\end{bmatrix}.\\
+\\[0.2in]
+$A - 5I_3$ =
+\begin{bmatrix}
+    5 & -1 & 3 \\
+    -4 & 3 & -6 \\
+    -3 & 1 & 2
+\end{bmatrix} -
+\begin{bmatrix}
+    5 & 0 & 0 \\
+    0 & 5 & 0 \\
+    0 & 0 & 5
+\end{bmatrix} =
+\begin{bmatrix}
+    0 & -1 & 3 \\
+    -4 & -2 & -6 \\
+    -3 & 1 & -3
+\end{bmatrix}\\
+\\[0.2in]
+$(5I_3)A = 5(I_3A) = 5A =$
+\begin{bmatrix}
+    25 & -5 & 15 \\
+    -20 & 15 & -30 \\
+    -15 & 5 & 10
+\end{bmatrix}.\\
+
 \subsubsection{Problem 8}
+The matrix $B$ would need to have 5 rows. The number of rows in the product is determined by the number of rows
+in the left operand of matrix multiplication, and since $BC$ has 5 rows, so must $B$.
 
 \subsubsection{Problem 12}
+Let $A = $
+\begin{bmatrix}
+    3 & -6 \\
+    -2 & 4
+\end{bmatrix}.\\
+\\[0.3in]
 
 \subsubsection{Problem 15}
+a. False. $AB$ is defined as $[A\vec{b_1} A\vec{b_2}]$.\\
+\\
+b. False. Each column of $AB$ is a linear combination of the columns of $A$ using weights from the corresponding
+column in $B$.\\
+\\
+c. True. Matrix multiplication distributes over addition.\\
+\\
+d. True, by theorem 3.\\
+\\
+e. False. The transpose of a product of matrices is equal to the product of their transposes in reverse order.
+\\
 
 \subsubsection{Problem 16}
+a.\\
+\\
+b. True. This is the definition of matrix multiplication.\\
+\\
+c. False. $(A^2)^T = A^TA^T$.\\
+\\
+d. False. $(ABC)^T = C^TB^TA^T$. This generalization is stated immediately after theorem 3.\\
+\\
+e. True. This is stated in theorem 3.\\
+\\
 
 \subsubsection{Problem 22}
 
