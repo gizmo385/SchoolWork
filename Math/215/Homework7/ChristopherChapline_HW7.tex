@@ -1,0 +1,243 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\begin{document}
+
+\title{Homework 7}
+\author{Christopher Chapline}
+\maketitle
+
+\section{Chapter 1.9}
+
+\subsubsection{Problem 17}
+
+Let
+$T:\mathds{R}^4 \rightarrow \mathds{R}^4$ \\
+
+\begin{bmatrix}
+    $x_1$ \\ $x_2$ \\ $x_3$ \\ $x_4$
+\end{bmatrix}
+\rightarrow
+\begin{bmatrix}
+    $x_1 + 2x_2$ \\ 0 \\ $2x_2 + x_4$ \\ $x_2 - x_4$
+\end{bmatrix} \\
+\\
+
+\noindent Let's determine the image of $\vec{e_1}, \vec{e_2}, \vec{e_3},$ and $\vec{e_4}$: \\
+\\
+$\vec{e_1} \rightarrow$
+\begin{bmatrix}
+    1 \\ 0 \\ 0 \\ 0
+\end{bmatrix},
+$\vec{e_2} \rightarrow$
+\begin{bmatrix}
+    2 \\ 0 \\ 2 \\ 1
+\end{bmatrix},
+$\vec{e_3} \rightarrow$
+\begin{bmatrix}
+    0 \\ 0 \\ 0 \\ 0
+\end{bmatrix},
+$\vec{e_4} \rightarrow$
+\begin{bmatrix}
+    0 \\ 0 \\ 1 \\ -1
+\end{bmatrix} \\
+
+Given these images for $e_1, e_2, e_3,$ and $e_4$, we can redefine $T$ as such:
+
+$T:\mathds{R}^4 \rightarrow \mathds{R}^4$ \\
+
+\begin{bmatrix}
+    $x_1$ \\ $x_2$ \\ $x_3$ \\ $x_4$
+\end{bmatrix}
+$\rightarrow A\vec{x}$, where $A=$
+\begin{bmatrix}
+    1 & 2 & 0 & 0 \\
+    0 & 0 & 0 & 0 \\
+    0 & 2 & 0 & 1 \\
+    0 & 1 & 0 & -1
+\end{bmatrix} \\
+\\
+
+\subsubsection{Problem 19}
+
+Let
+$T:\mathds{R}^3 \rightarrow \mathds{R}^2$ \\
+
+\begin{bmatrix}
+    $x_1$ \\ $x_2$ \\ $x_3$
+\end{bmatrix}
+\rightarrow
+\begin{bmatrix}
+    $x_1 - 5x_2 + 4x_3$ \\ $x_2 - 6x_3$
+\end{bmatrix} \\
+\\
+
+\noindent Let's determine the image of $\vec{e_1}, \vec{e_2},$ and $\vec{e_3},$ \\
+\\
+$\vec{e_1} \rightarrow$
+\begin{bmatrix}
+    1 \\ 0
+\end{bmatrix},
+$\vec{e_2} \rightarrow$
+\begin{bmatrix}
+    -5 \\ 1
+\end{bmatrix},
+$\vec{e_3} \rightarrow$
+\begin{bmatrix}
+    4 \\ -6
+\end{bmatrix} \\
+\\
+\noindent Given these images for $e_1, e_2,$ and $e_3,$, we can redefine $T$ as such:
+
+$T:\mathds{R}^4 \rightarrow \mathds{R}^4$ \\
+
+\begin{bmatrix}
+    $x_1$ \\ $x_2$ \\ $x_3$
+\end{bmatrix}
+$\rightarrow A\vec{x}$, where $A=$
+\begin{bmatrix}
+    1 & -5 & 4 \\
+    0 & 1 & -6
+\end{bmatrix} \\
+\\
+
+
+\subsubsection{Problem 21}
+Let
+$T:\mathds{R}^2 \rightarrow \mathds{R}^2$ \\
+
+\begin{bmatrix}
+    $x_1$ \\ $x_2$
+\end{bmatrix}
+\rightarrow
+\begin{bmatrix}
+    $x_1 + x_2$ \\ $4x_1 + 5x_2$
+\end{bmatrix} \\
+\\
+
+\noindent First, we must find a matrix transformation equivalent to this linear transformation: \\
+\\
+$\vec{e_1} \rightarrow$
+\begin{bmatrix}
+    1 \\ 4
+\end{bmatrix},
+$\vec{e_2} \rightarrow$
+\begin{bmatrix}
+    1 \\ 5
+\end{bmatrix},
+$T:\vec{x} \rightarrow A\vec{x}$ where
+$A = $
+\begin{bmatrix}
+    1 & 1 \\
+    4 & 5
+\end{bmatrix} \\
+\\
+
+\noindent To find a vector $\vec{x}$ where $T\vec{x}$ = \begin{bmatrix} 3 \\ 8 \end{bmatrix}, we must find the solution to the
+matrix $A$ augmented by
+\begin{bmatrix}
+    3 \\ 8
+\end{bmatrix}: \\
+\\
+
+\noindent \begin{bmatrix}
+    1 & 1 & 3 \\
+    4 & 5 & 8
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 1 & 3 \\
+    0 & 1 & -4
+\end{bmatrix} $R_2 -= 4R_1$
+\backsim
+\begin{bmatrix}
+    1 & 0 & 7 \\
+    0 & 1 & -4
+\end{bmatrix} $R_1 -= R_2$ \\
+\\
+
+\noindent Therefore, $T\vec{x}$ = \begin{bmatrix} 3 \\ 8 \end{bmatrix} is consistent when $\vec{x} = \begin{bmatrix} 7 \\ -4 \end{bmatrix}$
+
+
+\clearpage
+\section{Chapter 2.1}
+\subsubsection{Problem 2}
+Let:
+$A =$
+\begin{bmatrix}
+    2 & 0 & -1 \\
+    4 & -5 & 2
+\end{bmatrix},
+$B = $
+\begin{bmatrix}
+    7 & -5 & 1 \\
+    1 & -4 & -3
+\end{bmatrix},
+$C = $
+\begin{bmatrix}
+    1 & 2 \\
+    -2 & 1
+\end{bmatrix},
+$D = $
+\begin{bmatrix}
+    3 & 5 \\
+    -1 & 4
+\end{bmatrix}, \\
+\\
+
+and $E = $
+\begin{bmatrix}
+    -5 \\
+    3
+\end{bmatrix}
+
+\subsubsection{Problem 4}
+
+\subsubsection{Problem 8}
+
+\subsubsection{Problem 12}
+
+\subsubsection{Problem 15}
+
+\subsubsection{Problem 16}
+
+\subsubsection{Problem 22}
+
+
+\end{document}
