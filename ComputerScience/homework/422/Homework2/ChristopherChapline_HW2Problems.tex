@@ -1,0 +1,102 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{subproblem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize CS 422 - Homework 2}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+
+
+\section*{Problem 2}
+
+\subsection*{Part (a)}
+Yes because only one process will get a $P(d)$
+
+No because $S$ never executes
+
+\subsection*{Part (b)}
+This implementation of $await$ statements doesn't avoid deadlock. Because there is no
+call to $V(d)$, every process will block upon reaching the $P(d)$.
+
+\subsection*{Part (c)}
+This does not guarentee that $B$ is true when $S$ is executed. This guarentees that $B$ \underline{has been}
+\textbf{true} before $S$ executes. Consider the possibility that after exiting the \textbf{while} loop, the
+process is interrupted and another process changes $B$. In this case, when the first process resumes, it is
+possible that $B$ is \textbf{false} when $S$ is executed.
+
+\section*{Problem 3}
+
+\subsection*{Part (a)}
+The $e$ semaphor restricts access to the $nr$, $nw$, $dr$, and $dw$ counters. The $r$ and $w$ semaphors represent
+the restrictions placed on when a reader or writer can enter the database. A reader will be allowed to enter their
+critical section when there are no writers in the database. Conversely, a writer will be able to enter the database
+when there are no readers or writers in the database. When a writer is waiting to enter a database, it will increment
+a counter tracking the number of writers that are waiting. Similarly, when a reader is waiting to enter a database, it
+will increment a counter to keep track of the number of readers waiting.
+
+\subsection*{Part (b)}
+This is a writers preference solution. In the Writers process, it will prefer to awake a delayed writer rather than a
+delayed reader.
+
+\subsection*{Part (c)}
+One of the most immediate differences is that the solution in figure 4.13 is a readers preference.\\
+\\
+In the best case, the reader process in figure 4.21 will make 3 $P$ calls and 2 $V$ calls per iteration of the
+\textbf{while} loop. In the worst case, the reader process will make 3 $P$ calls and 3 $V$ calls per iteration of the
+\textbf{while} loop.\\
+\\
+For the writer process in figure 4.21, 3 $P$ calls and 2 $V$ calls will be made per iteration in the best case. In the
+worst case, 3 $P$ calls and 4 $V$ calls will be made.\\
+\\
+For the reader process in figure 4.13, 2 $P$ calls and 2 $V$ calls will be made for each iteration of the loop in the
+best case. In the worst case, 3 $P$ calls will be made and 3 $V$ calls will be made per loop iteration.\\
+\\
+For the writer process in figure 4.13, 2 $P$ calls and 2 $V$ calls will be made per iteration in the best case. In the
+worst case, 3 $P$ calls and 3 $V$ calls will be made.\\
+
+
+
+
+\end{document}
