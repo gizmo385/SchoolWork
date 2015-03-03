@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{listings}
 \usepackage{hyperref}%
 \setcounter{MaxMatrixCols}{30}
 %TCIDATA{OutputFilter=late$x2$.dll}
@@ -47,18 +48,38 @@
 \begin{document}
 
 \section*{Problem 1}
+\begin{document}
+A standard solution to the critical section problem involves semaphors which essentially lock access to a portion
+of the code. This lock being enabled is effectively a binary state. Similarly, the sign of a number is also a binary
+state and we can use that binary state to implement our locking mechanism.
 
+\lstset{language=C}
+\begin{lstlisting}[frame=single]
+v = 1, s = NEG;
+
+while( s != POS ) {
+    DEC(v, s);
+}
+S;
+v = 1;
+\end{lstlisting}
+\\
+This implementation will only allow entrance into the system when \textbf{DEC} returns \textbf{POS} for the
+sign. Initially, this will happen for a single process, which enters into the critical section. The rest of the
+processes will sit and decrement v in a spin loop. This will prevent any of the other processes from entering until
+the process in the critical section exits. Upon exiting the critical section, the process will set $v$ to be
+1. This will ensure that one process exits the spin loop and enters the critical section.
 
 \section*{Problem 2}
 
 \subsection*{Part (a)}
-Yes because only one process will get a $P(d)$
-
-No because $S$ never executes
+Ignoring potential deadlock concerns, the statement itself would be executed atomically because only a single
+process will be able to proceed beyond the $P$ call each time.
 
 \subsection*{Part (b)}
-This implementation of $await$ statements doesn't avoid deadlock. Because there is no
-call to $V(d)$, every process will block upon reaching the $P(d)$.
+In the case that every process falls into the \textbf{while} loop, all of the processes will block on $P(d)$, causing
+deadlock. If a single process can skip over the \textbf{while} loop, then deadlock will be avoided because the first
+process will wake some process up.
 
 \subsection*{Part (c)}
 This does not guarentee that $B$ is true when $S$ is executed. This guarentees that $B$ \underline{has been}
