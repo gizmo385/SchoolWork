@@ -296,8 +296,30 @@ Let $A = $
 \begin{bmatrix}
     3 & -6 \\
     -2 & 4
-\end{bmatrix}.\\
-\\[0.3in]
+\end{bmatrix}\\
+\\[0.1in]
+To get $AB$ to be equal to zero, we need to get the linear combinations that make up the multiplication to each
+result in the zero vector. Recognize that the second column of $A$ is -2 times the first column of $A$. We can
+use this fact to construct our matrix $B$. Consider the multiplication of $A$ with the vector $\vec{b} = $
+\begin{bmatrix}
+    2 \\
+    1
+\end{bmatrix}.
+This multiplication results in the zero vector. Thus, if our matrix $B$ defined as $B = [\vec{b} \vec{b}]$, then
+we will have our answer:\\
+\\
+\begin{bmatrix}
+    3 & -6 \\
+    -2 & 4
+\end{bmatrix}
+\begin{bmatrix}
+    2 & 2 \\
+    1 & 1
+\end{bmatrix} =
+\begin{bmatrix}
+    0 & 0 \\
+    0 & 0
+\end{bmatrix}.
 
 \subsubsection{Problem 15}
 a. False. $AB$ is defined as $[A\vec{b_1} A\vec{b_2}]$.\\
@@ -313,7 +335,8 @@ e. False. The transpose of a product of matrices is equal to the product of thei
 \\
 
 \subsubsection{Problem 16}
-a.\\
+a. True. Expanding the multiplication of matrices $A$ and $B$ will show that the first row of $AB$
+is $[a_{11} \cdots a_{1n}][\vec{b_1} \cdots \vec{b_n}]$.
 \\
 b. True. This is the definition of matrix multiplication.\\
 \\
@@ -325,6 +348,11 @@ e. True. This is stated in theorem 3.\\
 \\
 
 \subsubsection{Problem 22}
+Assume that $B$ is a matrix whose columns are linearly independent and let $A$ be a matrix such that $AB$ is
+defined. Because the columns of $B$ are linearly independent, we know that does not exist a non-trivial solution
+to the equation $B\vec{x} = \vec{0}$. If we multiply both sides by $A$, we get that
+$AB\vec{x} = A\vec{0} \Rightarrow AB\vec{x} = \vec{0}$. Since there does not exist a non-trivial solution to
+$AB\vec{x} = \vec{0}$, the columns of $AB$ are linearly independent.
 
 
 \end{document}
