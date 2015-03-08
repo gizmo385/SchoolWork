@@ -4,7 +4,8 @@ import static java.lang.Math.abs;
 public class Jacobi {
 
     public static void main( String[] args ) {
-        final int MAX_ITERS = 1000;
+        // The largest difference between successive iterations that we will terminate on
+        final double EPSILON = 0.1;
 
         // Ensure that the user has entered the correct number of arguments
         if( args.length < 2 ) {
@@ -16,10 +17,7 @@ public class Jacobi {
         double leftStart    = args.length >= 3 ? Double.parseDouble(args[2]) : 1.0,
                topStart     = args.length >= 4 ? Double.parseDouble(args[3]) : 1.0,
                rightStart   = args.length >= 5 ? Double.parseDouble(args[4]) : 80.0,
-               bottomStart  = args.length >= 6 ? Double.parseDouble(args[5]) : 80.0,
-
-        // The largest difference between successive iterations that we will terminate on
-        double epsilon = 0.1;
+               bottomStart  = args.length >= 6 ? Double.parseDouble(args[5]) : 80.0;
 
         // Read in the command line arguments
         int gridSize = Integer.parseInt( args[0] );
@@ -32,7 +30,7 @@ public class Jacobi {
         System.out.printf("numProcs = %d\n", numThreads);
         System.out.printf("left = %.1f, top = %.1f, right = %.1f, bottom = %.1f\n", leftStart, topStart,
                 rightStart, bottomStart);
-        System.out.printf("epsilon = %.1f\n", epsilon);
+        System.out.printf("EPSILON = %.1f\n", EPSILON);
 
         // Create our grids
         double grid[][] = new double[gridSize + 2][gridSize + 2];
@@ -89,7 +87,7 @@ public class Jacobi {
             }
 
             // Determine if we've completed the iteration
-            if( maxDifference < epsilon ) {
+            if( maxDifference < EPSILON ) {
                 break;
             }
 
