@@ -1,6 +1,10 @@
 import static java.lang.Math.max;
 import static java.lang.Math.abs;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.IOException;
+
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.CountDownLatch;
@@ -10,6 +14,15 @@ public class Jacobi {
     private static double[][] grid, new_grid;
     private static double maxDifference;
 
+    /**
+     * Performs Jacobi iteration using a grid of a specified size and parsing it with
+     * a pre-determined number of threads.
+     *
+     * @param args The first argument for this program is the size of the interior grid being
+     * iterated over. The second argument determines the number of threads that the iterations are
+     * taking place on. Optional arguments include the initial values for the left, top, right, and
+     * bottom exteriors respectively.
+     */
     public static void main( String[] args ) {
         // The largest difference between successive iterations that we will terminate on
         final double EPSILON = 0.1;
@@ -30,16 +43,11 @@ public class Jacobi {
         int gridSize = Integer.parseInt( args[0] );
         int numThreads = Integer.parseInt( args[1] );
 
+        // Iterations and batch size
         int numberOfIterations = 0;
         int rowsPerThread = gridSize / numThreads;
         int leftover = gridSize % numThreads;
 
-        // Print out information to stdout
-        System.out.printf("N = %d\n", gridSize);
-        System.out.printf("numProcs = %d\n", numThreads);
-        System.out.printf("left = %.1f, top = %.1f, right = %.1f, bottom = %.1f\n", leftStart, topStart,
-                rightStart, bottomStart);
-        System.out.printf("EPSILON = %.1f\n", EPSILON);
 
         // Initialize our grids
         grid = new double[gridSize + 2][gridSize + 2];
@@ -70,36 +78,42 @@ public class Jacobi {
 
         // Semaphore for interacting with maxDifference
         Semaphore maxSem = new Semaphore(1);
+        Semaphore threadsSemaphore = new Semaphore(numThreads);
 
         // Perform the iterations
         for( ; ; numberOfIterations++ ) {
             maxDifference = 0.0;
-            CountDownLatch counter = new CountDownLatch(numThreads);
 
             // Create threads to perform the iterations
             for( int thread = 0; thread < numThreads; thread++ ) {
+                // Acquire a permit from the semaphore for each thread that we're creating
+                try {
+                    threadsSemaphore.acquire();
+                } catch( InterruptedException ie ) {
+                    System.err.println("interrupted while attempting to acquire semaphore!");
+                    System.exit(1);
+                }
+
+                // Create the worker
+                WorkerThread worker;
                 int startingRow = (thread * rowsPerThread) + 1;
                 int endingRow = startingRow + rowsPerThread;
 
-                WorkerThread worker;
-
                 if( (thread + 1) == numThreads ) {
-                    worker = new WorkerThread(thread, gridSize, startingRow, endingRow + leftover,
-                            maxSem, counter);
+                    worker = new WorkerThread(gridSize, startingRow, endingRow + leftover, maxSem,
+                            threadsSemaphore);
                 } else {
-                    worker = new WorkerThread(thread, gridSize, startingRow, endingRow, maxSem,
-                            counter);
+                    worker = new WorkerThread(gridSize, startingRow, endingRow, maxSem,
+                            threadsSemaphore);
                 }
 
+                // Start the worker
                 worker.start();
             }
 
             // Block until the counter reaches zero
-            try {
-                counter.await();
-            } catch( InterruptedException ie ) {
-                System.err.println("Main thread interrupted on await(counter)!");
-                System.exit(1);
+            while( threadsSemaphore.availablePermits() != numThreads ) {
+                // Spin
             }
 
             // Determine if we've completed the iteration
@@ -107,49 +121,93 @@ public class Jacobi {
                 break;
             }
 
-            // Copy the updated values in
             for( int i = 0; i < grid.length; i++ ) {
-                for( int j = 0; j < grid.length; j++ ) {
-                    grid[i][j] = new_grid[i][j];
-                }
+                System.arraycopy(new_grid[i], 0, grid[i], 0, grid.length);
             }
         }
 
         // Stop the timer
         long finish = System.nanoTime();
 
-        System.out.printf("Number of iterations to complete: %d\n", numberOfIterations );
-        System.out.printf("Time to complete: %d microseconds\n", (finish - start) / 1000 );
+        // Standard out
+        System.out.printf("Finished %d iterations in %d microseconds using %d threads\n",
+                numberOfIterations, (finish - start) / 1000, numThreads);
 
-        for( int i = 0; i < grid.length; i++ ) {
-            for( int j = 0; j < grid.length; j++ ) {
-                System.out.printf("%7.4f ", grid[i][j]);
+        // Write output to a file
+        File outputFile = createFile("JavaJacobiResults.txt");
+        try (PrintWriter fileOut = new PrintWriter(outputFile)) {
+            fileOut.printf("Grid size: %d\n", gridSize);
+            fileOut.printf("Number of threads: %d\n", numThreads);
+            fileOut.printf("Edge values: left = %f, right = %f, top = %f, bottom = %f\n",
+                    leftStart, rightStart, topStart, bottomStart);
+            fileOut.printf("Epsilon: %f\n\n", EPSILON);
+
+            // Write lines to the file
+            for( int i = 0; i < grid.length; i++ ) {
+                for( int j = 0; j < grid.length; j++ ) {
+                    fileOut.printf("%7.4f ", grid[i][j]);
+                }
+
+                fileOut.println();
             }
-
-            System.out.println();
+        } catch( IOException ioe ) {
+            System.err.printf( "Error attempting to write to file: %s\n", outputFile.getName() );
         }
     }
 
+    /**
+     * Creates a file with the specified filename. This method will return the File that has been
+     * created. In addition to creating the file object, this method will create the file on the
+     * file system if it does not already exist.
+     *
+     * @param filename The name of the file being created.
+     *
+     * @return The file object which has been created.
+     */
+    private static File createFile(String filename) {
+        File file = new File( filename );
+
+        try {
+            file.createNewFile();
+        } catch( IOException ioe ) {
+            System.err.printf("Error while trying to create file \"%s\"!\n", filename);
+        }
+
+        return file;
+    }
+
+    /**
+     * A thread which will perform Jacobi iterations on a particular partition of the grid.
+     */
     private static class WorkerThread extends Thread {
 
-        private int gridSize, firstRow, lastRow, threadId;
-        private Semaphore maxSem;
-        private CountDownLatch counter;
+        private int gridSize, firstRow, lastRow;
+        private Semaphore maxSem, threadsSemaphore;
 
-        public WorkerThread(int threadId, int gridSize, int firstRow, int lastRow, Semaphore maxSem,
-                CountDownLatch counter) {
+        /**
+         * Creates a thread which will perform Jacobi iterations.
+         *
+         * @param gridSize          the size of the interior grid that is being iterated over.
+         * @param firstRow          the index of the first row being operated on.
+         * @param lastRow           the index of the last row being operated on.
+         * @param maxSem            the semaphore that controls access to maxDifference.
+         * @param threadsSemaphore  the semaphore that counts the number of threads active.
+         */
+        public WorkerThread(int gridSize, int firstRow, int lastRow, Semaphore maxSem,
+                Semaphore threadsSemaphore) {
             this.gridSize = gridSize;
             this.firstRow = firstRow;
             this.lastRow = lastRow;
             this.maxSem = maxSem;
-            this.counter = counter;
-
-            // Print out that this thread has been created
-            //safePrintf("[WT %d] Created!\n", threadId);
+            this.threadsSemaphore = threadsSemaphore;
         }
 
+        /**
+         * Will perform Jacobi iterations on the partition of the grid. This will terminated after
+         * acquiring a lock on a semaphore and comparing its local maximum difference to the maximum
+         * global distance.
+         */
         @Override public void run() {
-            //safePrintf("[WT %d] Started!\n", threadId);
             // Calculate a subset of the rows
             for( int row = firstRow; row < lastRow; row++ ) {
                 for( int column = 1; column <= gridSize; column++ ) {
@@ -176,8 +234,8 @@ public class Jacobi {
                 System.exit(1);
             }
 
-            //safePrintf("[WT %d] Finished!\n", threadId);
-            counter.countDown();
+            // Release a permit from the threads semaphore
+            threadsSemaphore.release();
         }
     }
 }
