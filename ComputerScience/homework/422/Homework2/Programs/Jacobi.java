@@ -1,7 +1,13 @@
 import static java.lang.Math.max;
 import static java.lang.Math.abs;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
+
 public class Jacobi {
+
+    private static double[][] grid, new_grid;
+    private static double maxDifference;
 
     public static void main( String[] args ) {
         // The largest difference between successive iterations that we will terminate on
@@ -32,9 +38,9 @@ public class Jacobi {
                 rightStart, bottomStart);
         System.out.printf("EPSILON = %.1f\n", EPSILON);
 
-        // Create our grids
-        double grid[][] = new double[gridSize + 2][gridSize + 2];
-        double new_grid[][] = new double[gridSize + 2][gridSize + 2];
+        // Initialize our grids
+        grid = new double[gridSize + 2][gridSize + 2];
+        new_grid = new double[gridSize + 2][gridSize + 2];
 
         // Set the top and bottom boundary points
         for( int i = 0; i < grid.length; i++ ) {
@@ -56,32 +62,18 @@ public class Jacobi {
 
         grid[grid.length - 1][0] = bottomStart;
 
-        System.out.println("Starting values:");
-        for( int i = 0; i < grid.length; i++ ) {
-            for( int j = 0; j < grid.length; j++ ) {
-                System.out.printf("%4.1f ", grid[i][j]);
-            }
-
-            System.out.println();
-        }
-
         long start = System.nanoTime();
 
         // Perform the iterations
         for( ; ; numberOfIterations++ ) {
+            maxDifference = 0.0;
 
             // Compute all iterior points
             for( int i = 1; i <= gridSize; i++ ) {
                 for( int j = 1; j <= gridSize; j++ ) {
                     new_grid[i][j] = (grid[i - 1][j] + grid[i + 1][j] + grid[i][j - 1]
                         + grid[i][j + 1]) * 0.25;
-                }
-            }
 
-            // Compute the maximal difference across the values
-            double maxDifference = 0.0;
-            for( int i = 1; i <= gridSize; i++ ) {
-                for( int j = 1; j <= gridSize; j++ ) {
                     maxDifference = max(maxDifference, abs(new_grid[i][j] - grid[i][j]));
                 }
             }
@@ -113,4 +105,48 @@ public class Jacobi {
         }
     }
 
+    private static class WorkerThread extends Thread {
+
+        private int gridSize, firstRow, lastRow;
+        private Semaphore maxSem;
+        private CountDownLatch counter;
+
+        public WorkerThread(int gridSize, int firstRow, int lastRow, Semaphore maxSem,
+                CountDownLatch counter) {
+            this.gridSize = gridSize;
+            this.firstRow = firstRow;
+            this.lastRow = lastRow;
+            this.maxSem = maxSem;
+        }
+
+        @Override public void run() {
+            // Calculate a subset of the rows
+            for( int row = firstRow; row < lastRow; row++ ) {
+                for( int column = 1; column < gridSize; column++ ) {
+                    new_grid[row][column] = (grid[row - 1][column] + grid[row + 1][column]
+                            + grid[row][column - 1] + grid[row][column + 1]) * 0.25;
+                }
+            }
+
+            // Compute the maximal difference amongst these rows
+            double localMax = 0.0;
+            for( int row = firstRow; row < lastRow; row++ ) {
+                for( int column = 1; column < gridSize; column++ ) {
+                    localMax = max(localMax, abs(new_grid[row][column] - grid[row][column]));
+                }
+            }
+
+            // Determine if the local max is larger than the global max
+            try {
+                maxSem.acquire();
+                maxDifference = max(maxDifference, localMax);
+                maxSem.release();
+            } catch( InterruptedException ie ) {
+                System.err.println("Max difference calculation interrupted! Exiting!");
+                System.exit(1);
+            }
+
+            counter.countDown();
+        }
+    }
 }
