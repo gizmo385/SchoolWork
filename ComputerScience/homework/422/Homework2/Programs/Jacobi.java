@@ -1,6 +1,7 @@
 import static java.lang.Math.max;
 import static java.lang.Math.abs;
 
+import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.CountDownLatch;
 
@@ -30,6 +31,8 @@ public class Jacobi {
         int numThreads = Integer.parseInt( args[1] );
 
         int numberOfIterations = 0;
+        int rowsPerThread = gridSize / numThreads;
+        int leftover = gridSize % numThreads;
 
         // Print out information to stdout
         System.out.printf("N = %d\n", gridSize);
@@ -62,20 +65,41 @@ public class Jacobi {
 
         grid[grid.length - 1][0] = bottomStart;
 
+        // Start the timer
         long start = System.nanoTime();
+
+        // Semaphore for interacting with maxDifference
+        Semaphore maxSem = new Semaphore(1);
 
         // Perform the iterations
         for( ; ; numberOfIterations++ ) {
             maxDifference = 0.0;
+            CountDownLatch counter = new CountDownLatch(numThreads);
 
-            // Compute all iterior points
-            for( int i = 1; i <= gridSize; i++ ) {
-                for( int j = 1; j <= gridSize; j++ ) {
-                    new_grid[i][j] = (grid[i - 1][j] + grid[i + 1][j] + grid[i][j - 1]
-                        + grid[i][j + 1]) * 0.25;
+            // Create threads to perform the iterations
+            for( int thread = 0; thread < numThreads; thread++ ) {
+                int startingRow = (thread * rowsPerThread) + 1;
+                int endingRow = startingRow + rowsPerThread;
 
-                    maxDifference = max(maxDifference, abs(new_grid[i][j] - grid[i][j]));
+                WorkerThread worker;
+
+                if( (thread + 1) == numThreads ) {
+                    worker = new WorkerThread(thread, gridSize, startingRow, endingRow + leftover,
+                            maxSem, counter);
+                } else {
+                    worker = new WorkerThread(thread, gridSize, startingRow, endingRow, maxSem,
+                            counter);
                 }
+
+                worker.start();
+            }
+
+            // Block until the counter reaches zero
+            try {
+                counter.await();
+            } catch( InterruptedException ie ) {
+                System.err.println("Main thread interrupted on await(counter)!");
+                System.exit(1);
             }
 
             // Determine if we've completed the iteration
@@ -91,6 +115,7 @@ public class Jacobi {
             }
         }
 
+        // Stop the timer
         long finish = System.nanoTime();
 
         System.out.printf("Number of iterations to complete: %d\n", numberOfIterations );
@@ -107,22 +132,27 @@ public class Jacobi {
 
     private static class WorkerThread extends Thread {
 
-        private int gridSize, firstRow, lastRow;
+        private int gridSize, firstRow, lastRow, threadId;
         private Semaphore maxSem;
         private CountDownLatch counter;
 
-        public WorkerThread(int gridSize, int firstRow, int lastRow, Semaphore maxSem,
+        public WorkerThread(int threadId, int gridSize, int firstRow, int lastRow, Semaphore maxSem,
                 CountDownLatch counter) {
             this.gridSize = gridSize;
             this.firstRow = firstRow;
             this.lastRow = lastRow;
             this.maxSem = maxSem;
+            this.counter = counter;
+
+            // Print out that this thread has been created
+            //safePrintf("[WT %d] Created!\n", threadId);
         }
 
         @Override public void run() {
+            //safePrintf("[WT %d] Started!\n", threadId);
             // Calculate a subset of the rows
             for( int row = firstRow; row < lastRow; row++ ) {
-                for( int column = 1; column < gridSize; column++ ) {
+                for( int column = 1; column <= gridSize; column++ ) {
                     new_grid[row][column] = (grid[row - 1][column] + grid[row + 1][column]
                             + grid[row][column - 1] + grid[row][column + 1]) * 0.25;
                 }
@@ -131,7 +161,7 @@ public class Jacobi {
             // Compute the maximal difference amongst these rows
             double localMax = 0.0;
             for( int row = firstRow; row < lastRow; row++ ) {
-                for( int column = 1; column < gridSize; column++ ) {
+                for( int column = 1; column <= gridSize; column++ ) {
                     localMax = max(localMax, abs(new_grid[row][column] - grid[row][column]));
                 }
             }
@@ -146,6 +176,7 @@ public class Jacobi {
                 System.exit(1);
             }
 
+            //safePrintf("[WT %d] Finished!\n", threadId);
             counter.countDown();
         }
     }
