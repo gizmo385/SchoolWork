@@ -17,6 +17,8 @@ typedef struct WorkerArgs {
     int thread, gridSize, firstRow, lastRow;
     sem_t *maxSem;
     sem_t *countSemaphore;
+    sem_t *changeCountSemaphore;
+    pthread_barrier_t *barrier;
 } WorkerArgs;
 
 /* Global variables */
@@ -110,14 +112,20 @@ int main( int argc, char *argv[] ) {
     // Semaphore for interacting with maxDifference
     sem_t maxSem;
     sem_t countSemaphore;
+    sem_t changeCountSemaphore;
 
     sem_init(&maxSem, 0, 1);
+    /*sem_init(&countSemaphore, 0, 0);*/
     sem_init(&countSemaphore, 0, numThreads - 1);
+    sem_init(&changeCountSemaphore, 0, 1);
 
     // Set global thread attributes
     pthread_attr_t attr;
     pthread_attr_init( &attr );
     pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
+
+    pthread_barrier_t barrier;
+    pthread_barrier_init(&barrier, NULL, numThreads);
 
     maxDifference = 0.0;
 
@@ -140,6 +148,8 @@ int main( int argc, char *argv[] ) {
         wa->firstRow = startingRow;
         wa->lastRow = endingRow;
         wa->maxSem = &maxSem;
+        wa->barrier = &barrier;
+        wa->changeCountSemaphore = &changeCountSemaphore;
         wa->countSemaphore = &countSemaphore;
 
         if( (thread + 1) == numThreads ) {
@@ -147,9 +157,7 @@ int main( int argc, char *argv[] ) {
         }
 
         // Create our thread
-        pthread_t worker;
-        threads[thread] = worker;
-        pthread_create(&worker, &attr, iterationWorker, wa);
+        pthread_create(&(threads[thread]), &attr, iterationWorker, wa);
     }
 
     for( int thread = 0; thread < numThreads; thread++ ) {
@@ -198,14 +206,15 @@ int main( int argc, char *argv[] ) {
 void* iterationWorker(void* arg) {
     // Extract arguments
     WorkerArgs *wa = (WorkerArgs*)arg;
-    int threadId = wa->thread;
+    /*int threadId = wa->thread;*/
     int gridSize = wa->gridSize;
     int firstRow = wa->firstRow;
     int lastRow = wa->lastRow;
     sem_t *maxSem = wa->maxSem;
     sem_t *countSemaphore = wa->countSemaphore;
+    sem_t *changeCountSemaphore = wa->changeCountSemaphore;
 
-    printf("Thread [%d] checking in!\n", threadId);
+    /*printf("Thread [%d] checking in!\n", threadId);*/
 
     while(!finished) {
         /*sem_wait(iterationSemaphore);*/
@@ -231,10 +240,25 @@ void* iterationWorker(void* arg) {
         maxDifference = MAX(maxDifference, localMax);
         sem_post(maxSem);
 
+#if 0
+        pthread_barrier_wait(wa->barrier);
+
+        if( maxDifference < EPSILON ) {
+            return NULL;
+        } else {
+            if( threadId == 0 ) {
+                numberOfIterations++;
+            }
+
+
+        }
+        pthread_barrier_wait(wa->barrier);
+#endif
+
+/*#if 0*/
         // Increment the counter
-        sem_wait(countSemaphore);
+        sem_wait(changeCountSemaphore);
         count++;
-        sem_post(countSemaphore);
 
         // Wait for the other threads to finish
         // The first thread will update global state
@@ -249,7 +273,7 @@ void* iterationWorker(void* arg) {
                 // If haven't, update the state
                 maxDifference = 0.0;
                 numberOfIterations++;
-                printf("[Thread %d] Updating global state\n", threadId);
+                /*printf("[Thread %d] Updating global state\n", threadId);*/
             }
 
             int old_count = count;
@@ -259,11 +283,12 @@ void* iterationWorker(void* arg) {
                 sem_post(countSemaphore);
             }
         } else {
-            printf("[Thread %d] Waiting for count semaphore...\n", threadId);
+            /*printf("[Thread %d] Waiting for count semaphore...\n", threadId);*/
             sem_wait(countSemaphore);
         }
 
-        // Update our grid if we haven't finished
+        sem_post(changeCountSemaphore);
+
         if( !finished ) {
             for( int i = firstRow; i < lastRow; i++ ) {
                 for( int j = 0; j < (gridSize + 2); j++ ) {
@@ -271,6 +296,8 @@ void* iterationWorker(void* arg) {
                 }
             }
         }
+        /*#endif*/
+
     }
 
     return NULL;

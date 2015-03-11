@@ -1,0 +1,103 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize CS 422 - Homework 2 - Timing Report}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section{General Implementation Comments}
+For both implementations of this problem, the program requires 2 mandatory arguments. These mandatory arguments are the interior grid size and the number of threads that are being executed, in that order. In addition to these arguments, there are 4 optional arguments allowing you to supply new values for the left, top, right, and bottom exteriors (in that order). The default values for these optional arguments are 1.0, 1.0, 80.0, and 80.0 respectively.\\
+\\
+In both implementations, there are some obvious performance bottlenecks that exist. For example, in both implementations I repeatedly copy values from my new grid into my old grid. Although this operation is threaded, it is still a performance impact that is unecessary. In the textbook readings, Andrews describes an implementation in which you would merely swap the roles of the old and new grids after each iteration, thus removing the need for copying the values.
+
+\section{Java Timing Results}
+
+Throughout the course of my testing the Java version, I was unable to receive any significant speed increases by increasing the number of workers assigned to the grid. In fact, I would frequently encounter a speed decrease. Here are some of my results from trying different grid sizes with different numbers of workers:\\
+\\
+\begin{tabular}{| l | l | l | l | l | l |}
+    \hline
+    Grid Size & 1 & 2 & 4 & 8 & 16\\ \hline
+    16 & 38285 & 17775 & 48946 & 44460 & 11755 \\ \hline
+    32 & 47037 & 83092 & 73227 & 38341 & 136792\\ \hline
+    64 & 67673 & 76770 & 167441 & 274588 & 155512\\ \hline
+    128 & 90840 & 110598 & 187661 & 137327 & 514625 \\ \hline
+    256 & 209224 & 259648 & 268598 & 400483 & 501207 \\ \hline
+    512 & 905593 & 652143 & 386134 & 638053 & 1907518 \\ \hline
+    1024 & 3029917 & 2015317 & 1218102 & 1780524 & 2776852 \\ \hline
+\end{tabular}\\
+\\
+The timings presented are all presented in microseconds.\\
+\\
+I tested the timings with the following bash script:\\
+\hline
+\begin{verbatim}
+for gridSize in 16 32 64 128 256 512 1024
+do
+    for workers in 1 2 4 8 16
+    do
+        java Jacobi $gridSize $workers
+    done
+done
+\end{verbatim}
+\hline
+
+\section{C Timing Results}
+I did not have the opportunity to get an implementation of the C version entirely working because of issues with the semaphores in the POSIX library. The version that I currently have working, after staying in Isabelle's office until 8PM, completes about half of the array and is approaching a level of correctness. However, if I was able to get a version of this working, the steps that I would have followed to test it would have been to perform the exact same tests on the C version that I had on the java version and then generate charts to compare their performance. When I was working solely on the sequential version, I noticed an order of magnitude performance increase with the C version over the java version. I would have expected similar results with the multithreaded version, possibly even giving a little bit higher of a speed advantage to C. The lack of the JVM's overhead in creating the threads probably would have yielded another small performance boost over the Java version.\\
+\\
+With the understanding that I was unable to get a working C version, I will use Dr. Homer's binary to perform my tests. The code to execute the tests is the same as the code used to execute the Java tests, except that I will be executing "patrickJacobi" instead of "java Jacobi". Here are my timing results for Patrick's C implementation:\\
+\\
+\begin{tabular}{| l | l | l | l | l | l |}
+    \hline
+    Grid Size & 1 & 2 & 4 & 8 & 16\\ \hline
+    16 & 912 & 2857 & 13356 & 9218 & 16291 \\ \hline
+    32 & 6636 & 8537 & 17460 & 19047 & 31604\\ \hline
+    64 & 32385 & 27264 & 24357 & 37363 & 84323 \\ \hline
+    128 & 121163 & 48745 & 52577 & 61630 & 95762 \\ \hline
+    256 & 481900 & 169912 & 115359 & 251331 & 229328 \\ \hline
+    512 & 60707 & 686240 & 532937 & 563016 & 537420 \\ \hline
+    1024 & 366069 & 960171 & 587908 & 167930 & 191562 \\ \hline
+\end{tabular}\\
+\\
+From this data, we can notice that the addition of more workers increased the performance up until a point, and then the performance would either plateau or go back down. The performance detriment would likely result from the overhead of managing the barriers and threads. Compared to the Java version, the C version exhibited significant performance increase.
+\end{document}
