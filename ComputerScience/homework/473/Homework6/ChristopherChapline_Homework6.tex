@@ -1,0 +1,252 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize CSc 473 - Homework 6}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+\lstset{language=Java}
+\lstset{showstringspaces=false}
+
+\section*{Problem 6.1}
+\begin{theorem}
+    The algorithm is correct.
+\end{theorem}
+
+\begin{proof}\\
+    \\
+    \textbf{Basis:} The start state is trivially reachable from the start state.
+    \\[0.1in]
+    \textbf{Induction:} Assume that we are currently some state $A$ that is reachable from the start state. Consider a possible production on $A$, namely $A \righarrow \alpha$. This production. This production would lead us to a set of symbols. We can label all of these symbols reachable as they are reachable from $A$ which is reachable from the start state by the inductive hypthesis. Furthermore, since all symbols that we can reach from $A$ are reachable from the start state, no state that we can visit will be erroneously marked as unreachable. Thus, if $A$ is reachable from the start state, the symbols in $A \rightarrow \alpha$ are also reachable.\\
+    \\[0.1in]
+    Because no reachable state will be erroneously marked as unreachable and because each reachable state will be marked as reachable, this algorithm is correct.
+\end{proof}
+
+\begin{theorem}
+    The algorithm is complete.
+\end{theorem}
+
+\begin{proof}\\
+    \\
+    \textbf{Basis:} Assume that the start state is the only state. This state is trivially reachable and will not be removed, satisfying our basis.
+    \\[0.1in]
+    \textbf{Induction:} Assume that we are at some state $A$ that is reachable from the start state. Because this state is reachable, it will not be removed. All productions from $A$, namely $A \rightarrow \alpha$, lead to symbols which may or may not have been visited before. In the case where they have been visited before, we do nothing. In the case where they haven't been visited, we mark that state as reachable from the start state. We can conclude that this because it was immediately reachable from $A$, which is reachable from the start state by the inductive hypthesis.\\
+    \\[0.07in]
+    Because every state that we were able to reach from the start state has been marked as reachable, we know that those states that are not marked as reachable were states that we did not encounter when taking productions beginning at the start state. Thus, we can conclude that the algorithm is correct and will only remove unreachable states and will not remove reachable states.
+
+\end{proof}
+
+\section*{Problem 6.2}
+\hline\\
+\\
+\begin{lstlisting}
+import java.io.*;
+
+class Parser {
+    static int lookahead;
+
+    public Parser() throws IOException {
+        lookahead = System.in.read();
+    }
+
+    void E() throws IOException {
+        System.out.println("E -> TR");
+        T();
+
+        for(;;) {
+
+            if( lookahead == '+' ) {
+                System.out.println("R -> +TR");
+                match('+');
+                T();
+                continue;
+            } else if( lookahead == '-' ) {
+                System.out.println("R -> -TR");
+                match('-');
+                T();
+                continue;
+            }
+
+            break;
+        }
+
+        System.out.println("T -> epsilon");
+    }
+
+    void T() throws IOException {
+        if( Character.isDigit((char)lookahead) ) {
+            System.out.printf("T -> %c\n", (char)lookahead);
+            match(lookahead);
+        } else throw new Error("syntax error");
+    }
+
+    void match(int t) throws IOException {
+        if( lookahead == t )
+        lookahead = System.in.read();
+        else throw new Error("syntax error");
+    }
+}
+
+public class Descent {
+    public static void main(String[] args) throws IOException {
+        Parser parse = new Parser();
+        parse.E();
+    }
+}
+\end{lstlisting}
+Example output
+\\
+
+\section*{Problem 6.3}
+
+First, some example output:\\
+\\
+9-3*2
+\begin{verbatim}
+E -> TR
+T -> 9
+R -> A
+R -> -TR
+T -> 3
+R -> *TR
+T -> 2
+R -> A
+A -> epsilon
+A -> epsilon
+\end{verbatim}
+
+\hline
+\begin{lstlisting}
+import java.io.*;
+
+class Parser {
+    static int lookahead;
+
+    public Parser() throws IOException {
+        lookahead = System.in.read();
+    }
+
+    void E() throws IOException {
+
+        if( lookahead == '(' ) {
+            System.out.println("E -> (E)");
+            match('(');
+            E();
+            match(')');
+        } else {
+            System.out.println("E -> TR");
+            T();
+
+            for(;;) {
+
+                if( lookahead == '*' ) {
+                    System.out.println("R -> *TR");
+                    match('*');
+                    T();
+                    continue;
+                } else if( lookahead == '/' ) {
+                    System.out.println("R -> /TR");
+                    match('/');
+                    T();
+                    continue;
+                }
+
+                break;
+            }
+
+            System.out.println("R -> A");
+            A();
+        }
+    }
+
+    void A() throws IOException {
+        for(;;) {
+            if( lookahead == '+' ) {
+                System.out.println("R -> +TR");
+                match('+');
+                T();
+                continue;
+            } else if( lookahead == '-' ) {
+                System.out.println("R -> -TR");
+                match('-');
+                T();
+                continue;
+            }
+
+            break;
+        }
+
+        System.out.println("A -> epsilon" );
+    }
+
+    void T() throws IOException {
+        if( Character.isDigit((char)lookahead) ) {
+            System.out.printf("T -> %c\n", (char)lookahead);
+            match(lookahead);
+        } else if (lookahead == '(' ) {
+            match('(');
+            E();
+            match(')');
+        } else {
+            throw new Error("syntax error");
+        }
+    }
+
+    void match(int t) throws IOException {
+        if( lookahead == t )
+            lookahead = System.in.read();
+        else throw new Error("syntax error");
+    }
+}
+
+
+public class Descent {
+    public static void main(String[] args) throws IOException {
+        Parser parse = new Parser();
+        parse.E();
+    }
+}
+\end{lstlisting}
+\hline
+
+\end{document}
