@@ -1,35 +1,60 @@
 #include <stdlib.h>
 #include <stdio.h>
+
+#include <string.h>
+#include <stdbool.h>
 #include <math.h>
+
 #include <sys/time.h>
+
 #include <semaphore.h>
 #include <pthread.h>
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-// Structures
+/* Our structure definitions */
 typedef struct WorkerArgs {
-    int gridSize;               // The size of the interior grid being iterated over
-    int firstRow;               // The row that the iterations will being on
-    int lastRow;                // The row that the iterations will terminate on
-    double *maxDifference;      // A pointer to the variable monitoring the max difference
-    sem_t* maxSem;              // A semaphore for controlling access to maxDifference
-    sem_t* threadsSemaphore;    // A semaphore that counts the number of active threads
-
-    double*** grid;             // A pointer to the 2D grid
-    double*** new_grid;         // A pointer to the 2D grid that iterations will enter into
+    int thread, gridSize, firstRow, lastRow;
+    sem_t *maxSem;
+    sem_t *countSemaphore;
 } WorkerArgs;
 
-// Function prototypes
-void* iterationWorker( void* arg);
+/* Global variables */
 
+// Our Jacobi grids
+double** grid;
+double** new_grid;
+
+// The largest difference found across the grids
+double maxDifference;
+
+// The number of threads being used
+int numThreads;
+
+int count;
+
+// the number of iterations it took to discover the answer
+int numberOfIterations = 1;
+
+// The largest possible difference between values
+#define EPSILON 0.1
+
+// Determines whether or not iterations have finished computing
+bool finished = false;
+
+/* Function prototypes */
+void* iterationWorker(void* arg);
+
+
+/**
+ * Performs Jacobi iteration using a grid of a specified size and parsing it with
+ * a pre-determined number of threads.
+ *
+ */
 int main( int argc, char *argv[] ) {
-    // The largest difference between successive iterations that we will terminate on
-    const double EPSILON = 0.1;
-
     // Ensure that the user has entered the correct number of arguments
-    if( argc < 2 ) {
-        fprintf(stderr, "Usage: java Jacobi <gridSize> <numThreads>\n");
+    if( argc < 3 ) {
+        printf("Usage: java Jacobi <gridSize> <numThreads>\n");
         exit(1);
     }
 
@@ -41,32 +66,21 @@ int main( int argc, char *argv[] ) {
 
     // Read in the command line arguments
     int gridSize = atoi( argv[1] );
-    int numThreads = atoi( argv[2] );
+    numThreads = atoi( argv[2] );
 
-    // Calculate grid information
-    int numberOfIterations = 0;
+    // Iterations and batch size
     int rowsPerThread = gridSize / numThreads;
     int leftover = gridSize % numThreads;
 
-    // Print out information to stdout
-    printf("N = %d\n", gridSize);
-    printf("numProcs = %d\n", numThreads);
-    printf("left = %.1f, top = %.1f, right = %.1f, bottom = %.1f\n", leftStart, topStart,
-            rightStart, bottomStart);
-    printf("EPSILON = %.1f\n", EPSILON);
-
-    // Create our grids
+    // Initialize our grids
     int arraySize = gridSize + 2;
-    double** grid = calloc( arraySize, sizeof(double*) );
-    double** new_grid = calloc( arraySize, sizeof(double*) );
-
-    // Intialize our grid
-    for( int i = 0; i < arraySize; i++ ) {
-        grid[i] = calloc( arraySize, sizeof(double) );
-        new_grid[i] = calloc( arraySize, sizeof(double) );
-    }
+    grid = calloc(arraySize, sizeof(double*));
+    new_grid = calloc(arraySize, sizeof(double*));
 
     for( int i = 0; i < arraySize; i++ ) {
+        grid[i] = calloc(arraySize, sizeof(double));
+        new_grid[i] = calloc(arraySize, sizeof(double));
+
         for( int j = 0; j < arraySize; j++ ) {
             grid[i][j] = 0.0;
             new_grid[i][j] = 0.0;
@@ -93,74 +107,56 @@ int main( int argc, char *argv[] ) {
 
     grid[arraySize - 1][0] = bottomStart;
 
-    // Create our semaphores
-    sem_t maxSem, threadsSemaphore;
-    sem_init(&maxSem, 0, 1);
-    sem_init(&threadsSemaphore, 0, numThreads);
+    // Semaphore for interacting with maxDifference
+    sem_t maxSem;
+    sem_t countSemaphore;
 
-    // Set up pthreads
+    sem_init(&maxSem, 0, 1);
+    sem_init(&countSemaphore, 0, numThreads - 1);
+
+    // Set global thread attributes
     pthread_attr_t attr;
     pthread_attr_init( &attr );
     pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
 
+    maxDifference = 0.0;
+
     // Start the timer
     struct timeval start;
     gettimeofday(&start, NULL);
+    pthread_t threads[numThreads];
 
-    // Perform the iterations
-    for( ; ; numberOfIterations++ ) {
-        double maxDifference = 0.0;
+    // Create threads to perform the iterations
+    for( int thread = 0; thread < numThreads; thread++ ) {
 
-        // Create workers
-        for( int thread = 0; thread < numThreads; thread++ ) {
-            printf( "[Iteration %d] Created thread %d\n", numberOfIterations, thread);
-            sem_wait(&threadsSemaphore);
-            int startingRow = (thread * rowsPerThread) + 1;
-            int endingRow = startingRow + 1;
+        // Set up the worker
+        int startingRow = (thread * rowsPerThread) + 1;
+        int endingRow = startingRow + rowsPerThread;
 
-            // Set up our arguments for the thread
-            WorkerArgs wa;
-            wa.gridSize = gridSize;
-            wa.firstRow = startingRow;
-            wa.maxDifference = &maxDifference;
-            wa.maxSem = &maxSem;
-            wa.threadsSemaphore = &threadsSemaphore;
-            wa.grid = &grid;
-            wa.new_grid = &new_grid;
+        // Create worker arguments
+        WorkerArgs *wa = malloc(sizeof(WorkerArgs));
+        wa->thread = thread;
+        wa->gridSize = gridSize;
+        wa->firstRow = startingRow;
+        wa->lastRow = endingRow;
+        wa->maxSem = &maxSem;
+        wa->countSemaphore = &countSemaphore;
 
-            // Handle edge case
-            if( (thread + 1) == numThreads ) {
-                wa.lastRow = endingRow + leftover;
-            } else {
-                wa.lastRow = endingRow;
-            }
-
-            // Create the thread
-            pthread_t thread;
-            pthread_create(&thread, &attr, iterationWorker, (void*)&wa);
+        if( (thread + 1) == numThreads ) {
+            wa->lastRow += leftover;
         }
 
-        // Wait until all threads have finished
-        int val;
-        do {
-            sem_getvalue(&threadsSemaphore, &val);
-        } while( val != numThreads );
-
-        // Determine if we've completed the iteration
-        printf("[Iteration %d] maxDifference = %f\n", numberOfIterations, maxDifference);
-        if( maxDifference < EPSILON ) {
-            break;
-        }
-
-        // Copy the updated values in
-        for( int i = 0; i < arraySize; i++ ) {
-            for( int j = 0; j < arraySize; j++ ) {
-                grid[i][j] = new_grid[i][j];
-            }
-        }
+        // Create our thread
+        pthread_t worker;
+        threads[thread] = worker;
+        pthread_create(&worker, &attr, iterationWorker, wa);
     }
 
-    // Stop timer
+    for( int thread = 0; thread < numThreads; thread++ ) {
+        pthread_join(threads[thread], NULL);
+    }
+
+    // Stop the timer
     struct timeval end;
     gettimeofday(&end, NULL);
 
@@ -172,60 +168,110 @@ int main( int argc, char *argv[] ) {
         seconds--;
     }
 
-    // Print information about the iterations
-    printf("Number of iterations to complete: %d\n", numberOfIterations );
-    printf("execution time = %d seconds, %d microseconds\n", seconds, micros);
+    // Standard out
+    printf("Finished %d iterations in %d seconds, %d microseconds using %d threads\n",
+            numberOfIterations, seconds, micros, numThreads);
 
+    // Write output to a file
+    FILE* outputFile = fopen("CJacobiResults.txt", "w");
+    fprintf(outputFile, "Grid size: %d\n", gridSize);
+    fprintf(outputFile, "Number of threads: %d\n", numThreads);
+    fprintf(outputFile, "Edge values: left = %f, right = %f, top = %f, bottom = %f\n",
+            leftStart, rightStart, topStart, bottomStart);
+    fprintf(outputFile, "Epsilon: %f\n\n", EPSILON);
+
+    // Write lines to the file
     for( int i = 0; i < arraySize; i++ ) {
         for( int j = 0; j < arraySize; j++ ) {
-            printf("%7.4f ", grid[i][j]);
+            fprintf(outputFile, "%7.4f ", grid[i][j]);
         }
 
-        printf("\n");
+        fprintf(outputFile, "\n");
     }
-
-    // Cleanup
-    for( int i = 0; i < arraySize; i++ ) {
-        free( grid[i] );
-        free( new_grid[i] );
-    }
-
-    free(grid);
-    free(new_grid);
 }
 
-void* iterationWorker( void* arg) {
+/**
+ * Will perform Jacobi iterations on the partition of the grid. This will terminated after
+ * acquiring a lock on a semaphore and comparing its local maximum difference to the maximum
+ * global distance.
+ */
+void* iterationWorker(void* arg) {
     // Extract arguments
-    WorkerArgs* wa = arg;
-    double*** grid = wa->grid;
-    double*** new_grid = wa->new_grid;
+    WorkerArgs *wa = (WorkerArgs*)arg;
+    int threadId = wa->thread;
+    int gridSize = wa->gridSize;
     int firstRow = wa->firstRow;
     int lastRow = wa->lastRow;
-    int gridSize = wa->gridSize;
+    sem_t *maxSem = wa->maxSem;
+    sem_t *countSemaphore = wa->countSemaphore;
 
-    // Calculate a subset of the rows
-    for( int row = firstRow; row < lastRow; row++ ) {
-        for( int column = 1; column <= gridSize; column++ ) {
-            (*new_grid)[row][column] = ((*grid)[row - 1][column] + (*grid)[row + 1][column]
-                    + (*grid)[row][column - 1] + (*grid)[row][column + 1]) * 0.25;
+    printf("Thread [%d] checking in!\n", threadId);
+
+    while(!finished) {
+        /*sem_wait(iterationSemaphore);*/
+
+        // Calculate a subset of the rows
+        for( int row = firstRow; row < lastRow; row++ ) {
+            for( int column = 1; column <= gridSize; column++ ) {
+                new_grid[row][column] = (grid[row - 1][column] + grid[row + 1][column]
+                        + grid[row][column - 1] + grid[row][column + 1]) * 0.25;
+            }
+        }
+
+        // Compute the maximal difference amongst these rows
+        double localMax = 0.0;
+        for( int row = firstRow; row < lastRow; row++ ) {
+            for( int column = 1; column <= gridSize; column++ ) {
+                localMax = MAX(localMax, fabs(new_grid[row][column] - grid[row][column]));
+            }
+        }
+
+        // Determine if the local max is larger than the global max
+        sem_wait(maxSem);
+        maxDifference = MAX(maxDifference, localMax);
+        sem_post(maxSem);
+
+        // Increment the counter
+        sem_wait(countSemaphore);
+        count++;
+        sem_post(countSemaphore);
+
+        // Wait for the other threads to finish
+        // The first thread will update global state
+        if( count == (numThreads - 1) ) {
+            /*sem_wait(countSemaphore);*/
+
+            // Check if we've finished iterating
+            /*if( count == 17 ) {*/
+            if( maxDifference < EPSILON ) {
+                finished = true;
+            } else {
+                // If haven't, update the state
+                maxDifference = 0.0;
+                numberOfIterations++;
+                printf("[Thread %d] Updating global state\n", threadId);
+            }
+
+            int old_count = count;
+            count = 0;
+
+            for( int i = 0; i < old_count; i++ ) {
+                sem_post(countSemaphore);
+            }
+        } else {
+            printf("[Thread %d] Waiting for count semaphore...\n", threadId);
+            sem_wait(countSemaphore);
+        }
+
+        // Update our grid if we haven't finished
+        if( !finished ) {
+            for( int i = firstRow; i < lastRow; i++ ) {
+                for( int j = 0; j < (gridSize + 2); j++ ) {
+                    grid[i][j] = new_grid[i][j];
+                }
+            }
         }
     }
-
-    // Compute the maximal difference amongst these rows
-    double localMax = 0.0;
-    for( int row = firstRow; row < lastRow; row++ ) {
-        for( int column = 1; column <= gridSize; column++ ) {
-            localMax = MAX(localMax, fabs( ((*new_grid)[row][column] - (*grid)[row][column])) );
-        }
-    }
-
-    // Determine if the local max is larger than the global max
-    sem_wait(wa->maxSem);
-    *(wa->maxDifference) = MAX(localMax, *(wa->maxDifference));
-    sem_post(wa->maxSem);
-
-    // Release permit from threads semaphore
-    sem_post(wa->threadsSemaphore);
 
     return NULL;
 }

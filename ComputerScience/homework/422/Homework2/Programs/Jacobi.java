@@ -55,7 +55,6 @@ public class Jacobi {
         int rowsPerThread = gridSize / numThreads;
         int leftover = gridSize % numThreads;
 
-
         // Initialize our grids
         grid = new double[gridSize + 2][gridSize + 2];
         new_grid = new double[gridSize + 2][gridSize + 2];
