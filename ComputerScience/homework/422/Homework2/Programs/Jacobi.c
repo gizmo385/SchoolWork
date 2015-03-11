@@ -18,7 +18,6 @@ typedef struct WorkerArgs {
     sem_t *maxSem;
     sem_t *countSemaphore;
     sem_t *changeCountSemaphore;
-    pthread_barrier_t *barrier;
 } WorkerArgs;
 
 /* Global variables */
@@ -43,6 +42,8 @@ int numberOfIterations = 1;
 
 // Determines whether or not iterations have finished computing
 bool finished = false;
+
+pthread_barrier_t barrier;
 
 /* Function prototypes */
 void* iterationWorker(void* arg);
@@ -124,7 +125,6 @@ int main( int argc, char *argv[] ) {
     pthread_attr_init( &attr );
     pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
 
-    pthread_barrier_t barrier;
     pthread_barrier_init(&barrier, NULL, numThreads);
 
     maxDifference = 0.0;
@@ -148,7 +148,6 @@ int main( int argc, char *argv[] ) {
         wa->firstRow = startingRow;
         wa->lastRow = endingRow;
         wa->maxSem = &maxSem;
-        wa->barrier = &barrier;
         wa->changeCountSemaphore = &changeCountSemaphore;
         wa->countSemaphore = &countSemaphore;
 
@@ -206,13 +205,13 @@ int main( int argc, char *argv[] ) {
 void* iterationWorker(void* arg) {
     // Extract arguments
     WorkerArgs *wa = (WorkerArgs*)arg;
-    /*int threadId = wa->thread;*/
+    int threadId = wa->thread;
     int gridSize = wa->gridSize;
     int firstRow = wa->firstRow;
     int lastRow = wa->lastRow;
     sem_t *maxSem = wa->maxSem;
-    sem_t *countSemaphore = wa->countSemaphore;
-    sem_t *changeCountSemaphore = wa->changeCountSemaphore;
+    /*sem_t *countSemaphore = wa->countSemaphore;*/
+    /*sem_t *changeCountSemaphore = wa->changeCountSemaphore;*/
 
     /*printf("Thread [%d] checking in!\n", threadId);*/
 
@@ -240,22 +239,41 @@ void* iterationWorker(void* arg) {
         maxDifference = MAX(maxDifference, localMax);
         sem_post(maxSem);
 
-#if 0
-        pthread_barrier_wait(wa->barrier);
+/*#if 0*/
+        //printf( "[Thread %d] Waiting at first barrier...\n", threadId);
+        pthread_barrier_wait(&barrier);
+        //printf( "[Thread %d] Passed first barrier\n", threadId);
 
         if( maxDifference < EPSILON ) {
-            return NULL;
+            //printf("[Thread %d] maxDifference < Epsilon!\n", threadId);
+            finished = true;
         } else {
             if( threadId == 0 ) {
                 numberOfIterations++;
             }
 
-
+            for( int i = firstRow; i < lastRow; i++ ) {
+                for( int j = 0; j < (gridSize + 2); j++ ) {
+                    grid[i][j] = new_grid[i][j];
+                }
+            }
         }
-        pthread_barrier_wait(wa->barrier);
-#endif
 
-/*#if 0*/
+        //printf( "[Thread %d] Waiting at second barrier...\n", threadId);
+        pthread_barrier_wait(&barrier);
+        //printf( "[Thread %d] Passed second barrier\n", threadId);
+
+        if( threadId == 0 ) {
+            maxDifference = 0.0;
+        }
+
+        //printf( "[Thread %d] Waiting at third barrier...\n", threadId);
+        pthread_barrier_wait(&barrier);
+        //printf( "[Thread %d] Passed third barrier\n", threadId);
+
+/*#endif*/
+
+#if 0
         // Increment the counter
         sem_wait(changeCountSemaphore);
         count++;
@@ -296,7 +314,7 @@ void* iterationWorker(void* arg) {
                 }
             }
         }
-        /*#endif*/
+#endif
 
     }
 
