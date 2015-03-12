@@ -1,0 +1,150 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Math 215 - Homework 8}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Chapter 2.2}
+
+\subsubsection*{Problem 3}
+
+Let $A = $
+\begin{bmatrix}
+    7 & 3 \\
+    -6 & -3
+\end{bmatrix}.
+The inverse of a 2x2 matrix is:
+$\frac{1}{ad-bc}$
+\begin{bmatrix}
+    a & b \\
+    c & d
+\end{bmatrix}.
+Thus, $A^{-1} = \frac{1}{(7)(-3) - (3)(-6)}$
+\begin{bmatrix}
+    -3 & -3 \\
+    6 & 7
+\end{bmatrix}
+$= \frac{1}{3}$
+\begin{bmatrix}
+    -3 & -3 \\
+    6 & 7
+\end{bmatrix}.
+
+\subsubsection*{Problem 6}
+Solve the linear system:
+\begin{cases}
+    $7x_1 + 3x_2 = 9$\\
+    $-6x_1 - 3x_2 = ?$
+\end{cases}\\[0.1in]
+
+$A\vec{x} =$
+\begin{bmatrix}
+    9 \\ ?
+\end{bmatrix}
+$\Rightarrow \vec{x} = A^{-1}$
+\begin{bmatrix}
+    9 \\ ?
+\end{bmatrix}
+$\Rightarrow \vec{x} = \frac{1}{3}$
+\begin{bmatrix}
+    -3 & -3 \\
+    6 & 7
+\end{bmatrix}
+\begin{bmatrix}
+    9 \\ ?
+\end{bmatrix}
+
+\subsubsection*{Problem 8}
+$A = PBP^{-1} \Rightarrow P^{-1}A = BP^{-1} \Rightarrow P^{-1}AP = B$.
+
+\subsubsection*{Problem 32}
+
+Find $A^{-1}$ if it exists when $A =$
+\begin{bmatrix}
+    1 & 2 & -1 \\
+    -4 & -7 & 3 \\
+    -2 & -6 & 4
+\end{bmatrix}.
+We will augment by $I_3$ and row reduce.\\
+\\[0.1in]
+\begin{bmatrix}
+    1 & 2 & -1 & \vline & 1 & 0 & 0 \\
+    -4 & -7 & 3 & \vline & 0 & 1 & 0 \\
+    -2 & -6 & 4 & \vline & 0 & 0 & 1
+\end{bmatrix}
+$\backsim$
+\begin{bmatrix}
+    1 & 2 & -1 & \vline & 1 & 0 & 0 \\
+    0 & 1 & -1 & \vline & 4 & 1 & 0 \\
+    0 & -2 & 2 & \vline & 2 & 0 & 1
+\end{bmatrix}
+$\backsim$
+\begin{bmatrix}
+    1 & 2 & -1 & \vline & 1 & 0 & 0 \\
+    0 & 1 & -1 & \vline & 4 & 1 & 0 \\
+    0 & 0 & 0 & \vline & 10 & 2 & 1
+\end{bmatrix}\\
+\\[0.1in]
+Because $A$ is not row equivalent with $I_3$, $A$ is not invertible.
+
+\section*{Chapter 2.3}
+
+\subsubsection*{Problem 12}
+\paragraph{(a)} False. Matrix multiplication is not commutative.
+\paragraph{(b)} False. If the map $T$ were onto or one-to-one, this would be true.
+\paragraph{(c)} Flase. Not every $nxn$ matrix spans $\mathbb{R}^n$
+\paragraph{(d)} True. If $A$ had $n$ pivots, $A\vec{x} = \vec{b}$ would only have the trivial solution by the Invertible Matrix Theorem.
+\paragraph{(e)} True. If a matrix is invertible, so is its transpose. This is Theorem 6.
+
+\subsubsection*{Problem 20}
+Yes, it is possible. According to the invertible matrix theorem, if an $nxn$ matrix $A$ spans $\mathbb{R}^n$, then $A\vec{x} = \vec{b}$ has \textbf{at least one} solution for all $\vec{b}$ in $\mathbb{R}^n$.
+
+\subsubsection*{Problem 21}
+The existence of some $\vec{v}$ such that $C\vec{u} = \vec{v}$ has more than one solution does not prevent $C$ from spanning $\mathbb{R}^n$. As in number 20, the invertible matrix theorem says that if $C\vec{u} = \vec{v}$ has \textbf{at least one} solution for all $\vec{v}$ in $\mathbb{R}^n$, then it spans $\mathbb{R}^n$.
+
+\subsubsection*{Problem 28}
+Theorem 6 states that $(AB)^{-1} = B^{-1}A^{-1}$. This equality shows that for $AB$ to be invertible, it must be representable as the product of 2 invertible matrices.
+
+\section{Chapter 3.1}
+
+\end{document}
