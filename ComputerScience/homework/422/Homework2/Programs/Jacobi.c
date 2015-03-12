@@ -16,8 +16,6 @@
 typedef struct WorkerArgs {
     int thread, gridSize, firstRow, lastRow;
     sem_t *maxSem;
-    sem_t *countSemaphore;
-    sem_t *changeCountSemaphore;
 } WorkerArgs;
 
 /* Global variables */
@@ -32,8 +30,6 @@ double maxDifference;
 // The number of threads being used
 int numThreads;
 
-int count;
-
 // the number of iterations it took to discover the answer
 int numberOfIterations = 1;
 
@@ -43,6 +39,7 @@ int numberOfIterations = 1;
 // Determines whether or not iterations have finished computing
 bool finished = false;
 
+// A barrier to ensure thread synchronization
 pthread_barrier_t barrier;
 
 /* Function prototypes */
@@ -57,7 +54,7 @@ void* iterationWorker(void* arg);
 int main( int argc, char *argv[] ) {
     // Ensure that the user has entered the correct number of arguments
     if( argc < 3 ) {
-        printf("Usage: java Jacobi <gridSize> <numThreads>\n");
+        printf("Usage: ./Jacobi <gridSize> <numThreads>\n");
         exit(1);
     }
 
@@ -112,21 +109,16 @@ int main( int argc, char *argv[] ) {
 
     // Semaphore for interacting with maxDifference
     sem_t maxSem;
-    sem_t countSemaphore;
-    sem_t changeCountSemaphore;
-
     sem_init(&maxSem, 0, 1);
-    /*sem_init(&countSemaphore, 0, 0);*/
-    sem_init(&countSemaphore, 0, numThreads - 1);
-    sem_init(&changeCountSemaphore, 0, 1);
 
-    // Set global thread attributes
+    // Set global thread and barrier attributes
     pthread_attr_t attr;
     pthread_attr_init( &attr );
     pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
 
     pthread_barrier_init(&barrier, NULL, numThreads);
 
+    // Initialize max difference to be zero. This will be changed by the threads
     maxDifference = 0.0;
 
     // Start the timer
@@ -148,9 +140,8 @@ int main( int argc, char *argv[] ) {
         wa->firstRow = startingRow;
         wa->lastRow = endingRow;
         wa->maxSem = &maxSem;
-        wa->changeCountSemaphore = &changeCountSemaphore;
-        wa->countSemaphore = &countSemaphore;
 
+        // The last thread will need to pick up a little bit of slack
         if( (thread + 1) == numThreads ) {
             wa->lastRow += leftover;
         }
@@ -210,15 +201,13 @@ void* iterationWorker(void* arg) {
     int firstRow = wa->firstRow;
     int lastRow = wa->lastRow;
     sem_t *maxSem = wa->maxSem;
-    /*sem_t *countSemaphore = wa->countSemaphore;*/
-    /*sem_t *changeCountSemaphore = wa->changeCountSemaphore;*/
-
-    /*printf("Thread [%d] checking in!\n", threadId);*/
 
     while(!finished) {
-        /*sem_wait(iterationSemaphore);*/
-
-        // Calculate a subset of the rows
+        /*
+         * We will have every worker thread calculate their particular partition of the grid. Each
+         * thread will handle (gridSize / numThreads) rows in the grid with the last thread
+         * potentially handling an extra (gridSize % num) rows.
+         */
         for( int row = firstRow; row < lastRow; row++ ) {
             for( int column = 1; column <= gridSize; column++ ) {
                 new_grid[row][column] = (grid[row - 1][column] + grid[row + 1][column]
@@ -226,7 +215,10 @@ void* iterationWorker(void* arg) {
             }
         }
 
-        // Compute the maximal difference amongst these rows
+        /*
+         * Each thread will compute the maximum difference between iterations that it encountered
+         * for its partition of the grid.
+         */
         double localMax = 0.0;
         for( int row = firstRow; row < lastRow; row++ ) {
             for( int column = 1; column <= gridSize; column++ ) {
@@ -234,24 +226,44 @@ void* iterationWorker(void* arg) {
             }
         }
 
-        // Determine if the local max is larger than the global max
+        /*
+         * Every thread will update the global max to be the larger of either (1) the global max or
+         * (2) their local max. This is operation is gated by a semaphore to ensure mutual
+         * exclusion.
+         */
         sem_wait(maxSem);
         maxDifference = MAX(maxDifference, localMax);
         sem_post(maxSem);
 
-/*#if 0*/
-        //printf( "[Thread %d] Waiting at first barrier...\n", threadId);
+        /*
+         * We must wait until all threads have arrived at this point. At this point, we know that
+         * the value in maxDifference is its final value for this iteration.
+         */
         pthread_barrier_wait(&barrier);
-        //printf( "[Thread %d] Passed first barrier\n", threadId);
 
+        /*
+         * If the maxDifference value is less than the set EPSILON value, all threads will set
+         * finished to true. This is redundent, but does not provide a measurable performance impact
+         * overall. Setting finished to true will cause all threads to exit when they loop around to
+         * the top of the loop.
+         */
         if( maxDifference < EPSILON ) {
             //printf("[Thread %d] maxDifference < Epsilon!\n", threadId);
             finished = true;
         } else {
+            /*
+             * We want to have a single thread increment the number of iterations. Since there will
+             * always be a thread will ID 0 in this solution (it is the first thread created), we
+             * will use that thread.
+             */
             if( threadId == 0 ) {
                 numberOfIterations++;
             }
 
+            /*
+             * Now we will have each thread copy its rows into the final array. This operation could
+             * be optimized out and will be in the future.
+             */
             for( int i = firstRow; i < lastRow; i++ ) {
                 for( int j = 0; j < (gridSize + 2); j++ ) {
                     grid[i][j] = new_grid[i][j];
@@ -259,63 +271,25 @@ void* iterationWorker(void* arg) {
             }
         }
 
-        //printf( "[Thread %d] Waiting at second barrier...\n", threadId);
+        /*
+         * Here we must wait for the threads to finish their calculations involving maxDifference
+         * before we reset it back to 0, so we barrier here.
+         */
         pthread_barrier_wait(&barrier);
-        //printf( "[Thread %d] Passed second barrier\n", threadId);
 
+         // We will have the first thread (ID of 0) reset max difference to 0.0.
         if( threadId == 0 ) {
             maxDifference = 0.0;
         }
 
-        //printf( "[Thread %d] Waiting at third barrier...\n", threadId);
+        /*
+         * At this point, all calculations for this iteration are finished and maxDifference has
+         * been reset to 0.0, allowing for the next iteration to begin. We barrier here to ensure
+         * that all threads start with maxDifference having a value of 0.0. Removing the barrier
+         * introduces the possibility that one thread will begin its iteration and change max
+         * difference, only to have thread 0 reset it back to 0.0.
+         */
         pthread_barrier_wait(&barrier);
-        //printf( "[Thread %d] Passed third barrier\n", threadId);
-
-/*#endif*/
-
-#if 0
-        // Increment the counter
-        sem_wait(changeCountSemaphore);
-        count++;
-
-        // Wait for the other threads to finish
-        // The first thread will update global state
-        if( count == (numThreads - 1) ) {
-            /*sem_wait(countSemaphore);*/
-
-            // Check if we've finished iterating
-            /*if( count == 17 ) {*/
-            if( maxDifference < EPSILON ) {
-                finished = true;
-            } else {
-                // If haven't, update the state
-                maxDifference = 0.0;
-                numberOfIterations++;
-                /*printf("[Thread %d] Updating global state\n", threadId);*/
-            }
-
-            int old_count = count;
-            count = 0;
-
-            for( int i = 0; i < old_count; i++ ) {
-                sem_post(countSemaphore);
-            }
-        } else {
-            /*printf("[Thread %d] Waiting for count semaphore...\n", threadId);*/
-            sem_wait(countSemaphore);
-        }
-
-        sem_post(changeCountSemaphore);
-
-        if( !finished ) {
-            for( int i = firstRow; i < lastRow; i++ ) {
-                for( int j = 0; j < (gridSize + 2); j++ ) {
-                    grid[i][j] = new_grid[i][j];
-                }
-            }
-        }
-#endif
-
     }
 
     return NULL;
