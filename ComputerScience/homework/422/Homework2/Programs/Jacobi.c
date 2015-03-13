@@ -12,6 +12,9 @@
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+// The largest possible difference between values
+#define EPSILON 0.1
+
 /* Our structure definitions */
 typedef struct WorkerArgs {
     int thread, gridSize, firstRow, lastRow;
@@ -32,9 +35,6 @@ int numThreads;
 
 // the number of iterations it took to discover the answer
 int numberOfIterations = 1;
-
-// The largest possible difference between values
-#define EPSILON 0.1
 
 // Determines whether or not iterations have finished computing
 bool finished = false;
