@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}%
@@ -73,17 +74,17 @@ $= \frac{1}{3}$
 \subsubsection*{Problem 6}
 Solve the linear system:
 \begin{cases}
-    $7x_1 + 3x_2 = 9$\\
-    $-6x_1 - 3x_2 = ?$
+    $7x_1 + 3x_2 = -9$\\
+    $-6x_1 - 3x_2 = 4$
 \end{cases}\\[0.1in]
 
 $A\vec{x} =$
 \begin{bmatrix}
-    9 \\ ?
+    -9 \\ 4
 \end{bmatrix}
 $\Rightarrow \vec{x} = A^{-1}$
 \begin{bmatrix}
-    9 \\ ?
+    -9 \\ 4
 \end{bmatrix}
 $\Rightarrow \vec{x} = \frac{1}{3}$
 \begin{bmatrix}
@@ -91,8 +92,20 @@ $\Rightarrow \vec{x} = \frac{1}{3}$
     6 & 7
 \end{bmatrix}
 \begin{bmatrix}
-    9 \\ ?
+    -9 \\ 4
+\end{bmatrix}\\[0.1in]
+$= \frac{1}{3}$
+\begin{bmatrix}
+    27 \\ -54
 \end{bmatrix}
+\begin{bmatrix}
+    -12 \\ 28
+\end{bmatrix}$=\frac{1}{3}$
+\begin{bmatrix}
+    15 \\ -26
+\end{bmatrix}
+
+
 
 \subsubsection*{Problem 8}
 $A = PBP^{-1} \Rightarrow P^{-1}A = BP^{-1} \Rightarrow P^{-1}AP = B$.
@@ -143,7 +156,7 @@ Yes, it is possible. According to the invertible matrix theorem, if an $nxn$ mat
 The existence of some $\vec{v}$ such that $C\vec{u} = \vec{v}$ has more than one solution does not prevent $C$ from spanning $\mathbb{R}^n$. As in number 20, the invertible matrix theorem says that if $C\vec{u} = \vec{v}$ has \textbf{at least one} solution for all $\vec{v}$ in $\mathbb{R}^n$, then it spans $\mathbb{R}^n$.
 
 \subsubsection*{Problem 28}
-Theorem 6 states that $(AB)^{-1} = B^{-1}A^{-1}$. This equality shows that for $AB$ to be invertible, it must be representable as the product of 2 invertible matrices.
+Assume that $AB$ is invertible and that $B$ is not invertible. This means that $B$ is not one-to-one, which implies that there exists an $x$ and a $y$ such that $Bx = By$. However, this would also imply that $ABx = ABy$ which cannot be true because $AB$ is one-to-one by the invertible matrix theorem. This is a contradiction. Therefore, $B$ must be invertible.
 
 \section{Chapter 3.1}
 
@@ -195,7 +208,7 @@ $\end{array} = -4*$
 \begin{array}{|l l|}
     3 & -3 \\
     4 & -3
-$\end{array} = -4(-9 + 12) = -4 * 3 = -12$.
+$\end{array}$\\$ = -4(-9 + 12) = -4 * 3 = -12$.
 
 \clearpage
 \subsubsection{Problem 14}
