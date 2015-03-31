@@ -1,0 +1,568 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Homework 9}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Chapter 4.1}
+
+\subsection*{Problem 6}
+
+The set described is not a subspace of $\mathbb{P}_n$ because it not closed under scalar multiplication. Take an arbitrary element from the set, $p(t) = t^2 + a$ and multiply it by some
+$b \in \mathbb{R}$. $b \cdot p(t) = b(t^2 + a) = bt^2 + ba$. Because $bt^2 + ba$ is not in the set, this is not a subspace.
+
+\subsection*{Problem 8}
+
+This set is a subspace of $\mathbb{P}_n$. Because the zero polynomial satisfies $p(0) = 0$, the zero polynomial is in this set. If $p_1(t) = 0$ and $p_2(t) = 0$, then $p_1_ + p_2 = 0$.
+Also, if $p_1(t) = 0$, then $p_1(t) \cdot a = 0$ when $a \in \mathbb{R}$.\\
+\\
+Because the set contains the zero polynomial and is closed under vector addition and scalar multiplication, it is a subspace of $\mathbb{P}_n$.
+
+\subsection*{Problem 11}
+
+Let $W = \left\{
+    \begin{bmatrix}
+        2b + 3c \\
+        -b \\
+        2c
+    \end{bmatrix}
+    : b, c \in \mathbb{R}
+\right\}$.
+We can represent the vector that describes the elements of $W$ as the following linear combination:\\
+\\
+$
+\begin{bmatrix}
+    2b + 3c \\
+    -b \\
+    2c
+\end{bmatrix}
+=
+b
+\begin{bmatrix}
+    2 \\ - 1 \\ 0
+\end{bmatrix}
++
+c
+\begin{bmatrix}
+    3 \\ 0 \\ 2
+\end{bmatrix}
+$\\
+\\
+Thus, we can say
+$
+W = Span
+\left\{
+    \begin{bmatrix}
+        2 \\ - 1 \\ 0
+    \end{bmatrix}
+    ,
+    \begin{bmatrix}
+        3 \\ 0 \\ 2
+    \end{bmatrix}
+\right\}
+$. Because we can represent $W$ as the span of some vectors, we know that $W$ is a subspace of $\mathbb{R}^3$ by \textbf{theorem 1}.
+
+\subsection*{Problem 12}
+
+We can the vector that describes the elements of $W$ as the following linear combination:\\
+\\
+$
+\begin{bmatrix}
+    2s + 4t \\
+    2s \\
+    2s - 3t \\
+    5t
+\end{bmatrix}
+=
+\begin{bmatrix}
+    1 \\ 2 \\ 2 \\ 0
+\end{bmatrix}
++
+\begin{bmatrix}
+    4 \\ 2 \\ -3 \\ 5
+\end{bmatrix}
+$\\
+\\
+Because we can represent $W$ as the span of two vectors in $\mathbb{R}^4$, we know that $W$ is a subspace of $\mathbb{R}^4$.
+
+\subsection*{Problem 16}
+
+Take two arbitrary vectors of this form and add them together:\\
+\\
+$
+\begin{bmatrix}
+    1 \\
+    3a_1 - 5b_1 \\
+    3b_1 + 2a_1
+\end{bmatrix}
++
+\begin{bmatrix}
+    1 \\
+    3a_2 - 5b_2 \\
+    3b_2 + 2a_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+    2 \\
+    3(a_1 + a_2) - 5(b_1 + b_2) \\
+    2(a_1 + a_2) + 3(b_1 + b_2)
+\end{bmatrix}
+$\\
+\\
+Because the first row is not of the form
+$\begin{bmatrix}
+    1 \\
+    3a - 5b \\
+    3b + 2a
+\end{bmatrix}$
+, the vectors of this form are not closed under vector addition and thus do not form a vector subspace.
+
+\subsection*{Problem 18}
+We can represent the vector that forms the elements of this set as a linear combination:
+$
+\begin{bmatrix}
+    4a + 3b \\
+    0 \\
+    a + 3b + c \\
+    3b - 2c
+\end{bmatrix}
+=
+a
+\begin{bmatrix}
+    3 \\ 0 \\ 1 \\ 0
+\end{bmatrix}
++
+b
+\begin{bmatrix}
+    3 \\ 0 \\ 3 \\ 3
+\end{bmatrix}
++
+c
+\begin{bmatrix}
+    0 \\ 0 \\ 1 \\ -2
+\end{bmatrix}$\\
+\\
+This means that we can define the set of vectors of that form to be
+$
+Span
+\left\{
+    \begin{bmatrix}
+        3 \\ 0 \\ 1 \\ 0
+    \end{bmatrix}
+    ,
+    \begin{bmatrix}
+        3 \\ 0 \\ 3 \\ 3
+    \end{bmatrix}
+    ,
+    \begin{bmatrix}
+        0 \\ 0 \\ 1 \\ -2
+    \end{bmatrix}
+\right\}
+$.\\
+\\
+Because we can define vectors of this form as a span, we know that those vectors form a subspace of $\mathbb{R}^4$.
+
+\subsection*{Problem 21}
+
+First, we identify that the matrix of all zeroes is in $H$ when $a = 0, b = 0$, and $c = 0$.\\
+\\
+Second, we will take two arbitrary elements of $H$ and add them:\\
+\\
+$
+\begin{bmatrix}
+    a_1 & b_1 \\
+    0 & c_1
+\end{bmatrix}
++
+\begin{bmatrix}
+    a_2 & b_2 \\
+    0 & c_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+    a_1 + a_2 & b_1 + b_2 \\
+    0 & c_1 + c_2
+\end{bmatrix}
+$\\
+\\
+Because the result of this addition is in $H$, the set is closed under addition. Lastly, we will check that $H$ is closed under scalar multiplication:\\
+\\
+$
+k
+\begin{bmatrix}
+    a & b \\
+    0 & c
+\end{bmatrix}
+=
+\begin{bmatrix}
+    ka & kb \\
+    0 & kc
+\end{bmatrix}
+$\\
+\\
+This result is in $H$, meaning that $H$ is closed under scalar multiplication. Because all 3 of these properties hold, $H$ is a vector subspace.
+
+
+\section*{Chapter 4.2}
+
+\subsection*{Problem 2}
+
+Let
+$\vec{w} =
+\begin{bmatrix}
+    1 \\ -1 \\ 1
+\end{bmatrix}, A =
+\begin{bmatrix}
+    2 & 6 & 4 \\
+    -3 & 2 & 5 \\
+    -5 & -4 & 1
+\end{bmatrix}$.\\
+\\
+If $\vec{w} \in Null(A)$, then $A\vec{w} = \vec{0}$. We will calculate $A\vec{w}$:\\
+\\
+$
+\begin{bmatrix}
+    2 & 6 & 4 \\
+    -3 & 2 & 5 \\
+    -5 & -4 & 1
+\end{bmatrix}
+\begin{bmatrix}
+    1 \\ -1 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+    2 \\ -3 \\ -5
+\end{bmatrix}
++
+\begin{bmatrix}
+    -6 \\ -2 \\ 4
+\end{bmatrix}
++
+\begin{bmatrix}
+    4 \\ 5 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+    0 \\ 0 \\ 0
+\end{bmatrix}$\\
+\\
+Because $A\vec{w} = \vec{0}$, we know that $\vec{w} \in Null(A)$.
+
+\subsection*{Problem 4}
+
+Let $A =
+\begin{bmatrix}
+    1 & -3 & 2 & 0 \\
+    0 & 0 & 3 & 0
+\end{bmatrix}$. \\
+\\
+To find a description of the $Null(A)$, we will solve the homogenous equation, $A\vec{x} = \vec{0}$:\\
+\\
+$
+[A | \vec{0}] \backsim
+\begin{bmatrix}
+    1 & -3 & 2 & 0 & \vline & 0\\
+    0 & 0 & 3 & 0 & \vline & 0
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & -3 & 2 & 0 & \vline & 0\\
+    0 & 0 & 1 & 0 & \vline & 0
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & -3 & 0 & 0 & \vline & 0\\
+    0 & 0 & 1 & 0 & \vline & 0
+\end{bmatrix}
+$\\
+\\[0.1in]
+We can rewrite this like so:\\
+\\
+$
+\vec{x} =
+\begin{bmatrix}
+    x_1 \\ x_2 \\ x_3 \\ x_4
+\end{bmatrix}
+=
+\begin{bmatrix}
+    3 x_2 \\
+    x_2 \\
+    x_3 \\
+    x_4
+\end{bmatrix}
+=
+\begin{bmatrix}
+    3 x_2 \\
+    x_2 \\
+    0 \\
+    x_4
+\end{bmatrix}
+=
+x_2
+\begin{bmatrix}
+    3 \\
+    1 \\
+    0 \\
+    0
+\end{bmatrix}
++
+x_4
+\begin{bmatrix}
+    0 \\
+    0 \\
+    0 \\
+    1
+\end{bmatrix}
+: x_2, x_4 \in \mathbb{R}
+$\\
+\\[0.07in]
+This means that we can describe $Null(A)$ as
+$Span
+\left\{
+    \begin{bmatrix}
+        3 \\
+        1 \\
+        0 \\
+        0
+    \end{bmatrix}
+    ,
+    \begin{bmatrix}
+        0 \\
+        0 \\
+        0 \\
+        1
+    \end{bmatrix}
+\right\}
+$
+
+\subsection*{Problem 6}
+
+Let $A =
+\begin{bmatrix}
+    1 & 3 & -4 & -3 & 1 \\
+    0 & 1 & -3 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 0
+\end{bmatrix}
+$.\\
+\\
+To find an explicit description of $Null(A)$, we will solve the homogenous equation $A\vec{x} = \vec{0}$:\\
+\\
+$
+[A | \vec{0}] =
+\begin{bmatrix}
+    1 & 3 & -4 & -3 & 1 & \vline & 0 \\
+    0 & 1 & -3 & 1 & 0 & \vline & 0 \\
+    0 & 0 & 0 & 0 & 0 & \vline & 0
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & 5 & -6 & 1 & \vline & 0 \\
+    0 & 1 & -3 & 1 & 0 & \vline & 0 \\
+    0 & 0 & 0 & 0 & 0 & \vline & 0
+\end{bmatrix}
+$\\
+\\
+We an rewrite this like so:\\
+\\
+$\vec{x} =
+\begin{bmatrix}
+    x_1 \\ x_2 \\ x_3 \\ x_4 \\ x_5
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -5x_3 + 6x_4 - x_5\\
+    3x_3 - x_4
+    x_3
+    x_4
+    x_5
+\end{bmatrix}
+=
+x_3
+\begin{bmatrix}
+    -5 \\ 3 \\ 1 \\ 0 \\ 0
+\end{bmatrix}
+x_4
+\begin{bmatrix}
+    6 \\ -1 \\ 0 \\ 1 \\ 0
+\end{bmatrix}
+x_5
+\begin{bmatrix}
+    -1 \\ 0 \\ 0 \\ 0 \\ 1
+\end{bmatrix}
+$\\
+\\[0.1in]
+This means that we can describe $Null(A)$ as
+$Span
+\left\{
+    \begin{bmatrix}
+        -5 \\ 3 \\ 1 \\ 0 \\ 0
+    \end{bmatrix}
+    ,
+    \begin{bmatrix}
+        6 \\ -1 \\ 0 \\ 1 \\ 0
+    \end{bmatrix}
+    ,
+    \begin{bmatrix}
+        -1 \\ 0 \\ 0 \\ 0 \\ 1
+    \end{bmatrix}
+\right\}
+
+
+\subsection*{Problem 16}
+
+Let
+$H =
+\left\{
+    \begin{bmatrix}
+        b - c \\
+        2b + 3d \\
+        b + 3c - 3d \\
+        c + d
+    \end{bmatrix}
+    : b, c, d \in \mathbb{R}
+\right\}$.\\
+\\
+We can rewrite the vector describing elements in this set as the following linear combination:
+\\[0.05in]
+$
+H =
+b
+\begin{bmatrix}
+    1 \\ 2 \\ 1 \\ 0
+\end{bmatrix}
++
+c
+\begin{bmatrix}
+    -1 \\ 0 \\ 3 \\ 1
+\end{bmatrix}
++
+d
+\begin{bmatrix}
+    0 \\ 3 \\ -3 \\ 1
+\end{bmatrix}
+$\\
+\\[0.1in]
+We can conclude that:
+$A =
+\begin{bmatrix}
+    1 & -1 & 0 \\
+    2 & 0 & 3 \\
+    1 & 3 & -3 \\
+    0 & 1 & 1
+\end{bmatrix}
+$
+
+\subsection*{Problem 24}
+
+Let
+$A =
+\begin{bmatrix}
+    10 & -8 & -2 & -2 \\
+    0 & 2 & 2 & -2 \\
+    1 & -1 & 6 & 0 \\
+    1 & 1 & 0 & -2
+\end{bmatrix}
+, w =
+\begin{bmatrix}
+    2 \\ 2 \\ 0 \\ 2
+\end{bmatrix}$.\\
+\\
+To determine if $w \in Null(A)$, we can check to see if $A\vec{w} = \vec{0}$:\\
+\\
+$
+\begin{bmatrix}
+    10 & -8 & -2 & -2 \\
+    0 & 2 & 2 & -2 \\
+    1 & -1 & 6 & 0 \\
+    1 & 1 & 0 & -2
+\end{bmatrix}
+\begin{bmatrix}
+    2 \\ 2 \\ 0 \\ 2
+\end{bmatrix}
+=
+\begin{bmatrix}
+    20 \\ 0 \\ 2 \\ 2
+\end{bmatrix}
++
+\begin{bmatrix}
+    -16 \\ 4 \\ -2 \\ 2
+\end{bmatrix}
++
+\begin{bmatrix}
+    0 \\ 0 \\ 0 \\ 0
+\end{bmatrix}
++
+\begin{bmatrix}
+    -4 \\ -4 \\ 0 \\ -4
+\end{bmatrix}
+=
+\begin{bmatrix}
+    0 \\ 0 \\ 0 \\ 0
+\end{bmatrix}
+$\\
+\\[0.1in]
+Because $A\vec{w} = \vec{0}$, we can conclude that $w \in Null(A)$.\\
+\\[0.15in]
+Now, to determine if $\vec{w} \in Coll(A)$, we must show whether or not $[A | \vec{w}]$ is consistent:\\
+\\
+$
+[A | \vec{w}] \backsim
+\begin{bmatrix}
+    10 & -8 & -2 & -2 & \vline & 2 \\
+    0 & 2 & 2 & -2 & \vline & 2 \\
+    1 & -1 & 6 & 0 & \vline & 0 \\
+    1 & 1 & 0 & -2 & \vline & 2
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & 0 & -1 & 1 \\
+    0 & 1 & 0 & -1 & 1 \\
+    0 & 0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0
+\end{bmatrix}
+$\\
+\\
+Because this augmented matrix is consistent, we know that $\vec{w} \in Coll(A)$.
+
+\end{document}
