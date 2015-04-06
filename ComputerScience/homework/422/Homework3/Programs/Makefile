@@ -3,8 +3,8 @@
 barber: JavaFiles
 
 # Executable targets
-JavaFiles: SleepingBarbers.java
-	javac SleepingBarbers.java
+JavaFiles: Barbers.java
+	javac Barbers.java
 
 # Add a clean target that silently removes the .o files
 clean:
