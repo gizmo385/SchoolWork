@@ -1,0 +1,212 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize CSc 422 - Homework 3 - Problems}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+
+\lstset{language=Python}
+\subsection*{Part b}
+
+\begin{lstlisting}[frame=single]
+monitor bank {
+    int balance = 1000000;
+    cond delay;
+
+    proc deposit( int amount ) {
+        balance += amount;
+
+        # Determine if I'm waking someone up
+        if( amount(delay) <= balance) {
+            signal(delay);
+        }
+    } # deposit
+
+    proc withdraw( int amount ) {
+        while ( amount > balance ) {
+            wait( delay );
+        }
+
+        balance -= amount;
+        return amount;
+    } # withdraw
+} # bank monitor
+\end{lstlisting}
+
+\subsection*{Part c}
+
+\begin{lstlisting}[frame=single]
+monitor bank {
+    int balance = 1000000;
+    queue withdrawAmounts;
+    cond delay;
+
+    proc deposit( int amount ) {
+        balance += amount;
+
+        # Determine if I'm waking someone up
+        int nextWithdraw = withdrAwamounts.head();
+        if( nextWithdraw <= balance ) {
+            signal(delay);
+        }
+    } # deposit
+
+    proc withdraw( int amount ) {
+        withdrawAmounts.push(amount);
+        while ( amount > balance ) {
+            wait( delay );
+        }
+
+        withdrawAmounts.pop();
+
+        balance -= amount;
+        return amount;
+    } # withdraw
+} # bank monitor
+\end{lstlisting}
+
+\section*{Problem 2}
+
+Our implementation of this will make use of a list of queues as our buffer. Each time the producer produces an item, it will be added to the queues for all
+consumers waiting. This way, when a consumer finishes processing an item, it can go fetch the next item to process in its queue. This allows each consumer
+to handle each item in its own time.
+\begin{lstlisting}[frame=single]
+
+monitor producerConsumer {
+    buffer = queue[n]
+    itemCondition = cond[n]
+
+    def produceItem(item) {
+        for i in range(0, n):
+            queue = buffer[i]
+            queue.add(item)
+            signal(itemCondition[i])
+    }
+
+    def consumeItem(producerId) {
+        while empty(buffer[producerId]):
+            wait(itemCondition);
+
+        item = buffer[producerId].pop()
+
+        # Consume item
+    }
+}
+
+\end{lstlisting}\\
+\\
+For this implementation, consumers will call consumeItem, which will wait until an item has been produced and then consume it. Producers should call
+produceItem, which will distribute the produced item to all consumers via a buffer of queues.
+
+
+\section*{Problem 3}
+
+For this solution, our monitor will have three separate functions. The first function will handle calls to A, the second function will handle calls to B, and the
+last function will handle calls to either printer. Each function will rely on a separate condition variable.
+
+\begin{lstlisting}[frame=single]
+
+monitor printer {
+    boolean aAvailable = true, bAvailable = true;
+    cond printerCondition;
+
+    procedure printA() {
+        while( ! aAvailable ) {
+            wait(printerCondition);
+        }
+
+        aAvailable = false;
+
+        // Print
+
+        aAvailable = true;
+        signal_all(printerCondition);
+    }
+
+    procedure printB() {
+        while( ! bAvailable ) {
+            wait(printerCondition);
+        }
+
+        aAvailable = false;
+
+        // Print
+
+        bAvailable = true;
+        signal_all(printerCondition);
+    }
+
+    procedure printEither() {
+        while( !aAvailable and !bAvailable ) {
+            wait(printerCondition);
+        }
+
+        boolean usingA = false, usingB = false;
+
+        if( aAvailable ) {
+            aAvailable = false;
+            usingA = true;
+        } else if( bAvailable ) {
+            bAvailable = false;
+            usingB = true;
+        }
+
+        // Print
+
+        if( usingA ) {
+            aAvailable = true;
+        } else if( usingB ) {
+            bAvailable = true;
+        }
+
+        signal_all(printerCondition);
+    }
+}
+
+\end{lstlisting}
+
+
+\end{document}
