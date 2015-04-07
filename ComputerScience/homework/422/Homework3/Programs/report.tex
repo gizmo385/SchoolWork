@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{listings}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}%
@@ -45,6 +46,51 @@
 \rhead{{\footnotesize Christopher Chapline}}
 \begin{document}
 
-\section*{Testing Methodology}
+\section*{Compilation and Running}
+
+To compile the project, run the following command:
+
+\lstset{language=Bash}
+\begin{lstlisting}[frame=single]
+make barber
+\end{lstlisting}\\
+\\
+The program takes the following command line arguments:
+\begin{itemize}
+    \begin{item}
+        \textbf{numberOfCustomers}: The number of customers that will arrive throughout the program
+    \end{item}
+
+    \begin{item}
+        \textbf{haircutTime}: The number of seconds that it will take for a customer's haircut to be completed
+    \end{item}
+
+    \begin{item}
+        \textbf{arrivalInterval}: The number of seconds in between the arrival of the customers (where the 0th customer arrives immediately)
+    \end{item}
+\end{itemize}
+\\
+An example of running this program follows:
+\begin{verbatim}
+java Barbers 3 5 1
+The barber shop has opened for the day! Serving 3 customers today!
+Customer 0 has arrived at the barber shop!
+Customer 0 has started their haircut!
+Customer 1 has arrived at the barber shop!
+Customer 2 has arrived at the barber shop!
+Customer 0 has finished their haircut!
+Customer 0 has left the building!
+Customer 1 has started their haircut!
+Customer 1 has finished their haircut!
+Customer 1 has left the building!
+Customer 2 has started their haircut!
+Customer 2 has finished their haircut!
+Customer 2 has left the building!
+The barber shop is closing for the day!
+\end{verbatim}
+
+\section*{Testing}
+
+\section*{Potential Improvements}
 
 \end{document}
