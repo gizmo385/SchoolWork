@@ -49,14 +49,44 @@
 
 \subsection*{Part b}
 
-$(q, w, Z_0) \vdash $
+$(q, 0011, Z_0) \vdash (q, 011, XZ_0) \vdash (q, 11, XXZ_0) \vdash (q, 1, XXZ_0) \vdash (q, \epsilon, XXZ_0) \vdash (p, \epsilon, XZ_0) \vdash (p, \epsilon, Z_0) \vdash (p, \epsilon, \epsilon)$
 
 \subsection*{Part c}
+
+$(q, 010, Z_0) \vdash (q, 10, XZ_0) \vdash (q, 0, XXZ_0) \vdash (q, \epsilon, XXXZ_0) \vdash (p, \epsilon, XXZ_0) \vdash (p, \epsilon, XXZ_0) \vdash (p, \epsilon, XZ_0) \vdash (p, \epsilon, Z_0) \vdash (p, \epsilon, \epsilon)$
 
 \section*{Problem 7.2}
 \subsection*{Part a}
 
+Here is the definition for the transition function, $\delta$:\\
+\\
+$\delta(q, \epsilon, E) = \{(q, TE')\}$\\
+\\
+$\delta(q, \epsilon, E') = \{(q, +TE'), (q, -TE')\}$\\
+\\
+$\delta(q, \epsilon, T) = \{(q, FT')\}$\\
+\\
+$\delta(q, \epsilon, T') = \{(q, *FT'), (q, /FT')\}$\\
+\\
+$\delta(q, \epsilon, T') = \{(q, /FT')\}$\\
+\\
+$\delta(q, \epsilon, \epsilon) = \{(q, \epsilon)\}$\\
+\\
+$\delta(q, +, +) = \{(q, \epsilon)\}$\\
+\\
+$\delta(q, -, -) = \{(q, \epsilon)\}$\\
+\\
+$\delta(q, a, a) = \{(q, \epsilon)\}$\\
+\\
+$\delta(q, b, b) = \{(q, \epsilon)\}$\\
+\\
+$\delta(q, c, c) = \{(q, \epsilon)\}$\\
+\\
+
 \subsection*{Part b}
+
+$(a, a+b*c, Z_0) \vdash (q, +b*c, aZ_0) \vdash (q, +b*c, +TE'aZ_0) \vdash (q, b*c, TE'aZ_0) \vdash (q, b*c, FT'E'aZ_0) \vdash (q, b*c, bT'E'aZ_0) \vdash (q, *c, T'E'aZ_0) \vdash (q, *c, *FT'E'aZ_0)
+\vdash (q, c, FT'E'aZ_0) \vdash (q, c, c\epsilon E'aZ_0) \vdash (q, \epsilon, \epsilon aZ_0) \vdash (q, \epsilon \epsilon)$
 
 \section*{Problem 7.3}
 \subsection*{Part a}
