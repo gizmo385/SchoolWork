@@ -49,10 +49,93 @@
 
 States: $\{s, r, f\}$ where $q$ is our initial state and $f$ is our final state\\
 \\
-Our turing machine is defined by the following instaneous descriptions:
+Our Turing Machine is defined by the following instaneous descriptions:\\
+\\
+$\delta(q, 0) = (q, 0, R)$
+\hfill
+$\delta(q, 1) = (q, 1, R)$
+\hfill
+$\delta(q, B) = (r, B, L)$\\
+\\
+$\delta(r, 0) = (f, 1, R)$
+\hfill
+$\delta(r, 1) = (r, 0, L)$
 
 \section*{Problem 2}
+
+The method that we will use to perform binary addition is as follows: First of all, we will scan left-to-right copying the symbol from the left-hand operand
+onto the second tape. Upon reaching a blank, we will switch states. Then, we will move the second tape to its start.Afterwards, we proceed through the second
+operand, we will print onto the second tape the result of
+adding the bits at the head of each tape.\\
+\\
+Here is an explanation of the states used in this Turing Machine:
+\begin{itemize}
+        \begin{item}
+            $q_0$: This state will be the state that we use to copy the left-hand operand onto the second tape. This is also our start state.
+        \end{item}
+
+        \begin{item}
+            $q_1$: This state will be the state that we use to move the first tape to the last digit on the tape
+        \end{item}
+
+        \begin{item}
+            $q_2$: This is the state that will be used while scanning left-to-right on both the first and second tapes to perform the addition
+        \end{item}
+
+        \begin{item}
+            $q_3$: This is the state that will be used when addition needs to have a carry
+        \end{item}
+
+        \begin{item}
+            $f$: This is our final state and will indicate that the addition has been completed.
+        \end{item}
+\end{itemize}\\
+\\
+States: $\{q_0, q_1, q_2, f\}$\\
+\\
+We have two tapes. The first tape consists of the two operands, separated by a space. The second tape consists of all blanks, but will be the location where
+we store the result of the addition.\\
+\\
+These are our transitions:\\
+\\
+% These transitions handle copying into the second tape
+$\delta(q_0, 0, B) = (q_0, 0, 0, R, R)$
+\hfill
+$\delta(q_0, 1, B) = (q_0, 1, 1, R, R)$\\
+\\
+$\delta(q_0, B, B) = (q_1, B, B, S, L)$
+\hfill
+% These transitions handle moving to the end of the first tape
+$\delta(q_1, 0, B) = (q_1, 0, B, R, S)$\\
+\\
+$\delta(q_1, 1, B) = (q_1, 1, B, R, S)$
+\hfill
+$\delta(q_1, B, B) = (q_2, B, B, R, S)$\\
+\\
+% These transitions handle addition
+$\delta(q_2, 1, 1) = (q_2, 1, 0, L, L)$
+\hfill
+$\delta(q_2, 0, 1) = (q_2, 0, 1, L, L)$\\
+\\
+$\delta(q_2, 0, 0) = (q_2, 0, 0, L, L)$
+\hfill
+$\delta(q_2, 1, 1) = (q_3, 1, 1, L, L)$\\
+\\
+% These transitions handle addition with carries
+$\delta(q_3, 0, 1) = (q_2, 0, 0, L, L)$
+\hfill
+$\delta(q_3, 1, 0) = (q_2, 1, 0, L, L)$\\
+\\
+$\delta(q_3, 0, 0) = (q_2, 0, 1, L, L)$
+\hfill
+$\delta(q_3, 1, 1) = (q_3, 1, 0, L, L)$\\
+\\
+% This transition handles transitioning into the final state
+$\delta(q_2, B, B) = (f, B, B, S, S)$\\
+\\
+
 \section*{Problem 3}
+
 \section*{Problem 4}
 
 \end{document}
