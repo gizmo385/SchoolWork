@@ -136,6 +136,78 @@ $\delta(q_2, B, B) = (f, B, B, S, S)$\\
 
 \section*{Problem 3}
 
+We need the following states:
+\begin{itemize}
+        \begin{item}
+            $s$: This is our start state
+        \end{item}
+
+        \begin{item}
+            $q_0$: This state represents the situation where we're writing a 0 on the next cell
+        \end{item}
+
+        \begin{item}
+            $q_1$: This state represents the situation where we're writing a 1 on the next cell
+        \end{item}
+
+        \begin{item}
+            $q_{b0}$: This represents the situation where we're writing a B in the next cell and a zero in the cell after that
+        \end{item}
+
+        \begin{item}
+            $q_{b1}$: This represents the situation where we're writing a B in the next cell and a one in the cell after that
+        \end{item}
+
+        \begin{item}
+            $f$: This represents our final state, when we have nothing to write and are on a B
+        \end{item}
+\end{itemize}\\
+\\
+Here are our transitions:\\
+\\
+% Transitions out of the start state
+$\delta(s, 0) = (q_0, 0, R)$
+\hfill
+$\delta(s, 1) = (q_1, 1, R)$
+\hfill
+$\delta(s, B) = (f, B, S)$\\
+\\
+% Transitions handling q0
+$\delta(q_0, 0) = (q_{b0}, 0, R)$
+\hfill
+$\delta(q_0, 1) = (q_{b1}, 0, R)$
+\hfill
+$\delta(q_0, B) = (f, 0, R)$\\
+\\
+%Transitions handling q1
+$\delta(q_1, 0) = (q_{b0}, 1, R)$
+\hfill
+$\delta(q_1, 1) = (q_{b1}, 1, R)$
+\hfill
+$\delta(q_1, B) = (f, 1, R)$\\
+\\
+% b0 transitions
+$\delta(q_{b0}, 0) = (q_{b0}, B, R)$
+\hfill
+$\delta(q_{b0}, 1) = (q_{b1}, B, R)$
+\hfill
+$\delta(q_{b0}, B) = (q_{0}, B, R)$\\
+\\
+% b1 transitions
+$\delta(q_{b1}, 0) = (q_{b0}, B, R)$
+\hfill
+$\delta(q_{b1}, 1) = (q_{b1}, B, R)$
+\hfill
+$\delta(q_{b1}, B) = (q_{1}, B, R)$\\
+\\
+
+
 \section*{Problem 4}
+
+Each string will require us to move the length of the string plus the number of B's that will need to be inserted into the string, which is $m-1$. Thus, we could
+define the function like so:
+
+$f(m) = m + (m - 1)$
+
 
 \end{document}
