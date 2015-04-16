@@ -1,0 +1,493 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Math 215 - Homework 10}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Section 4.3}
+
+\subsection*{Problem 14}
+
+Let $A = $
+\begin{bmatrix}
+    1 & 2 & 3 & -4 & 8 \\
+    1 & 2 & 0 & 2 & 8 \\
+    2 & 4 & -3 & 10 & 9 \\
+    3 & 6 & 0 & 6 & 9
+\end{bmatrix},
+$B = $
+\begin{bmatrix}
+    1 & 2 & 0 & 2 & 5 \\
+    0 & 0 & 3 & -6 & 3 \\
+    0 & 0 & 0 & 0 & -7 \\
+    0 & 0 & 0 & 0 & 0
+\end{bmatrix}\\
+\\[0.1in]
+To find $Coll(A)$, we will identify the pivot columns of $A$. These columns are
+$\left\{
+    \begin{bmatrix}
+        1 \\ 1 \\ 2 \\ 3
+    \end{bmatrix},
+    \begin{bmatrix}
+        3 \\ 0 \\ -3 \\ 0
+    \end{bmatrix},
+    \begin{bmatrix}
+        8 \\ 8 \\ 9 \\ 9
+    \end{bmatrix}
+\right\}$.
+Thus, we can say that $Coll(A) = Span
+\left\{
+    \begin{bmatrix}
+        1 \\ 1 \\ 2 \\ 3
+    \end{bmatrix},
+    \begin{bmatrix}
+        3 \\ 0 \\ -3 \\ 0
+    \end{bmatrix},
+    \begin{bmatrix}
+        8 \\ 8 \\ 9 \\ 9
+    \end{bmatrix}
+\right\}$.\\
+\\[0.1in]
+To find $Null(A)$, we will determine when $A\vec{x} = \vec{0}$\\
+\\
+$\vec{x} =
+\begin{bmatrix}
+    x_1 \\ x_2 \\ x_3 \\ x_4 \\ x_5
+\end{bmatrix}=
+\begin{bmatrix}
+    -2x_2 - 2x_4 - 5x_5 \\
+    x_2 \\
+    2x_4 - x_5 \\
+    x_4 \\
+    x_5
+\end{bmatrix} =
+x_2
+\begin{bmatrix}
+    -2 \\
+    1 \\
+    0 \\
+    0 \\
+    0
+\end{bmatrix}
++
+x_4
+\begin{bmatrix}
+    -2 \\
+    0 \\
+    2 \\
+    1 \\
+    0
+\end{bmatrix}
++
+x_5
+\begin{bmatrix}
+    -5 \\
+    0 \\
+    -1 \\
+    0 \\
+    1
+\end{bmatrix}$\\
+\\[0.1in]
+Thus, $Null(A) =
+\left\{
+\begin{bmatrix}
+    -2 \\
+    1 \\
+    0 \\
+    0 \\
+    0
+\end{bmatrix},
+\begin{bmatrix}
+    -2 \\
+    0 \\
+    2 \\
+    1 \\
+    0
+\end{bmatrix},
+\begin{bmatrix}
+    -5 \\
+    0 \\
+    -1 \\
+    0 \\
+    1
+\end{bmatrix}
+\right\}$
+
+\subsection*{Problem 16}
+
+Let $V =
+\left\{
+    \begin{bmatrix}
+        1 \\ 0 \\ 0 \\ 1
+    \end{bmatrix},
+    \begin{bmatrix}
+        -2 \\ 0 \\ 0 \\ 2
+    \end{bmatrix},
+    \begin{bmatrix}
+        3 \\ -1 \\ 1 \\ -1
+    \end{bmatrix},
+    \begin{bmatrix}
+        5 \\ -3 \\ 3 \\ -4
+    \end{bmatrix},
+    \begin{bmatrix}
+        2 \\ -1 \\ 1 \\ 0
+    \end{bmatrix}
+\right\}$. To find a basis for the span of the vectors in $V$, we need to find the linearly independent vectors of $V$.\\
+\\[0.05in]
+Let $A =
+\begin{bmatrix}
+    1 & -2 & 3 & 5 & 2 \\
+    0 & 0 & -1 & -3 & -1 \\
+    0 & 0 & 1 & 3 & 1 \\
+    1 & 2 & -1 & -4 & 0
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & -2 & 3 & 5 & 2 \\
+    0 & 1 & -1 & -9 & -2 \\
+    0 & 0 & 1 & 3 & 1 \\
+    0 & 0 & 0 & 0 & 0
+\end{bmatrix}$
+\clearpage
+\noindent Taking only the pivot columns, a basis for the space spanned by $V$ is
+$\left\{
+    \begin{bmatrix}
+        1 \\ 0 \\ 0 \\ 0
+    \end{bmatrix},
+    \begin{bmatrix}
+        -2 \\ 1 \\ 0 \\ 0
+    \end{bmatrix},
+    \begin{bmatrix}
+        3 \\ -1 \\ 1 \\ 0
+    \end{bmatrix}
+\right\}
+$
+
+\subsection*{Problem 24}
+
+The matrix whose columns are the vectors of \mathcal{B} must have a pivot in every column because the set is linearly independent. Because each vector
+exists in $\mathbb{R}^n$, the matrix is square. Since the matrix is square and its columns are linearly independent, we know that the vectors span
+$\mathbb{R}^n$ by the Invertible Matrix Theorem. Since the vectors form a linearly independent spanning set, they form a basis of $\mathbb{R}^n$.
+
+\section*{Section 4.4}
+
+\subsection*{Problem 2}
+
+Let $\mathcal{B} =
+\left\{
+    \begin{bmatrix}
+        3 \\ -5
+    \end{bmatrix},
+    \begin{bmatrix}
+        -4 \\ 6
+    \end{bmatrix}
+\right\}$
+and let $[\vec{x}]_\mathcal{B} =
+\begin{bmatrix}
+    -2 \\ 5
+\end{bmatrix}$.\\
+\\[0.05in]
+$\vec{x} = (-2)
+\begin{bmatrix}
+    3 \\ -5
+\end{bmatrix}
++
+5
+\begin{bmatrix}
+    -4 \\ 6
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -6 \\ 10
+\end{bmatrix}
++
+\begin{bmatrix}
+    -20 \\ 30
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -26 \\ 40
+\end{bmatrix}$
+
+\subsection*{Problem 4}
+
+Let $\mathcal{B} =
+\left\{
+    \begin{bmatrix}
+        -2 \\ 2 \\ 0
+    \end{bmatrix},
+    \begin{bmatrix}
+        3 \\ 0 \\ 2
+    \end{bmatrix},
+    \begin{bmatrix}
+        4 \\ -1 \\ 3
+    \end{bmatrix}
+\right\}$
+and let $[\vec{x}]_\mathcal{B} =
+\begin{bmatrix}
+    1 \\ 0 \\ -2
+\end{bmatrix}$.\\
+\\[0.05in]
+$\vec{x} =
+\begin{bmatrix}
+    -2 \\ 2 \\ 0
+\end{bmatrix}
++
+\begin{bmatrix}
+    -8 \\ 2 \\ -6
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -10 \\ 4 \\ -6
+\end{bmatrix}$
+
+\subsection*{Problem 13}
+
+Let $\mathcal{B} = \{1 + t^2, t + t^2, 1 + 2t + t^2\}$ be a basis for $\mathbb{P}_2$ and let $p(t) = 1 + 4t + 7t^2$. First, we will
+write $p(t)$ in terms of the basis $\mathbb{C} = \{1, t, t^2\}$: $[p(t)]_\mathbb{C} =
+\begin{bmatrix}
+    1 \\ 4 \\ 7
+\end{bmatrix}$.\\
+\\[0.05in]
+To rewrite this relative to $\mathbb{C}$, we will augment the vectors in $\mathcal{B}$ relative to the standard basis and find a solution
+to the system:\\
+\\
+$[1 + t^2]_\mathbb{C} =
+\begin{bmatrix}
+    1 \\ 0 \\ 1
+\end{bmatrix}$
+\hfill
+$[t + t^2]_\mathbb{C} =
+\begin{bmatrix}
+    1 \\ 1 \\ 0
+\end{bmatrix}$
+\hfill
+$[1 + 2t + t^2]_\mathbb{C} =
+\begin{bmatrix}
+    1 \\ 2 \\ 1
+\end{bmatrix}$\\
+\\[0.7in]
+$
+\begin{bmatrix}
+    1 & 1 & 1 & \vline & 1 \\
+    0 & 1 & 2 & \vline & 4 \\
+    1 & 0 & 1 & \vline & 7
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    0 & 1 & 0 & \vline & 8 \\
+    0 & 1 & 2 & \vline & 4 \\
+    1 & 0 & 1 & \vline & 7
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    0 & 1 & 0 & \vline & 8 \\
+    0 & 0 & 1 & \vline & -2 \\
+    1 & 0 & 1 & \vline & 7
+\end{bmatrix}
+\backsim\\
+\\[0.07in]
+\begin{bmatrix}
+    0 & 1 & 0 & \vline & 8 \\
+    0 & 0 & 1 & \vline & -2 \\
+    1 & 0 & 0 & \vline & 9
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & 0 & \vline & 9 \\
+    0 & 1 & 0 & \vline & 8 \\
+    0 & 0 & 1 & \vline & -2
+\end{bmatrix}
+$\\
+\\[0.1in]
+Thus, $[p(t)]_\mathcal{B} =
+\begin{bmatrix}
+    9 \\ 8 \\ -2
+\end{bmatrix}$.
+
+
+
+\subsection*{Problem 28}
+
+We will use the basis $\mathcal{B} = \{t^3, t^2, t, 1\}$ for $\mathbb{P}_3}$. Rewriting each polynomial as a column vector with respect to $\mathcal{B}$:\\
+\\
+$[1-2t^2-3t^3]_\mathcal{B} =
+\begin{bmatrix}
+    -3 \\ -2 \\ 0 \\ 1
+\end{bmatrix}$
+\hfill
+$[t + 2t^3]_\mathcal{B} =
+\begin{bmatrix}
+    2 \\ 0 \\ 1 \\ 0
+\end{bmatrix}$
+\hfill
+$[1 + t -2t^2]_\mathcal{B} =
+\begin{bmatrix}
+    0 \\ -2 \\ 1 \\ 1
+\end{bmatrix}$\\
+\\[0.1in]
+To determine if these polynomials are linearly independent, we can put the column vectors into a matrix and determine if there is a pivot
+in every column:\\
+\\
+$
+\begin{bmatrix}
+    -3 & 2 & 0 \\
+    -2 & 0 & -2 \\
+    0 & 1 & 1 \\
+    1 & 0 & 1
+\end{bmatrix}
+\hfill
+\backsim
+\hfill
+\begin{bmatrix}
+    -3 & 2 & 0 \\
+    0 & 0 & 0 \\
+    0 & 1 & 1 \\
+    1 & 0 & 1
+\end{bmatrix}
+\hfill
+\backsim
+\hfill
+\begin{bmatrix}
+    -3 & 2 & 0 \\
+    1 & 0 & 1 \\
+    0 & 1 & 1 \\
+    0 & 0 & 0
+\end{bmatrix}
+\hfill
+\backsim
+\hfill
+\begin{bmatrix}
+    -3 & 2 & 0 \\
+    1 & 0 & 1 \\
+    -1 & 1 & 0 \\
+    0 & 0 & 0
+\end{bmatrix}
+\backsim\\
+\\[0.07in]
+\begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 0 & 1 \\
+    0 & 1 & 0 \\
+    0 & 0 & 0
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1 \\
+    0 & 0 & 0
+\end{bmatrix}$\\
+\\[0.1in]
+Because there is a pivot in every column, we know that the polynomials are linearly independent.
+
+\subsection*{Problem 31}
+
+\medium \textbf{Part a}\\
+\\
+We will use $\mathcal{B} = \{t^2, t, 1\}$ as a basis for $\mathbb{P}_2$ to rewrite these polynomials as column vectors:\\
+\\
+$[1-t^2]_\mathcal{B} =
+\begin{bmatrix}
+    -1 \\ 0 \\ 1
+\end{bmatrix}$
+\hfill
+$[1-3t+5t^2]_\mathcal{B} =
+\begin{bmatrix}
+    5 \\ -3 \\ 1
+\end{bmatrix}$\\
+\\
+$[-3+5t-7t^2]_\mathcal{B} =
+\begin{bmatrix}
+    -3 \\ 5 \\ -7
+\end{bmatrix}$
+\hfill
+$[-4+5t-6t^2]_\mathcal{B} =
+\begin{bmatrix}
+    -6 \\ 5 \\ -4
+\end{bmatrix}$\\
+\\[0.05in]
+We will now combine these column vectors into a matrix and check for a pivot in each row:\\
+\\
+$
+\begin{bmatrix}
+    -1 & 5 & -3 & -6 \\
+    0 & -3 & 5 & 5 \\
+    1 & 1 & -7 & 4
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
+\end{bmatrix}$\\
+\\
+Because there is a pivot in every row, we know that these column vectors span $\mathbb{R}^2$. However, since these column vectors
+represent polynomials in $\mathbb{P}_2$, we also know that the polynomials span $\mathbb{P}_2$.\\
+\\[0.1in]
+\medium \textbf{Part b}\\
+\\
+We will use $\mathcal{B} = \{t^2, t, 1\}$ as a basis for $\mathbb{P}_2$ to rewrite these polynomials as column vectors:\\
+\\
+$[5t + t^2]_\mathcal{B} =
+\begin{bmatrix}
+    1 \\ 5 \\ 0
+\end{bmatrix}$
+\hfill
+$[1 - 8t - 2t^2]_\mathcal{B} =
+\begin{bmatrix}
+    -2 \\ -8 \\ 1
+\end{bmatrix}$\\
+\\
+$[-3 + 4t + 2t^2]_\mathcal{B} =
+\begin{bmatrix}
+    2 \\ 4 \\ -3
+\end{bmatrix}$
+\hfill
+$[1 - t^2]_\mathcal{B} =
+\begin{bmatrix}
+    -1 \\ 0 \\ 1
+\end{bmatrix}$
+
+\end{document}
