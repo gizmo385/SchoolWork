@@ -1,0 +1,3 @@
+[submodule "ComputerScience/homework/422/ParallelProject"]
+	path = ComputerScience/homework/422/ParallelProject
+	url = git@github.com:gizmo385/n-bodies.git
