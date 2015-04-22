@@ -49,8 +49,67 @@
 
 \subsection*{Part a}
 
+We will need three tapes for this Turing Machine. The first tape will be a counter representing the next number that will be considered
+for primality. When the next number is requested, we will do the following:
+\begin{enumerate}
+    \begin{item}
+        Copy the current number from the first tape into the third tape
+    \end{item}
+
+    \begin{item}
+        Find the last prime on the second tape, and for each zero in the current prime, remove a zero from the number on the third tape. When you reach the
+        end of the prime, return to the head of that prime. Do this until one of the following cases is reached:
+        \begin{enumerate}
+            \begin{item}
+                The prime reaches its last bit when the number in the third tape equals zero. This means that the number is evenly divisible by the
+                prime (i.e. the current number is not prime).
+            \end{item}
+
+            \begin{item}
+                The number reaches zero before the prime has reached its last bit. This means that the number is not evenly divisible by the prime. Increment
+                the number in tape 1.
+            \end{item}
+        \end{enumerate}
+    \end{item}
+
+    \begin{item}
+        Repeat this process until either the number is evenly divisible by a prime on the second tape or until all primes are exhausted. If all primes are
+        exhausted, then the number is prime and we can append it to the end of the second tape and increment the number on tape 1. Otherwise, we can simply
+        increment the number on the first tape.
+    \end{item}
+\end{enumerate}
+
 \subsection*{Part b}
 
+Here is a rough layout of the states for this Turing Machine:
+\begin{itemize}
+    \begin{item}
+        $c_0$: This state is used when copying the number in the first tape into the third tape.
+    \end{item}
+
+    \begin{item}
+        $c_1$: This state is used when moving the head of the third tape back to the beginning of the number after copying.
+    \end{item}
+
+    \begin{item}
+        $d$: Used when traversing a prime number and current number to determine if the current number gets zeroed out when the prime number ends.
+    \end{item}
+
+    \begin{item}
+        $p_0$: This state represents when the current number reaches zero before reaching the end of the current prime number (i.e. the current number
+        might be prime).
+    \end{item}
+
+    \begin{item}
+        $p_1$: The state transitioned into when we've discovered that the current number is not evenly divisible by any current prime numbers (meaning that
+        the current number is prime).
+    \end{item}
+
+    \begin{item}
+        $n$: This state represents when the current number reaches zero when reaching the end of the current prime number (i.e. the current number is not
+        prime)
+    \end{item}
+\end{itemize}
 
 \section*{Problem 9.2}
 
@@ -58,7 +117,7 @@
 
 \begin{tabular}{| x | y | z | e |}
     \hline
-    \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{(x+ y)(–(x+z)) + (–x+ –z)} \\
+    \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{(x+y)(–(x+z)) + (–x+ –z)} \\
     \hline
     T & T & T & \\
     \hline
@@ -82,7 +141,7 @@
 
 \begin{tabular}{| x | y | z | e |}
     \hline
-    \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{(x+ y) + (–(x+z) + (–x+ –z))} \\
+    \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{(x+y) + (–(x+z) + (–x+ –z))} \\
     \hline
     T & T & T & \\
     \hline
