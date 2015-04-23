@@ -1,3 +1,6 @@
 [submodule "ComputerScience/homework/422/ParallelProject"]
 	path = ComputerScience/homework/422/ParallelProject
 	url = git@github.com:gizmo385/n-bodies.git
+[submodule "ComputerScience/homework/422/DistributedProject"]
+	path = ComputerScience/homework/422/DistributedProject
+	url = git@github.com:gizmo385/distributed-chat.git
