@@ -3,6 +3,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{listings}
 \usepackage{tikz}
 \usepackage{hyperref}%
 \setcounter{MaxMatrixCols}{30}
@@ -48,9 +49,57 @@
 \section*{Problem 1}
 
 \subsection*{Part a}
+
+\lstset{language=Python}
+\begin{lstlisting}[frame=single]
+chan in(int)
+chan out1(int)
+chan out2(int)
+
+process Partition:
+    int v;
+    receive in(v)
+    while( !empty(in) ):
+        int next;
+        receive in(next)
+
+        if next <= v:
+            send out1(next)
+        else:
+            send out2(next)
+\end{lstlisting}\\
+\\[0.1in]
+We can make the following conclusions about the values present in the values entering and exiting the process:\\
+\\
+\textbf{out1}: $i \leq v, \forall i \in \textbf{out1}$
+\hfill
+\textbf{out2}: $i > v, \forall i \in \textbf{out2}$\\
+\\
+\textbf{in}: $v \in \textbf{in } \wedge \textbf{in} = \textbf{out1} \cup \textbf{out2}$
+
 \subsection*{Part b}
 
 \section*{Problem 2}
 \section*{Problem 3}
+
+\lstset{language=Python}
+\begin{lstlisting}[frame=single]
+chan fromA(A, B, int, int, chan response(bool))
+
+process Server {
+    while( (not empty(as)) and (not empty(bs)) ) {
+        A a;
+        B b;
+        int numMetByA,
+        int numMetByB,
+        chan response;
+
+        receive toServer(a, b, numMet, response)
+
+        if(numMet
+    }
+}
+
+\end{lstlisting}
 
 \end{document}
