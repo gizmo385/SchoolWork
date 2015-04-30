@@ -67,6 +67,9 @@ process Partition:
             send out1(next)
         else:
             send out2(next)
+
+    send out1(v)
+    send out2(EOS)
 \end{lstlisting}\\
 \\[0.1in]
 We can make the following conclusions about the values present in the values entering and exiting the process:\\
@@ -79,24 +82,75 @@ We can make the following conclusions about the values present in the values ent
 
 \subsection*{Part b}
 
-\section*{Problem 2}
-\section*{Problem 3}
+This Partition functions identically to the partition algorithm that is used in quicksort. Using this, we could repeatedly
+partition until we are only given two elements. In this case, we would need at most $log(n)$ servers to handle all of the
+partitions.
 
+\clearpage
+\section*{Problem 2}
+\begin{lstlisting}[frame=single]
+channel toServer(command, philosopher, left, right)
+bool chopsticks[n]
+
+process Server {
+    while( true ) {
+        receive philosopher(command, philsopher, l, r)
+
+        if( command == PICK-UP ) {
+            if(chopsticks[l] and chopsticks[r]) {
+                chopsticks[l] = chopsticks[r] = 0
+                send philosopher()
+            } else {
+                # Put the client on a queue
+            }
+        } else if( command == PUT-DOWN ) {
+            chopsticks[l] = chopsticks[r] = true
+            # Get philsopher waiting on l
+            send philosopherWaitingOnL()
+
+            # Get philsopher waiting on r
+            send philosopherWaitingOnR()
+        }
+    }
+}
+\end{lstlisting}\\
+\\
+A philsopher would interact with the server like so:
+\begin{lstlisting}[frame=single]
+# Pick up the chopsticks
+send toServer(PICK-UP, myChan, leftChop, right Chop)
+receive myChan()
+
+# User chopsticks
+
+# Put down chopsticks
+send toServer(PUT-DOWN, myChan, leftChop, right Chop)
+\end{lstlisting}
+
+\clearpage
+\section*{Problem 3}
 \lstset{language=Python}
 \begin{lstlisting}[frame=single]
-chan fromA(A, B, int, int, chan response(bool))
+chan fromA(int, int, channel)
+int numMet[n]
 
 process Server {
     while( (not empty(as)) and (not empty(bs)) ) {
-        A a;
-        B b;
-        int numMetByA,
-        int numMetByB,
+        int who, myId;
         chan response;
 
-        receive toServer(a, b, numMet, response)
+        receive toServer(who, myId, response)
 
-        if(numMet
+        if( who == A ) {
+            if( numMet[myId] == 2 ) {
+                send response(LEAVE)
+            } else {
+                numMet[myId]++
+                send response(CONTINUE)
+            }
+        } elif( who == B ) {
+            send response(LEAVE)
+        }
     }
 }
 
