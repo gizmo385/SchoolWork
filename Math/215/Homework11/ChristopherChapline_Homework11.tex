@@ -49,15 +49,166 @@
 
 \subsection*{Problem 8}
 
+The dimension of the null space of $A$ ($dim(Null(A))$), would be 4.\\
+\\
+The column space of $A$ would not be equal $\mathbb{R}^4$. The vectors in $Coll(A)$ are in $\mathbb{R}^6$ and could not span $\mathbb{R}^4$.
+
 \subsection*{Problem 10}
 
+By Rank-Nullity, dimension of the column space of is 7 (the number of columns in the matrix) minus 5 (the dimension of the null space), which is 2. Thus, $dim(coll(A)) = 2$.
+
 \subsection*{Problem 12}
+
+The dimension of the row space of a matrix is equivalent to the rank of the matrix. The rank of $A$ is 4, thus the dimension of the row space of $A$ is also 4.
 
 \section*{Chapter 4.7}
 
 \subsection*{Problem 8}
 
+Let $\vec{b_1} =
+\begin{bmatrix}
+    -1 \\ 8
+\end{bmatrix},
+\vec{b_2} =
+\begin{bmatrix}
+    1 \\ -7
+\end{bmatrix},
+\vec{c_1} =
+\begin{bmatrix}
+    1 \\ 2
+\end{bmatrix},
+\vec{c_2} =
+\begin{bmatrix}
+    1 \\ 1
+\end{bmatrix}$.\\
+\\[0.1in]
+To find $P_{C \leftarrow B}$, we row reduce this matrix until the left side is equal to the identity matrix:\\
+\\
+$
+\begin{bmatrix}
+    1 & 1 & \vline & 1 & 1 \\
+    2 & 1 & \vline & 8 & -7
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 1 & \vline & 1 & 1 \\
+    0 & 1 & \vline & -10 & 9
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & \vline & 9 & -9 \\
+    0 & 1 & \vline & -10 & 9
+\end{bmatrix}$\\
+\\[0.05in]
+Thus, $P_{C \leftarrow B} =
+\begin{bmatrix}
+    9 & -9 \\
+    -10 & 9
+\end{bmatrix}$.\\
+\\[0.1in]
+There are two ways we can compute $P_{B \leftarrow C}$. We can either compute it using the same process we used to compute $P_{C \leftarrow B}$ or we can find the inverse
+of $P_{C \leftarrow B}$. Since $P_{C \leftarrow B}$ is a 2x2 matrix, its inverse has a simple closed form:\\
+\\
+$
+\begin{bmatrix}
+    a & b \\ c & d
+\end{bmatrix}^{-1}
+=
+\frac{1}{ad - bc}
+\begin{bmatrix}
+    d & -b \\ -c & a
+\end{bmatrix}
+\Rightarrow
+\frac{1}{(9)(9) - (-9)(-10)}
+\begin{bmatrix}
+    9 & 9 \\ 10 & 9
+\end{bmatrix}
+=
+-\frac{1}{9}
+\begin{bmatrix}
+    9 & 9 \\ 10 & 9
+\end{bmatrix}$\\
+\\[0.1in]
+Thus, $P_{B \leftarrow C} =
+-\frac{1}{9}
+\begin{bmatrix}
+    9 & 9 \\ 10 & 9
+\end{bmatrix}$.\\
+
 \subsection*{Problem 10}
+
+Let $\vec{b_1} =
+\begin{bmatrix}
+    6 \\ -12
+\end{bmatrix},
+\vec{b_2} =
+\begin{bmatrix}
+    4 \\ 2
+\end{bmatrix},
+\vec{c_1} =
+\begin{bmatrix}
+    4 \\ 2
+\end{bmatrix},
+\vec{c_2} =
+\begin{bmatrix}
+    3 \\ 9
+\end{bmatrix}$.\\
+\\[0.1in]
+To find $P_{B \leftarrow C}$, we row reduce this matrix until the left side is equal to the identity matrix:\\
+\\
+$
+\begin{bmatrix}
+    6 & 4 & \vline & 4 & 3 \\
+    -12 & 2 & \vline & 2 & 9
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    6 & 4 & \vline & 4 & 3 \\
+    0 & 10 & \vline & 10 & 15
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    6 & 4 & \vline & 4 & 3 \\
+    0 & 2 & \vline & 2 & 3
+\end{bmatrix}
+\backsim\\
+\\[0.05in]
+\begin{bmatrix}
+    6 & 0 & \vline & 0 & -3 \\
+    0 & 2 & \vline & 2 & 3
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & \vline & 0 & -\frac{1}{2} \\
+    0 & 1 & \vline & 1 & \frac{3}{2}
+\end{bmatrix}$\\
+\\[0.1in]
+Therefore, $P_{B \leftarrow C} =
+\begin{bmatrix}
+    0 & -\frac{1}{2} \\
+    1 & \frac{3}{2}
+\end{bmatrix}$. Once again, we can find $P_{C \leftarrow B}$ by find the inverse of $P_{B \leftarrow C}$.
+\[
+    P_{C \leftarrow B} = P_{B \leftarrow C}^{-1} =
+    \begin{bmatrix}
+        0 & -\frac{1}{2} \\
+        1 & \frac{3}{2}
+    \end{bmatrix}^{-1}
+    =
+    \frac{1}{\frac{1}{2}}
+    \begin{bmatrix}
+        \frac{3}{2} & \frac{1}{2} \\
+        -1 & 0
+    \end{bmatrix}^{-1}
+    = 2
+    \begin{bmatrix}
+        \frac{3}{2} & \frac{1}{2} \\
+        -1 & 0
+    \end{bmatrix}^{-1}
+\]
+
+
+
 
 \section*{Chapter 5.1}
 
