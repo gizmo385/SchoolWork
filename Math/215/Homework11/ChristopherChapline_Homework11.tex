@@ -214,21 +214,267 @@ Therefore, $P_{B \leftarrow C} =
 
 \subsection*{Problem 2}
 
+Let $A =
+\begin{bmatrix}
+    -1 & 4 \\
+    6 & 9
+\end{bmatrix}$
+and let $\lambda = -3$.\\
+\\[0.1in]
+If $\lambda$ is an eigenvalue of $A$ then $A\vec{x} = -3\vec{x}$. This means that $(A + 3I)\vec{x} = \vec{0}$, in other words, the columns of
+$\begin{bmatrix}
+    2 & 4 \\
+    6 & 12
+\end{bmatrix}$
+are linearly dependent. Since this is obviously true, $\lambda = 3$ is indeed an eigenvalue of $A$.
+
 \subsection*{Problem 4}
 
+Let $A =
+\begin{bmatrix}
+    5 & 2 \\
+    3 & 6
+\end{bmatrix}$
+and let $\vec{u} =
+\begin{bmatrix}
+    -1 \\ 1
+\end{bmatrix}$. If $\vec{u}$ is an eigenvector of $A$, then $A\vec{u} = c\vec{u}$ where $c \in \mathbb{R}$.
+\hfill
+$$
+A\vec{u} =
+\begin{bmatrix}
+    5 & 2 \\
+    3 & 6
+\end{bmatrix}
+\begin{bmatrix}
+    -1 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -5 \\ 3
+\end{bmatrix}
++
+\begin{bmatrix}
+    2 \\ 6
+\end{bmatrix}
+=
+\begin{bmatrix}
+    -3 \\ 9
+\end{bmatrix}
+$$
+Because there is no $c \in \mathbb{R}$ such that $c\vec{u} = \begin{bmatrix} -3 \\ 9 \end{bmatrix}$, we know that $\vec{u}$ is not an eigenvector of $A$.
+
+\clearpage
 \subsection*{Problem 10}
+Let $A =
+\begin{bmatrix}
+    -4 & 2 \\
+    3 & 1
+\end{bmatrix}$ and let $\lambda = -5$.
+$$
+(A+5I) =
+\begin{bmatrix}
+    1 & 2 \\
+    3 & 6
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 2 \\
+    0 & 0
+\end{bmatrix} \Rightarrow
+\vec{x} =
+\begin{bmatrix}
+    x_1 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+    2x_2 \\ x_2
+\end{bmatrix}
+=
+x_2
+\begin{bmatrix}
+    2 \\ 1
+\end{bmatrix}
+$$
+Let $x_1 = 1$. Then $\left\{\begin{bmatrix} 2 \\ 1 \end{bmatrix}\right\}$ is a basis for the eigenspace of $A$ corresponding to $\lambda$.
 
 \subsection*{Problem 12}
 
+Let $A =
+\begin{bmatrix}
+    4 & 1 \\
+    3 & 6
+\end{bmatrix}$, ${\lambda}_1 = 3$, and ${\lambda}_2 = 7$.
+$$
+(A - 3I) =
+\begin{bmatrix}
+    1 & 1 \\
+    3 & 3
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 1 \\
+    0 & 0
+\end{bmatrix} \Rightarrow
+\vec{x} =
+\begin{bmatrix}
+    x_1 \\ x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+    x_2 \\ x_2
+\end{bmatrix}
+=
+x_2
+\begin{bmatrix}
+    1 \\ 1
+\end{bmatrix}
+$$
+Let $x_2 = 1$. Then $\left\{\begin{bmatrix} 1 \\ 1 \end{bmatrix}\right\}$ is a basis for the eigenspace of $A$ corresponding to $\lambda_1$.
+$$
+(A - 3I) =
+\begin{bmatrix}
+    -3 & 1 \\
+    3 & -1
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    -3 & 1 \\
+    0 & 0
+\end{bmatrix} \Rightarrow
+\vec{x} =
+\begin{bmatrix}
+    x_1 \\ x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \frac{1}{3}x_2 \\ x_2
+\end{bmatrix}
+=
+x_2
+\begin{bmatrix}
+    \frac{1}{3} \\ 1
+\end{bmatrix}
+$$
+Let $x_2 = 1$. Then $\begin{bmatrix} \frac{1}{3} \\ 1 \end{bmatrix}$ is a basis for the eigenspace of $A$ corresponding to $\lambda_2$
+
 \subsection*{Problem 14}
+
+Let $A =
+\begin{bmatrix}
+    4 & 0 & -1 \\
+    3 & 0 & 3 \\
+    2 & -2 & 5
+\end{bmatrix}$
+and let $\lambda = 3$.
+$$
+(A - 3I) =
+\begin{bmatrix}
+    1 & 0 & -1 \\
+    3 & -3 & 3 \\
+    2 & -2 & 2
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & -1 \\
+    1 & -1 & 1 \\
+    0 & 0 & 0
+\end{bmatrix}
+\backsim
+\begin{bmatrix}
+    1 & 0 & -1 \\
+    0 & -1 & 2 \\
+    0 & 0 & 0
+\end{bmatrix}\Rightarrow
+\vec{x} =
+\begin{bmatrix}
+    x_1 \\ x_2 \\ x_3
+\end{bmatrix}
+=
+x_3
+\begin{bmatrix}
+    -1 \\ -2 \\ 1
+\end{bmatrix}
+$$
+With $x_3 = 1$, $\left\{\begin{bmatrix} -1 \\ -2 \\ 1 \end{bmatrix}\right\}$ forms a basis for the eigenspace of $A$ corresponding to $\lambda$.
+
 
 \section*{Chapter 5.2}
 
 \subsection*{Problem 2}
 
+Let $A =
+\begin{bmatrix}
+    -4 & 1 \\
+    6 & 1
+\end{bmatrix}$. Consider that when $(A - \lambda I)\vec{x} = \vec{0}$, $det(A - \lambda I) = 0$:
+$$
+det\left(
+\begin{bmatrix}
+    -4 - \lambda & 1 \\
+    6 & 1 - \lambda
+\end{bmatrix}
+\right) = 0
+\Rightarrow
+(-4 - \lambda)(1 - \lambda) - 6 = 0
+$$
+Now, to solve for the eigenvalues of $A$, we need to find the solutions to the equation $(-4 - \lambda)(1 - \lambda) - 6 = 0$:
+$$
+\lambda^2 + 3\lambda - 10 = 0
+\Rightarrow
+(\lambda + 5)(\lambda - 2) = 0
+$$
+Thus, the eigenvalues of $A$ are $\lambda_1 = -5$ and $\lambda_2 = 2$.
+
 \subsection*{Problem 4}
 
+Let $A =
+\begin{bmatrix}
+    8 & 2 \\
+    3 & 3
+\end{bmatrix}$. To find the eigenvalues of $A$, we find values such that the equation $det(A - \lambda I) = 0$ is satisfied:
+$$
+det\left(
+\begin{bmatrix}
+    8 - \lambda & 2 \\
+    3 & 3 - \lambda
+\end{bmatrix}
+\right) = 0
+\Rightarrow
+(8 - \lambda)(3 - \lambda) - 6 = 0
+$$
+Now, we must find the solutions to the equation $\lambda^2 - 11\lambda + 18 = 0$
+$$
+\lambda^2 - 11\lambda + 18 = 0
+\Rightarrow
+(\lambda - 9)(\lambda - 2) = 0
+$$
+Thus, our eigenvalues for $A$ are $\lambda_1 = 9$ and $\lambda_2 = 2$.
+
 \subsection*{Problem 6}
+
+Let $A =
+\begin{bmatrix}
+    9 & -2 \\
+    2 & 5
+\end{bmatrix}$. To find the eigenvalues of $A$, we find values such that the equation $det(A - \lambda I) = 0$ is satisfied:
+$$
+det\left(
+\begin{bmatrix}
+    9 - \lambda & -2 \\
+    2 & 5 - \lambda
+\end{bmatrix}
+\right) = 0
+\Rightarrow
+(9 - \lambda)(5 - \lambda) + 4 = 0
+$$
+Now we must solve for equation $\lambda^2 + 49 - 14\lambda = 0$:
+$$
+\lambda^2 + 49 - 14\lambda = 0
+\Rightarrow
+(\lambda - 7)(\lambda - 7) = 0
+$$
+This means that $A$ only has a single eigenvalue $\lambda = 7$
 
 
 \end{document}
