@@ -4,3 +4,9 @@
 [submodule "ComputerScience/homework/422/DistributedProject"]
 	path = ComputerScience/homework/422/DistributedProject
 	url = git@github.com:gizmo385/distributed-chat.git
+[submodule "ComputerScience/homework/335/FinalProject"]
+	path = ComputerScience/homework/335/FinalProject
+	url = https://github.com/gizmo385/TheFourNations.git
+[submodule "ComputerScience/homework/335/WumpusProject"]
+	path = ComputerScience/homework/335/WumpusProject
+	url = https://github.com/gizmo385/HuntTheWumpus
