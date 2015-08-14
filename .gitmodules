@@ -10,3 +10,15 @@
 [submodule "ComputerScience/homework/335/WumpusProject"]
 	path = ComputerScience/homework/335/WumpusProject
 	url = https://github.com/gizmo385/HuntTheWumpus
+[submodule "ComputerScience/422/DistributedProject"]
+	path = ComputerScience/422/DistributedProject
+	url = https://github.com/gizmo385/distributed-chat
+[submodule "ComputerScience/422/ParallelProject"]
+	path = ComputerScience/422/ParallelProject
+	url = https://github.com/gizmo385/n-bodies
+[submodule "ComputerScience/335/FinalProject"]
+	path = ComputerScience/335/FinalProject
+	url = https://github.com/gizmo385/TheFourNations
+[submodule "ComputerScience/335/WumpusProject"]
+	path = ComputerScience/335/WumpusProject
+	url = https://github.com/gizmo385/HuntTheWumpus
