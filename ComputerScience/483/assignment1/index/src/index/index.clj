@@ -36,9 +36,7 @@
   (let [index (->> documents
                    (postings-list)
                    (apply (partial merge-with concat)))]
-    (InvertedIndex. documents (sort-by key (zipmap (keys index)
-                                                   (map sort (vals index)))))))
-
-(clojure.pprint/pprint (postings-list test-documents))
+    (InvertedIndex. documents (zipmap (keys index)
+                                      (map sort (vals index))))))
 
 (clojure.pprint/pprint (inverted-index test-documents))
