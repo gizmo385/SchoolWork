@@ -39,8 +39,6 @@
     (InvertedIndex. documents (zipmap (keys index)
                                       (map sort (vals index))))))
 
-(clojure.pprint/pprint (inverted-index test-documents))
-
 (defmulti search-index-op
   "Implements different search operations"
   (fn [op index term1-results term2-results] op))
