@@ -1,5 +1,5 @@
 (ns index.index
-  (require [clojure.string :refer [join trim split]]))
+  (:require [clojure.string :refer [join trim split]]))
 
 (def test-documents ["doc1" "doc2" "doc3" "doc4"])
 
