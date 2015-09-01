@@ -1,7 +1,10 @@
 (ns index.core
+  (:require [index.index :refer [search-index inverted-index]])
   (:gen-class))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (let [index (inverted-index args)]
+    (println (search-index :and index ["drug" "schizophrenia" "approach"]))
+    )
+  )
