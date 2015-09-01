@@ -71,9 +71,3 @@
          (sort-by count)
          (reduce (partial search-index-op op))
          (map (partial nth documents)))))
-
-(comment
-  (let [index (inverted-index test-documents)]
-    (println (search-index :and index ["drug" "schizophrenia" "for"]))
-    )
-  )
