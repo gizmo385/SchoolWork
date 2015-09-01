@@ -41,9 +41,9 @@
 
 (defmulti search-index-op
   "Implements different search operations"
-  (fn [op index term1-results term2-results] op))
+  (fn [op term1-results term2-results] op))
 
-(defmethod search-index-op :and [_ index term1-documents term2-documents]
+(defmethod search-index-op :and [_ term1-documents term2-documents]
   (loop [documents []
          term1-documents term1-documents
          term2-documents term2-documents]
@@ -69,7 +69,7 @@
     (->> terms
          (map (partial get index))
          (sort-by count)
-         (reduce (partial search-index-op op index))
+         (reduce (partial search-index-op op))
          (map (partial nth documents)))))
 
 (comment
