@@ -74,8 +74,6 @@
 
 (comment
   (let [index (inverted-index test-documents)]
-    (println (map slurp test-documents))
-    (println (search-index :and index ["drug" "schizophrenia"]))
-    (println (search-index :and index ["schizophrenia"]))
-    (println (search-index :and index ["approach"]))
-    ))
+    (println (search-index :and index ["drug" "schizophrenia" "for"]))
+    )
+  )
