@@ -43,22 +43,22 @@
   "Implements different search operations"
   (fn [op index term1-results term2-results] op))
 
-(defmethod search-index-op :and [_ index term1-results term2-results]
-  (loop [results []
-         term1-results term1-results
-         term2-results term2-results]
-    (if (and (not-empty term1-results) (not-empty term2-results))
-      (let [term1-first (first term1-results)
-            term2-first (first term2-results)
-            term1-shorter (< (count term1-results) (count term2-results))]
+(defmethod search-index-op :and [_ index term1-documents term2-documents]
+  (loop [documents []
+         term1-documents term1-documents
+         term2-documents term2-documents]
+    (if (and (not-empty term1-documents) (not-empty term2-documents))
+      (let [term1-first (first term1-documents)
+            term2-first (first term2-documents)
+            term1-lower (< term1-first term2-first)]
         (if (= term1-first term2-first)
-          (recur (conj results term1-first)
-                 (rest term1-results)
-                 (rest term2-results))
-          (recur results
-                 (if term1-shorter term1-results (rest term1-results))
-                 (if term1-shorter (rest term2-results) term2-results))))
-      results)))
+          (recur (cons term1-first documents)
+                 (rest term1-documents)
+                 (rest term2-documents))
+          (recur documents
+                 (if term1-lower (rest term1-documents) term1-documents)
+                 (if term1-lower term2-documents (rest term2-documents)))))
+        documents)))
 
 (defn search-index [op {:keys [documents index]} terms]
   (do
