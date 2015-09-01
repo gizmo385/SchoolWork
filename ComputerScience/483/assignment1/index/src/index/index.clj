@@ -61,18 +61,16 @@
         documents)))
 
 (defn search-index [op {:keys [documents index]} terms]
-  (do
-    (map println terms)
-    (if (< 2 (count terms))
-      (->> terms
-           (map (partial get index))
-           (sort-by count)
-           (map (partial nth documents)))
-      (->> terms
-           (map (partial get index))
-           (sort-by count)
-           (reduce (partial search-index-op op index))
-           (map (partial nth documents))))))
+  (if (< (count terms) 2)
+    (->> terms
+         (map (partial get index))
+         (sort-by count)
+         (map (partial nth documents)))
+    (->> terms
+         (map (partial get index))
+         (sort-by count)
+         (reduce (partial search-index-op op index))
+         (map (partial nth documents)))))
 
 (comment
   (let [index (inverted-index test-documents)]
