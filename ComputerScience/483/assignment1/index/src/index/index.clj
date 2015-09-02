@@ -19,7 +19,6 @@
       ;; Read, trim, and tokenize each document
       (let [document-postings (->> documents
                                    (first)
-                                   (slurp)
                                    (trim)
                                    (tokenize doc-id-counter))]
         (recur (rest documents)
@@ -30,9 +29,9 @@
 (defrecord InvertedIndex [documents index])
 
 (defn inverted-index
-  "Constructs an inverted index for the documents supplied."
+  "Constructs an inverted index for the text documents supplied."
   [documents]
-  ;; Each word should map to a list of documents containing it
+  ;; Each word should be a string containing the document
   (let [index (->> documents
                    (postings-list)
                    (apply (partial merge-with concat)))]
@@ -52,22 +51,23 @@
             term2-first (first term2-documents)
             term1-lower (< term1-first term2-first)]
         (if (= term1-first term2-first)
+          ;; Either we need to advance both document lists
           (recur (cons term1-first documents)
                  (rest term1-documents)
                  (rest term2-documents))
+          ;; Or we need to a single document list
           (recur documents
+                 ;; And the list we advance is the one with the smaller current number
                  (if term1-lower (rest term1-documents) term1-documents)
                  (if term1-lower term2-documents (rest term2-documents)))))
-        documents)))
+      documents)))
 
-(defn search-index [op {:keys [documents index]} terms]
+(defn search-index [{:keys [documents index]} op terms]
   (if (< (count terms) 2)
     (->> terms
          (map (partial get index))
-         (sort-by count)
-         (map (partial nth documents)))
+         (sort-by count))
     (->> terms
          (map (partial get index))
          (sort-by count)
-         (reduce (partial search-index-op op))
-         (map (partial nth documents)))))
+         (reduce (partial search-index-op op)))))
