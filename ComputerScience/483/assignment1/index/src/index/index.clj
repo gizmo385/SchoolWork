@@ -11,7 +11,9 @@
     (for [string strings]
       {string (list doc-id)})))
 
-(defn postings-list [documents]
+(defn postings-list
+  "Creates a postings list for the documents supplied."
+  [documents]
   (loop [documents documents
          doc-id-counter 0
          acc []]
@@ -29,7 +31,8 @@
 (defrecord InvertedIndex [documents index])
 
 (defn inverted-index
-  "Constructs an inverted index for the text documents supplied."
+  "Constructs an inverted index for the text documents supplied. This first creates a postings list
+   and then merges identical terms by concatenating their document lists together"
   [documents]
   ;; Each word should be a string containing the document
   (let [index (->> documents
@@ -46,6 +49,7 @@
   (loop [documents []
          term1-documents term1-documents
          term2-documents term2-documents]
+    ;; If one of the documents lists is empty, then there will be nothing in common
     (if (and (not-empty term1-documents) (not-empty term2-documents))
       (let [term1-first (first term1-documents)
             term2-first (first term2-documents)
@@ -62,7 +66,10 @@
                  (if term1-lower term2-documents (rest term2-documents)))))
       documents)))
 
-(defn search-index [{:keys [documents index]} op terms]
+(defn search-index
+  "Searches the index by combining the supplied terms with a particular operation. This returns a
+   list of document ids"
+  [{:keys [documents index]} op terms]
   (if (< (count terms) 2)
     (->> terms
          (map (partial get index))
