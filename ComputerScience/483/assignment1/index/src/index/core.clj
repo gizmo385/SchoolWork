@@ -19,6 +19,6 @@
                 (->> *in*
                      java.io.BufferedReader.  ; We should open a reader on stdin
                      line-seq                 ; Get a sequence of lines from that reader
-                     (map #(split %1 #"\s+"))   ; Split the line based on spaces
+                     (map #(split %1 #"\s+")) ; Split the line based on spaces
                      flatten))]               ; And then flatten
     (println (search-index index :and query))))
