@@ -9,11 +9,11 @@
    supplied after this will be assumed to be your search query terms."
   [& args]
   (let [index (->> args
-                   (first)
-                   (slurp)
-                   (split-lines)
-                   (map trim)
-                   (inverted-index))
+                   first              ; The first element is our file containing documents
+                   slurp              ; We should read the file
+                   split-lines        ; Capture the lines
+                   (map trim)         ; Trim each line
+                   inverted-index)    ; And construct our inverted index based on the lines
         query (if (not-empty (rest args))
                 (rest args)
                 (->> *in*
