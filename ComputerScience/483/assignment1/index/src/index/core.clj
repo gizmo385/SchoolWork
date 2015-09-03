@@ -1,6 +1,6 @@
 (ns index.core
   (:require [index.index :refer [search-index inverted-index]]
-            [clojure.string :refer [split-lines trim]])
+            [clojure.string :refer [split split-lines trim]])
   (:gen-class))
 
 (defn -main
@@ -16,5 +16,9 @@
                    (inverted-index))
         query (if (not-empty (rest args))
                 (rest args)
-                (line-seq (java.io.BufferedReader. *in*)))]
+                (->> *in*
+                     java.io.BufferedReader.  ; We should open a reader on stdin
+                     line-seq                 ; Get a sequence of lines from that reader
+                     (map #(split %1 #"\s+"))   ; Split the line based on spaces
+                     flatten))]               ; And then flatten
     (println (search-index index :and query))))
