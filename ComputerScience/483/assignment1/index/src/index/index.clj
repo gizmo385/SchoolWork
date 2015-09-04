@@ -68,11 +68,11 @@
   "Searches the index by combining the supplied terms with a particular operation. This returns a
    list of document ids"
   [{:keys [documents index]} op terms]
-  (if (< (count terms) 2)
-    (->> terms
-         (map (partial get index))
-         (sort-by count))
-    (->> terms
-         (map (partial get index))
-         (sort-by count)
-         (reduce (partial search-index-op op)))))
+  (let [num-terms (count terms)]
+    (cond
+      (zero? num-terms) '()
+      (= 1 num-terms) (get index (first terms) '())
+      :else (->> terms
+                 (map (partial get index))
+                 (sort-by count)
+                 (reduce (partial search-index-op op))))))
