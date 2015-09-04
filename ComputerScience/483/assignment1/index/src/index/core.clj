@@ -34,5 +34,3 @@
     (if (not-empty (rest args))
       (println (search-index index :and (rest args)))
       (start-query-prompt index))))
-
-
