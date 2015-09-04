@@ -1,8 +1,6 @@
 (ns index.index
   (:require [clojure.string :refer [join trim split]]))
 
-(def test-documents ["doc1" "doc2" "doc3" "doc4"])
-
 (defn tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
