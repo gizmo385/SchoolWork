@@ -3,23 +3,30 @@
             [clojure.string :refer [split split-lines trim]])
   (:gen-class))
 
-(defn parse-query [query]
+(defn parse-query
+  "Parses the query so that it can be sent to the index"
+  [query]
   (map trim (split query #"\s+")))
 
-(defn prompt [prompt-text]
+(defn prompt
+  "Writes the desired prompt to stdout and then reads input from stdin"
+  [prompt-text]
   (flush)
   (print prompt-text)
   (flush)
   (read-line))
 
-(defn- start-query-prompt [index]
-  (loop [query-text (prompt ">>> ")]
+(defn- start-query-prompt
+  "Starts a prompt that listens for queries and then makes those queries against the supplied
+   index."
+  [index prompt-text]
+  (loop [query-text (prompt prompt-text)]
     (when (not-empty query-text)
       (->> query-text
            parse-query
            (search-index index :and)
            println)
-      (recur (prompt ">>> ")))))
+      (recur (prompt prompt-text)))))
 
 (defn -main
   "First we construct the inverted index. The first argument to the program should be a filename
@@ -33,4 +40,4 @@
                    inverted-index)]   ; And construct our inverted index based on the lines
     (if (not-empty (rest args))
       (println (search-index index :and (rest args)))
-      (start-query-prompt index))))
+      (start-query-prompt index ">>> "))))
