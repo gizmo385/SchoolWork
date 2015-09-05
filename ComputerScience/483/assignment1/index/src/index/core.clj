@@ -6,7 +6,7 @@
 (defn parse-query
   "Parses the query so that it can be sent to the index"
   [query]
-  (map trim (split query #"\s+")))
+  (split query #"\s+"))
 
 (defn prompt
   "Writes the desired prompt to stdout and then reads input from stdin"
