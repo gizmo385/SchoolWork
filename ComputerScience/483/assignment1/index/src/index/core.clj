@@ -11,7 +11,6 @@
 (defn prompt
   "Writes the desired prompt to stdout and then reads input from stdin"
   [prompt-text]
-  (flush)
   (print prompt-text)
   (flush)
   (read-line))
