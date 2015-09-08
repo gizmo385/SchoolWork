@@ -1,7 +1,7 @@
 (ns index.index
   (:require [clojure.string :refer [join trim split]]))
 
-(defn tokenize
+(defn- tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
   [doc-id string]
@@ -9,7 +9,7 @@
     (for [string strings]
       {string (list doc-id)})))
 
-(defn postings-list
+(defn- postings-list
   "Creates a postings list for the documents supplied."
   [documents]
   (loop [documents documents

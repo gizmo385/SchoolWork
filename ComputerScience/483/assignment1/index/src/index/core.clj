@@ -7,12 +7,12 @@
   "This is the prompt text that will be printed while asking for user queries."
   ">>> ")
 
-(defn parse-query
+(defn- parse-query
   "Parses the query so that it can be sent to the index"
   [query]
   (split query #"\s+"))
 
-(defn prompt
+(defn- prompt
   "Writes the prompt to stdout and then reads input from stdin. This prompt is specified in the by
    the *prompt* variable."
   []
