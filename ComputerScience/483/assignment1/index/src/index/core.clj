@@ -1,6 +1,7 @@
 (ns index.core
   (:require [index.index :refer [search-index inverted-index]]
-            [clojure.string :refer [split split-lines trim]])
+            [clojure.string :refer [split split-lines trim]]
+            [clojure.pprint :refer [pprint]])
   (:gen-class))
 
 (def ^:dynamic *prompt*
@@ -26,10 +27,7 @@
   [index]
   (loop [query-text (prompt)]
     (when (not-empty query-text)
-      (->> query-text
-           parse-query
-           (search-index index :and)
-           println)
+      (println (search-index index query-text))
       (recur (prompt)))))
 
 (defn -main
@@ -44,6 +42,8 @@
                    split-lines        ; Capture the lines
                    (map trim)         ; Trim each line
                    inverted-index)]   ; And construct our inverted index based on the lines
+    (pprint (:index index))
+    (pprint (:documents index))
     (if (not-empty (rest args))
       (println (search-index index :and (rest args)))
       (start-query-prompt index))))
