@@ -70,6 +70,9 @@
                  (if term1-lower term2-documents (rest term2-documents)))))
       documents)))
 
+(defmethod search-index-op :or [_ term1-documents term2-documents]
+  (distinct (concat term1-documents term2-documents)))
+
 (defn- handle-query
   "Handles query operators (AND, OR, etc.) as a reduction."
   [{:keys [documents index]} first-term & terms]
