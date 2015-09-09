@@ -1,5 +1,5 @@
 (ns index.index
-  (:require [clojure.string :refer [join trim split]]))
+  (:require [clojure.string :refer [join trim split lower-case]]))
 
 (defn- tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
@@ -70,16 +70,19 @@
                  (if term1-lower term2-documents (rest term2-documents)))))
       documents)))
 
+(defn- handle-query
+  "Handles query operators (AND, OR, etc.) as a reduction."
+  [{:keys [documents index]} first-term & terms]
+  (reduce (fn [term-documents [oper term]]
+            (search-index-op (keyword (lower-case oper)) term-documents (get index term)))
+          (get index first-term)
+          (partition 2 terms)))
+
 (defn search-index
   "Searches the index by combining the supplied terms with a particular operation. This returns a
    list of document ids"
-  [{:keys [documents index]} op terms]
-  (let [num-terms (count terms)]
-    (cond
-      (zero? num-terms) '()
-      (= 1 num-terms) (map (partial get documents) (get index (first terms) '()))
-      :else (->> terms
-                 (map (partial get index))
-                 (sort-by count)
-                 (reduce (partial search-index-op op))
-                 (map (partial get documents))))))
+  [{:keys [documents index] :as inverted-index} query]
+  (if (empty? query)
+    ()
+    (map (partial get documents)
+         (apply handle-query inverted-index (split query #"\s+")))))
