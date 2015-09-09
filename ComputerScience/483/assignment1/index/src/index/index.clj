@@ -5,7 +5,7 @@
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
   [doc-id string]
-  (let [strings (split string #"\s+")]
+  (let [strings (drop 2 (split string #"\s+"))]
     (for [string strings]
       {string (list doc-id)})))
 
@@ -28,6 +28,12 @@
 
 (defrecord InvertedIndex [documents index])
 
+(defn- doc-id-map [documents]
+  (let [ids (range (count documents))
+        doc-names (for [doc documents]
+                    (join " " (take 2 (split doc #"\s+"))))]
+    (zipmap ids doc-names)))
+
 (defn inverted-index
   "Constructs an inverted index for the text documents supplied. This first creates a postings list
    and then merges identical terms by concatenating their document lists together"
@@ -36,8 +42,8 @@
   (let [index (->> documents
                    (postings-list)
                    (apply (partial merge-with concat)))]
-    (InvertedIndex. documents (zipmap (keys index)
-                                      (map sort (vals index))))))
+    (InvertedIndex. (doc-id-map documents)
+                    (zipmap (keys index) (map sort (vals index))))))
 
 (defmulti search-index-op
   "Implements different search operations"
@@ -71,8 +77,9 @@
   (let [num-terms (count terms)]
     (cond
       (zero? num-terms) '()
-      (= 1 num-terms) (get index (first terms) '())
+      (= 1 num-terms) (map (partial get documents) (get index (first terms) '()))
       :else (->> terms
                  (map (partial get index))
                  (sort-by count)
-                 (reduce (partial search-index-op op))))))
+                 (reduce (partial search-index-op op))
+                 (map (partial get documents))))))
