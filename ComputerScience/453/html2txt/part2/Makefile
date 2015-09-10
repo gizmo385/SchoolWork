@@ -15,9 +15,11 @@ ifeq ($(OS),Linux)
 endif
 
 
-myhtml2txt: myhtml2txt.l
-	flex -o myhtml2txt.c myhtml2txt.l
-	${CC} ${CFLAGS} -o myhtml2txt myhtml2txt.c ${FLEX_LIB}
+myhtml2txt: myhtml2txt.l myhtml2txt.y
+	bison -d myhtml2txt.y
+	flex -o myhtml2txt.lex.c myhtml2txt.l
+	${CC} ${CFLAGS} -o myhtml2txt myhtml2txt.tab.c myhtml2txt.lex.c ${FLEX_LIB}
 
+.PHONY : clean
 clean:
-	@rm *.o myhtml2txt 2> /dev/null || true
+	/bin/rm -f myhtml2txt myhtml2txt.lex.c myhtml2txt.tab.c myhtml2txt.tab.h a.out
