@@ -1,17 +1,12 @@
 (ns index.core
   (:require [index.index :refer [search-index inverted-index]]
-            [clojure.string :refer [split split-lines trim]]
+            [clojure.string :refer [split split-lines trim join]]
             [clojure.pprint :refer [pprint]])
   (:gen-class))
 
 (def ^:dynamic *prompt*
   "This is the prompt text that will be printed while asking for user queries."
   ">>> ")
-
-(defn- parse-query
-  "Parses the query so that it can be sent to the index"
-  [query]
-  (split query #"\s+"))
 
 (defn- prompt
   "Writes the prompt to stdout and then reads input from stdin. This prompt is specified in the by
@@ -36,14 +31,21 @@
    supplied after this will be assumed to be your search query terms. Arguments supplied to this
    program will be by assuming an implicit AND exists between elements"
   [& args]
-  (let [index (->> args
-                   first              ; The first element is our file containing documents
-                   slurp              ; We should read the file
-                   split-lines        ; Capture the lines
-                   (map trim)         ; Trim each line
-                   inverted-index)]   ; And construct our inverted index based on the lines
-    (pprint (:index index))
-    (pprint (:documents index))
-    (if (not-empty (rest args))
-      (println (search-index index :and (rest args)))
-      (start-query-prompt index))))
+  (if (not-empty args)
+    (let [[document & query-terms] args
+          index (->> document
+                     slurp              ; We should read the file
+                     split-lines        ; Capture the lines
+                     (map trim)         ; Trim each line
+                     inverted-index)]   ; And construct our inverted index based on the lines
+      (pprint (:index index))
+      (pprint (:documents index))
+      (if (not-empty query-terms)
+        (println (search-index index (join " " query-terms)))
+        (start-query-prompt index)))
+    (binding [*out* *err*]
+      (println "ERROR: NO DOCUMENT SUPPLIED\n")
+      (println "Proper usage: lein run <filename> [query-terms ...]")
+      (println "Filename ensure that the first 2 words form the name of the document.")
+      (println "Query format: <term> [[operator term] ...] where operator is one of: OR, AND")
+      (System/exit 1))))
