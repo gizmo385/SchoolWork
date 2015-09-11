@@ -260,4 +260,7 @@ pom.xml.asc
 .lein-failures
 .nrepl-port
 
-
+### Latex
+*.aux
+*.out
+*.log
