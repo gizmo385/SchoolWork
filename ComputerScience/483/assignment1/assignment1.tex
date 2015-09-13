@@ -94,6 +94,22 @@ Thus, the ultimate result is document 4.
 \subsection*{Part 1}
 \subsection*{Part 2}
 \section*{Problem 3}
+
+Let's first compare the sizes of the resulting postings lists for each of the subqueries:
+\begin{itemize}
+    \item (tangerine OR trees) will yield a postings list containing, at most, 363,465 documents
+    \item (marmalade OR skies) will yield a postings list containing, at most, 379,571 documents
+    \item (kaleidoscope OR eyes) will yield a postings list containing, at most, 300,321 documents
+\end{itemize}\\
+\\
+After processing each of these subqueries, we should start by computing the intersection (AND) between the second and third subquery, as that will yield at most 300,321 documents. We should then compute the intersection between the resulting document list and the results of the first subquery.\\
+\\
+Thus, the order that the queries would be processed in is:
+\begin{enumerate}
+    \item Process each of the the 3 subqueries, (tangerine OR trees), (marmalade OR skies), and (kaleidoscope OR eyes) in any order.
+    \item Compute the AND of the results from (marmalade OR skies) and (kaleidoscope OR eyes).
+    \item Compute the AND of the results from (kaleidoscope OR eyes) and the result of the previous AND
+\end{enumerate}
 \section*{Problem 4}
 
 \end{document}
