@@ -47,15 +47,53 @@
 
 \section*{Problem 1}
 \subsection*{Part 1}
+
+\begin{tabular}{| a | b | c | d | e |}
+\hline
+& Doc 1 & Doc 2 & Doc 3 & Doc 4 \\ \hline
+schizophrenia & 1 & 1 & 1 & 1 \\ \hline
+drug & 1 & 1 & 0 & 0 \\ \hline
+of & 0 & 0 & 1 & 0 \\ \hline
+new & 0 & 1 & 1 & 1 \\ \hline
+for & 1 & 0 & 1 & 1 \\ \hline
+hopes & 0 & 0 & 0 & 1 \\ \hline
+approach & 0 & 0 & 1 & 0 \\ \hline
+patients & 0 & 0 & 0 & 1 \\ \hline
+treatment & 0 & 0 & 1 & 0 \\ \hline
+breakthrough & 1 & 0 & 0 & 0 \\ \hline
+\end{tabular}
+
 \subsection*{Part 2}
+\begin{tabular}{| a | b | c | d | e |}
+\hline
+schizophrenia & 1 & 2 & 3 & 4 \\ \hline
+drug & 1 & 2\\ \hline
+of & 3 \\ \hline
+new & 2 & 3 & 4 \\ \hline
+for & 1 & 3 & 4 \\ \hline
+hopes & 4 \\ \hline
+approach & 3 \\ \hline
+patients & 4 \\ \hline
+treatment & 3 \\ \hline
+breakthrough & 1 \\ \hline
+\end{tabular}
+
 \subsection*{Part 3}
+
 \subsubsection*{Part a}
+
+This query will yield the following documents: Doc 1, Doc 2
+
 \subsubsection*{Part b}
+
+Let's break this query down. The subquery "(drug OR approach)" will yield documents 1, 2, and 3. The subquery "for" will yield documents 1, 2, and 4. Applying the "AND NOT" operator to these results will leave us with only document 4.\\
+\\
+Thus, the ultimate result is document 4.
+
 \section*{Problem 2}
 \subsection*{Part 1}
 \subsection*{Part 2}
 \section*{Problem 3}
 \section*{Problem 4}
-\section*{Problem 5}
 
 \end{document}
