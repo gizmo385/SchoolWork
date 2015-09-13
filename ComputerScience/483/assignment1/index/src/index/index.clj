@@ -5,7 +5,7 @@
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
   [doc-id string]
-  (let [strings (drop 2 (split string #"\s+"))]
+  (let [strings (rest (split string #"\s+"))]
     (for [string strings]
       {string (list doc-id)})))
 
@@ -30,8 +30,7 @@
 
 (defn- doc-id-map [documents]
   (let [ids (range (count documents))
-        doc-names (for [doc documents]
-                    (join " " (take 2 (split doc #"\s+"))))]
+        doc-names (for [doc documents] (first (split doc #"\s+")))]
     (zipmap ids doc-names)))
 
 (defn inverted-index
