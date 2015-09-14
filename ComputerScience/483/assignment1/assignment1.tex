@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{listings}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}%
@@ -92,7 +93,42 @@ Thus, the ultimate result is document 4.
 
 \section*{Problem 2}
 \subsection*{Part 1}
+
+\lstset{language=Python}
+\begin{lstlisting}[frame=single]
+def or_operator(term1_documents, term2-documents):
+    # Create a set out of the longer list of documents
+    term1_length = len(term1_documents)
+    term2_length = len(term2_documents)
+    if term1_length > term2_length:
+        results = set(term1_documents)
+    else:
+        results = set(term2_documents)
+
+    # Add the smaller collection to the set
+    if term1_length > term2_length:
+        for document in term2_documents:
+            if document not in documents:
+                results.add(document)
+    else:
+        for document in term1_documents:
+            if document not in documents:
+                results.add(document)
+
+    return results
+\end{lstlisting}
+
 \subsection*{Part 2}
+\begin{lstlisting}[frame=single]
+def not_operator(term1_documents, term2_documents):
+    results = []
+    for document in term1_documents:
+        if document not in term2_documents:
+            results.add(document)
+
+    return results
+\end{lstlisting}
+
 \section*{Problem 3}
 
 Let's first compare the sizes of the resulting postings lists for each of the subqueries:
@@ -111,5 +147,24 @@ Thus, the order that the queries would be processed in is:
     \item Compute the AND of the results from (kaleidoscope OR eyes) and the result of the previous AND
 \end{enumerate}
 \section*{Problem 4}
+
+The way that we should handle this query is by taking the entire list of documents and filtering those out that occur in either the document list for the operand terms. The naive way to handle this query would be to invert the second documents list and then apply the OR. We can handle this instead by observing the following logical equivalence: $$x \vee (\neg y) \equiv \neg (\neg x \wedge y)$$
+We will first compute the documents associated with the second term that are not associated with the second term. After that, we will filter those documents from the global documents list. In code, that might look like this:
+
+\begin{lstlisting}[frame=single]
+def or_not_operator(term1_docs, term2_docs, all_docs):
+    # Calculate items we don't want
+    not_present = []
+    for document in term2_docs:
+        if document not in term1_docs:
+            not_present.append(document)
+
+    # Calculate the final list
+    results = all_docs
+    for document in not_present:
+        results.remove(document)
+
+    return results
+\end{lstlisting}
 
 \end{document}
