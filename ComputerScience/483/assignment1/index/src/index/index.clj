@@ -105,7 +105,10 @@
                   (handle first-term)
                   (partition 2 remaining-terms))))))
 
-(defn- read-query [query]
+(defn- read-query
+  "We read in a particular query by interpreting it as a parenthesized expression in EDN notation,
+   which is described here: https://github.com/edn-format/edn"
+  [query]
   (try
     (edn/read-string (str "(" (s/replace query "/" "_") ")"))
     (catch RuntimeException re nil)))
