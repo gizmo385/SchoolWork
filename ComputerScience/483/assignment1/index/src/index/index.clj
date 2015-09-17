@@ -113,5 +113,6 @@
   (if (empty? query)
     ()
     (if-let [parsed-query (read-query query)]
-      (handle-query inverted-index parsed-query)
+      (map (partial get documents)
+           (handle-query inverted-index parsed-query))
       "Error: Unbalanced parenthesis in query")))
