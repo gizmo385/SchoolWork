@@ -2,6 +2,8 @@
   (:require [clojure.string :refer [join trim split lower-case] :as s]
             [clojure.edn :as edn]))
 
+;;; Defining and creating an inverted index
+
 (defn- tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
@@ -45,6 +47,8 @@
     (InvertedIndex. (doc-id-map documents)
                     (zipmap (keys index) (map sort (vals index))))))
 
+;;; Searching our inverted index
+
 (defmulti search-index-op
   "Implements different search operations"
   (fn [op term1-results term2-results] op))
@@ -85,7 +89,7 @@
 
 (defn- handle-query
   "Handles query operators (AND, OR, etc.) as a reduction."
-  [{:keys [documents index] :as inverted-index} query]
+  [{:keys [index] :as inverted-index} query]
   (let [handle (partial handle-query inverted-index)]
     (cond
       ; Base cases
