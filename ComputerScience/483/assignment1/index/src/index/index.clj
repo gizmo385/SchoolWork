@@ -1,5 +1,6 @@
 (ns index.index
-  (:require [clojure.string :refer [join trim split lower-case]]))
+  (:require [clojure.string :refer [join trim split lower-case] :as s]
+            [clojure.edn :as edn]))
 
 (defn- tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
@@ -72,13 +73,38 @@
 (defmethod search-index-op :or [_ term1-documents term2-documents]
   (distinct (concat term1-documents term2-documents)))
 
+(defmethod search-index-op :prox [_ term1-documents term2-documents]
+  nil)
+
+(def ^:private operators ["AND" "OR"])
+
+(defn- operator? [text]
+  (let [text (str text)]
+    (or (= (first text) \_)
+        (some #{text} operators))))
+
 (defn- handle-query
   "Handles query operators (AND, OR, etc.) as a reduction."
-  [{:keys [documents index]} first-term & terms]
-  (reduce (fn [term-documents [oper term]]
-            (search-index-op (keyword (lower-case oper)) term-documents (get index term)))
-          (get index first-term)
-          (partition 2 terms)))
+  [{:keys [documents index] :as inverted-index} query]
+  (let [handle (partial handle-query inverted-index)]
+    (cond
+      ; Base cases
+      (operator? query) query
+      (symbol? query) (get index (str query))
+      (empty? query) ()
+
+      ; Recursive case
+      (list? query)
+      (let [[first-term & remaining-terms] query]
+        (reduce (fn [documents-acc [operation term]]
+                  (search-index-op (keyword (lower-case operation)) documents-acc (handle term)))
+                  (handle first-term)
+                  (partition 2 remaining-terms))))))
+
+(defn- read-query [query]
+  (try
+    (edn/read-string (str "(" (s/replace query "/" "_") ")"))
+    (catch RuntimeException re nil)))
 
 (defn search-index
   "Searches the index by combining the supplied terms with a particular operation. This returns a
@@ -86,5 +112,6 @@
   [{:keys [documents index] :as inverted-index} query]
   (if (empty? query)
     ()
-    (map (partial get documents)
-         (apply handle-query inverted-index (split query #"\s+")))))
+    (if-let [parsed-query (read-query query)]
+      (handle-query inverted-index parsed-query)
+      "Error: Unbalanced parenthesis in query")))
