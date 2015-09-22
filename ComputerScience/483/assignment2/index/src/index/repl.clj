@@ -21,5 +21,7 @@
   [index]
   (loop [query-text (prompt)]
     (when (not-empty query-text)
-      (println (join ", " (search-index index query-text)))
+      (as-> (search-index index query-text) result
+        (if (not-empty result) (join ", " result) "No results found")
+        (println result))
       (recur (prompt)))))
