@@ -5,6 +5,13 @@
 ;;; Defining and creating an inverted index
 (defrecord InvertedIndex [documents index])
 
+(defn- enumerate
+  "Zips a collection with an zero-index range to create an enumerated list.
+
+   Example: (enumerate ['a 'b 'c 'd]) --> ([0 'a] [1 'b] [2 'c] [3 'd])"
+  [coll]
+  (map vector (range) coll))
+
 (defn- tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
@@ -16,19 +23,9 @@
 (defn- postings-list
   "Creates a postings list for the documents supplied."
   [documents]
-  (loop [documents documents
-         doc-id-counter 0
-         acc []]
-    (if (not-empty documents)
-      ;; Read, trim, and tokenize each document
-      (let [document-postings (->> documents
-                                   (first)
-                                   (trim)
-                                   (tokenize doc-id-counter))]
-        (recur (rest documents)
-               (inc doc-id-counter)
-               (cons document-postings acc)))
-      (flatten acc))))
+  (flatten
+    (for [[document-id document] (enumerate documents)]
+      (tokenize document-id document))))
 
 (defn- doc-id-map [documents]
   (zipmap (range (count documents))
