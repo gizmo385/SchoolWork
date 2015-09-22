@@ -1,5 +1,5 @@
 (ns index.index
-  (:require [clojure.string :refer [join trim split lower-case split-lines] :as s]
+  (:require [clojure.string :refer [split lower-case split-lines] :as s]
             [clojure.edn :as edn]))
 
 ;;; Defining and creating an inverted index
