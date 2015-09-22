@@ -3,6 +3,7 @@
             [clojure.edn :as edn]))
 
 ;;; Defining and creating an inverted index
+(defrecord InvertedIndex [documents index])
 
 (defn- tokenize
   "Tokenizes the string and maps each token in the string a singleton list containing only the
@@ -29,12 +30,9 @@
                (cons document-postings acc)))
       (flatten acc))))
 
-(defrecord InvertedIndex [documents index])
-
 (defn- doc-id-map [documents]
-  (let [ids (range (count documents))
-        doc-names (for [doc documents] (first (split doc #"\s+")))]
-    (zipmap ids doc-names)))
+  (zipmap (range (count documents))
+          (for [doc documents] (first (split doc #"\s+")))))
 
 (defn inverted-index
   "Constructs an inverted index for the text documents supplied. This first creates a postings list
@@ -88,9 +86,10 @@
 (defmethod search-index-op :prox [_ term1-documents term2-documents]
   nil)
 
+;;; Parsing search queries
 (def ^:private operators ["AND" "OR"])
 
-(defn- operator? [text]
+(defn- operator?  [text]
   (let [text (str text)]
     (or (= (first text) \_)
         (some #{text} operators))))
@@ -100,12 +99,12 @@
   [{:keys [index] :as inverted-index} query]
   (let [handle (partial handle-query inverted-index)]
     (cond
-      ; Base cases
+      ;; Base cases
       (operator? query) query
       (symbol? query) (get index (str query))
       (empty? query) ()
 
-      ; Recursive case
+      ;; Recursive case
       (list? query)
       (let [[first-term & remaining-terms] query]
         (reduce (fn [documents-acc [operation term]]
