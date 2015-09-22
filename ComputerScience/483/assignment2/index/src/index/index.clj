@@ -54,10 +54,23 @@
        inverted-index))
 
 ;;; Searching our inverted index
+(def ^:private operators ["AND" "OR"])
+
+(defn- operator?  [text]
+  (let [text (str text)]
+    (or (= (first text) \_)
+        (some #{text} operators))))
+
+(defn- operator->keyword
+  "Returns the correct keyword operator a particular operation."
+  [operator]
+  (cond
+    (= (first (str operator)) \_) :prox
+    :else (keyword (lower-case operator))))
 
 (defmulti search-index-op
   "Implements different search operations"
-  (fn [op term1-results term2-results] op))
+  (fn [op term1-results term2-results] (operator->keyword op)))
 
 (defmethod search-index-op :and [_ term1-documents term2-documents]
   (loop [documents []
@@ -87,19 +100,6 @@
   nil)
 
 ;;; Parsing search queries
-(def ^:private operators ["AND" "OR"])
-
-(defn- operator?  [text]
-  (let [text (str text)]
-    (or (= (first text) \_)
-        (some #{text} operators))))
-
-(defn- operator->keyword
-  "Returns the correct keyword operator a particular operation."
-  [operator]
-  (cond
-    (= (first (str operator)) \_) :prox
-    :else (keyword (lower-case operator))))
 
 (defn- handle-query
   "Handles query operators (AND, OR, etc.) as a reduction."
@@ -115,9 +115,7 @@
       (list? query)
       (let [[first-term & remaining-terms] query]
         (reduce (fn [documents-acc [operation term]]
-                  (search-index-op (operator->keyword operation)
-                                   documents-acc
-                                   (handle term)))
+                  (search-index-op operation documents-acc (handle term)))
                 (handle first-term)
                 (partition 2 remaining-terms))))))
 
