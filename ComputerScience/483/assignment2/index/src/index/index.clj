@@ -94,6 +94,13 @@
     (or (= (first text) \_)
         (some #{text} operators))))
 
+(defn- operator->keyword
+  "Returns the correct keyword operator a particular operation."
+  [operator]
+  (cond
+    (= (first (str operator)) \_) :prox
+    :else (keyword (lower-case operator))))
+
 (defn- handle-query
   "Handles query operators (AND, OR, etc.) as a reduction."
   [{:keys [index] :as inverted-index} query]
@@ -108,7 +115,9 @@
       (list? query)
       (let [[first-term & remaining-terms] query]
         (reduce (fn [documents-acc [operation term]]
-                  (search-index-op (keyword (lower-case operation)) documents-acc (handle term)))
+                  (search-index-op (operator->keyword operation)
+                                   documents-acc
+                                   (handle term)))
                 (handle first-term)
                 (partition 2 remaining-terms))))))
 
