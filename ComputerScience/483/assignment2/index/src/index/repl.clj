@@ -1,7 +1,7 @@
-(ns index.util
+(ns index.repl
   "Functions related to the search repl"
   (:require [index.index :refer [search-index inverted-index]]
-            [clojure.string :refer [split split-lines trim join]]))
+            [clojure.string :refer [join]]))
 
 (def ^:dynamic *prompt*
   "This is the prompt text that will be printed while asking for user queries."
@@ -21,5 +21,5 @@
   [index]
   (loop [query-text (prompt)]
     (when (not-empty query-text)
-      (println (search-index index query-text))
+      (println (join ", " (search-index index query-text)))
       (recur (prompt)))))
