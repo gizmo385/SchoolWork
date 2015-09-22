@@ -1,5 +1,7 @@
 (ns index.core
   (:require [index.index :refer [search-index file->index]]
+            [index.repl :refer [search-index-loop]]
+            [clojure.string :refer [join]]
             [clojure.pprint :refer [pprint]])
   (:gen-class))
 
