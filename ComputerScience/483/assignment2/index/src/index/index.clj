@@ -120,12 +120,12 @@
 (defn- read-query
   "We read in a particular query by interpreting it as a parenthesized expression in EDN notation,
    which is described here: https://github.com/edn-format/edn"
-  [query]
+  [raw-query]
   (try
-    (as-> query <>
-         (s/replace <> "/" "_")
-         (str "(" <> ")")
-         (edn/read-string <>))
+    (as-> raw-query query
+         (s/replace query "/" "_") ; This is for proximity queries. / cannot be in symbols, _ can
+         (str "(" query ")")
+         (edn/read-string query))
     (catch RuntimeException re nil)))
 
 (defn search-index
