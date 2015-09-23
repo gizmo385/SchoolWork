@@ -92,19 +92,13 @@
     (if (and term1-documents term2-documents)
       (let [term1-first (first term1-documents)
             term2-first (first term2-documents)
-            term1-doc-id (:document-id term1-first)
-            term2-doc-id (:document-id term2-first)
-            term1-lower (< term1-doc-id term2-doc-id)]
-        (if (= term1-doc-id term2-doc-id)
-          ;; Either we need to advance both document lists
-          (recur (conj documents term1-first)
-                 (next term1-documents)
-                 (next term2-documents))
-          ;; Or we need to a single document list
-          (recur documents
-                 ;; And the list we advance is the one with the smaller current number
-                 (if term1-lower (next term1-documents) term1-documents)
-                 (if term1-lower term2-documents (next term2-documents)))))
+            doc-id-compare (compare (:document-id term1-first) (:document-id term2-first))]
+        (cond
+          (= 0 doc-id-compare) (recur (conj documents term1-first)
+                                      (next term1-documents)
+                                      (next term2-documents))
+          (< 0 doc-id-compare) (recur documents term1-documents (next term2-documents))
+          (> 0 doc-id-compare) (recur documents (next term1-documents) term2-documents)))
       documents)))
 
 (defmethod search-index-op :prox [operator term1-documents term2-documents]
