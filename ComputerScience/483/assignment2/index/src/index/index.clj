@@ -1,4 +1,5 @@
 (ns index.index
+  "Functions to the create and search an inverted index structure."
   (:require [clojure.string :refer [split lower-case split-lines] :as s]
             [clojure.edn :as edn]
             [clojure.algo.generic.functor :refer [fmap]]))
@@ -26,6 +27,7 @@
       (fmap sort acc))))
 
 (defn- tokenize
+  "Tokenizes the string based on the positions of the tokens in the document"
   [doc-id string]
   (for [[string positions] (gather-positions string)]
     {string (list (Posting. doc-id positions))}))
@@ -37,7 +39,9 @@
     (for [[document-id document] (enumerate documents)]
       (tokenize document-id document))))
 
-(defn- doc-id-map [documents]
+(defn- doc-id-map
+  "Zips a range (0...n) where n is the number of documents with the list of document names."
+  [documents]
   (zipmap (range (count documents))
           (for [doc documents] (first (split doc #"\s+")))))
 
@@ -49,8 +53,7 @@
   (let [index (->> documents
                    (postings-list)
                    (apply merge-with concat))]
-    (InvertedIndex. (doc-id-map documents)
-                    index)))
+    (InvertedIndex. (doc-id-map documents) index)))
 
 (defn file->index
   "Constructs an inverted index based on the lines in the file supplied"
@@ -63,7 +66,9 @@
 ;;; Searching our inverted index
 (def ^:private operators ["AND" "OR"])
 
-(defn- operator?  [text]
+(defn- operator?
+  "Returns whether or not a particular string is an operator"
+  [text]
   (let [text (str text)]
     (or (= (first text) \_)
         (some #{text} operators))))
