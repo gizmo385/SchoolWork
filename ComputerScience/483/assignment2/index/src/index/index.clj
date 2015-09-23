@@ -102,9 +102,6 @@
                  (if term1-lower term2-documents (rest term2-documents)))))
       documents)))
 
-(defmethod search-index-op :or [_ term1-documents term2-documents]
-  (distinct (concat term1-documents term2-documents)))
-
 (defmethod search-index-op :prox [operator term1-documents term2-documents]
   (let [proximity (Integer/parseInt (subs (str operator) 1))]
     (println proximity)))
