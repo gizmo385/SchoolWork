@@ -84,7 +84,7 @@
          term1-documents term1-documents
          term2-documents term2-documents]
     ;; If one of the documents lists is empty, then there will be nothing in common
-    (if (and (not-empty term1-documents) (not-empty term2-documents))
+    (if (and term1-documents term2-documents)
       (let [term1-first (first term1-documents)
             term2-first (first term2-documents)
             term1-doc-id (:document-id term1-first)
@@ -93,13 +93,13 @@
         (if (= term1-doc-id term2-doc-id)
           ;; Either we need to advance both document lists
           (recur (conj documents term1-first)
-                 (rest term1-documents)
-                 (rest term2-documents))
+                 (next term1-documents)
+                 (next term2-documents))
           ;; Or we need to a single document list
           (recur documents
                  ;; And the list we advance is the one with the smaller current number
-                 (if term1-lower (rest term1-documents) term1-documents)
-                 (if term1-lower term2-documents (rest term2-documents)))))
+                 (if term1-lower (next term1-documents) term1-documents)
+                 (if term1-lower term2-documents (next term2-documents)))))
       documents)))
 
 (defmethod search-index-op :prox [operator term1-documents term2-documents]
