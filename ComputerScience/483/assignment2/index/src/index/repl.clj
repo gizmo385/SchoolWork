@@ -21,7 +21,10 @@
   [index]
   (loop [query-text (prompt)]
     (when (not-empty query-text)
-      (as-> (search-index index query-text) result
-        (if (not-empty result) (join ", " result) "No results found")
-        (println result))
+      (let [result (search-index index query-text)]
+        (println
+          (cond
+            (string? result) result
+            (not-empty result) (join ", " result)
+            :else "No results found")))
       (recur (prompt)))))
