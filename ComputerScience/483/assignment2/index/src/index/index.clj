@@ -1,9 +1,11 @@
 (ns index.index
   (:require [clojure.string :refer [split lower-case split-lines] :as s]
-            [clojure.edn :as edn]))
+            [clojure.edn :as edn]
+            [clojure.algo.generic.functor :refer [fmap]]))
 
 ;;; Defining and creating an inverted index
 (defrecord InvertedIndex [documents index])
+(defrecord Posting [document-id positions])
 
 (defn- enumerate
   "Zips a collection with an zero-index range to create an enumerated list.
@@ -12,13 +14,21 @@
   [coll]
   (map vector (range) coll))
 
-(defn- tokenize
+(defn- gather-positions
   "Tokenizes the string and maps each token in the string a singleton list containing only the
    doc id"
+  [string]
+  (loop [strings (enumerate (rest (split string #"\s+")))
+         acc {}]
+    (if-let [[position string] (first strings)]
+      (recur (rest strings)
+             (assoc acc string (cons position (get acc string ()))))
+      (fmap sort acc))))
+
+(defn- tokenize
   [doc-id string]
-  (let [strings (rest (split string #"\s+"))]
-    (for [string strings]
-      {string (list doc-id)})))
+  (for [[string positions] (gather-positions string)]
+    {string (list (Posting. doc-id positions))}))
 
 (defn- postings-list
   "Creates a postings list for the documents supplied."
@@ -40,7 +50,7 @@
                    (postings-list)
                    (apply merge-with concat))]
     (InvertedIndex. (doc-id-map documents)
-                    (zipmap (keys index) (map sort (vals index))))))
+                    index)))
 
 (defn file->index
   "Constructs an inverted index based on the lines in the file supplied"
@@ -77,10 +87,12 @@
     (if (and (not-empty term1-documents) (not-empty term2-documents))
       (let [term1-first (first term1-documents)
             term2-first (first term2-documents)
-            term1-lower (< term1-first term2-first)]
-        (if (= term1-first term2-first)
+            term1-doc-id (:document-id term1-first)
+            term2-doc-id (:document-id term2-first)
+            term1-lower (< term1-doc-id term2-doc-id)]
+        (if (= term1-doc-id term2-doc-id)
           ;; Either we need to advance both document lists
-          (recur (cons term1-first documents)
+          (recur (conj documents term1-first)
                  (rest term1-documents)
                  (rest term2-documents))
           ;; Or we need to a single document list
@@ -135,6 +147,6 @@
   (if (empty? query)
     ()
     (if-let [parsed-query (read-query query)]
-      (map (partial get documents)
-           (handle-query inverted-index parsed-query))
+      (for [postings (handle-query inverted-index parsed-query)]
+        (get documents (:document-id postings)))
       "Error: Unbalanced parenthesis in query")))
