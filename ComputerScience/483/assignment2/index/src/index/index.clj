@@ -197,6 +197,8 @@
   (if (empty? query)
     ()
     (if-let [parsed-query (read-query query)]
-      (for [postings (handle-query inverted-index parsed-query)]
-        (get documents (:document-id postings)))
+      (try
+        (for [postings (handle-query inverted-index parsed-query)]
+          (get documents (:document-id postings)))
+        (catch IllegalArgumentException iae "There was an error while processing your query."))
       "Error: Unbalanced parenthesis in query")))
