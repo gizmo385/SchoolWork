@@ -131,9 +131,9 @@
   [raw-query]
   (try
     (as-> raw-query query
-         (s/replace query "/" "_") ; This is for proximity queries. / cannot be in symbols, _ can
-         (str "(" query ")")
-         (edn/read-string query))
+      (s/replace query "/" "_") ; This is for proximity queries. / cannot be in symbols, _ can
+      (str "(" query ")") ; Ensure entire query is parsed by wrapping it in parens
+      (edn/read-string query))
     (catch RuntimeException re nil)))
 
 (defn search-index
