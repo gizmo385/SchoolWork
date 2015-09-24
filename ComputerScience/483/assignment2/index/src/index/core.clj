@@ -16,9 +16,8 @@
       (if (not-empty query-terms)
         (println (search-index index (join " " query-terms)))
         (search-index-loop index)))
-    (binding [*out* *err*]
-      (println "ERROR: NO DOCUMENT SUPPLIED\n")
-      (println "Proper usage: lein run <filename> [query-terms ...]")
-      (println "Filename ensure that the first 2 words form the name of the document.")
-      (println "Query format: <term> [[operator term] ...] where operator is one of: OR, AND")
-      (System/exit 1))))
+    (do
+      (print "Enter a filename/path: ")
+      (flush)
+      (let [index (file->index (read-line))]
+        (search-index-loop index)))))
