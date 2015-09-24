@@ -55,8 +55,8 @@
     Example: (term1 AND (term2 /4 term3)) AND term5
 
     The currently supported operators are:
-        Binary AND (term1 AND term2): Returns documents where both terms are present
-        Proximity: (term1 /n term2): Returns documents where term2 is within n tokens of term1.
+       Binary AND (term1 AND term2): Returns documents where both terms are present
+       Proximity: (term1 /n term2): Returns documents where term2 is within n tokens of term1.
 
     Parenthesized queries are also supported. Additionally, there are the following commands:
        !help: Prints this message.

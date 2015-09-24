@@ -47,7 +47,9 @@
     {string (list (Posting. doc-id positions))}))
 
 (defn- postings-list
-  "Creates a postings list for the documents supplied. The postings list is a list"
+  "Creates a postings list for the documents supplied. This returns a list of individual postings,
+   which contain a single occurrence of a term in a single document. This can be combined (and are
+   later) by mapping applying (merge-with concat) to the list."
   [documents]
   (flatten
     (for [[document-id document] (enumerate documents)]
