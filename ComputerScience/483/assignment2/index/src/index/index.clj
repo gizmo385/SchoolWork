@@ -40,10 +40,9 @@
       (tokenize document-id document))))
 
 (defn- doc-id-map
-  "Zips a range (0...n) where n is the number of documents with the list of document names."
+  "Zips an infinite range with the list of document names"
   [documents]
-  (zipmap (range (count documents))
-          (for [doc documents] (first (split doc #"\s+")))))
+  (zipmap (range) (for [doc documents] (first (split doc #"\s+")))))
 
 (defn inverted-index
   "Constructs an inverted index for the text documents supplied. This first creates a postings list
