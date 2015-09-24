@@ -16,8 +16,8 @@
   (map vector (range) coll))
 
 (defn- gather-positions
-  "Tokenizes the string and maps each token in the string a singleton list containing only the
-   doc id"
+  "Tokenizes the string and maps each token in the string to a list containing the positions that
+   the token occurs at within the string."
   [string]
   (loop [strings (enumerate (rest (split string #"\s+")))
          acc {}]
@@ -27,13 +27,27 @@
       (fmap sort acc))))
 
 (defn- tokenize
-  "Tokenizes the string based on the positions of the tokens in the document"
+  "Tokenizes a string from a particular document. This will create a map where the string maps to a
+   list of postings, where each posting contains the document id and the positions within the
+   document that the string occurs at.
+
+   Example: For the document 'Doc1 This is a test of this thing' in a document with id 0, then
+   the following structure would be returned:
+   ({this ({:document-id 0 :positions (0)})}
+    {is ({:document-id 0 :positions (1)})}
+    {a ({:document-id 0 :positions (2)})}
+    {test ({:document-id 0 :positions (3)})}
+    {of ({:document-id 0 :positions (4)})}
+    {this ({:document-id 0 :positions (5)})}
+    {thing ({:document-id 0 :positions (6)})})
+
+   Note that Doc1 is ignored. The first token in the string is assumed to be the document name."
   [doc-id string]
   (for [[string positions] (gather-positions string)]
     {string (list (Posting. doc-id positions))}))
 
 (defn- postings-list
-  "Creates a postings list for the documents supplied."
+  "Creates a postings list for the documents supplied. The postings list is a list"
   [documents]
   (flatten
     (for [[document-id document] (enumerate documents)]
@@ -139,7 +153,16 @@
 ;;; Parsing search queries
 
 (defn- handle-query
-  "Handles query operators (AND, OR, etc.) as a reduction."
+  "Handles query operators (AND, OR, etc.) as a reduction. The reduction function works using the
+   following method:
+
+   For a query such as: term1 AND term2 /2 term3, it would be destructured as:
+   [term1 [AND term2] [/2 term3]]
+
+   The documents associated with term1 would be fetched and used as the initial value in the
+   reduction. Then, the AND implementation would be called where the initial value and the second
+   operand (term2 in this case) are passed as operands. The return of this would be used as the
+   initial value the next time around the reduction. Nested queries are handled recursively."
   [{:keys [index] :as inverted-index} query]
   (let [handle (partial handle-query inverted-index)]
     (cond
