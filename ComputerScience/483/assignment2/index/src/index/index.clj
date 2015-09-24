@@ -101,9 +101,41 @@
           (> 0 doc-id-compare) (recur documents (next term1-documents) term2-documents)))
       documents)))
 
+(defn- check-proximity [proximity term1-positions term2-positions]
+  (loop [term1-positions term1-positions
+         term2-positions term2-positions]
+    (if (and term1-positions term2-positions)
+      (let [distance (Math/abs (- (first term1-positions) (first term2-positions)))
+            comp-result (compare (first term1-positions) (first term2-positions))]
+        (cond
+          (<= distance proximity) true
+          (< 0 comp-result) (recur (next term1-positions) term2-positions)
+          (> 0 comp-result) (recur term1-positions (next term2-positions))))
+      false)))
+
 (defmethod search-index-op :prox [operator term1-documents term2-documents]
-  (let [proximity (Integer/parseInt (subs (str operator) 1))]
-    (println proximity)))
+  (loop [documents []
+         term1-documents term1-documents
+         term2-documents term2-documents]
+    (if (and term1-documents term2-documents)
+      (let [term1-first (first term1-documents)
+            term2-first (first term2-documents)
+            id-compare (compare (:document-id term1-first) (:document-id term2-first))]
+        (cond
+          (< 0 id-compare) (recur documents term1-documents (next term2-documents))
+          (> 0 id-compare) (recur documents (next term1-documents) term2-documents)
+
+          ;; Check proximities for identical terms
+          (= 0 id-compare)
+          (let [proximity (Integer/parseInt (subs (str operator) 1))]
+            (if (check-proximity proximity (:positions term1-first) (:positions term2-first))
+              (recur (conj documents term1-first)
+                     (next term1-documents)
+                     (next term2-documents))
+              (recur documents
+                     (next term1-documents)
+                     (next term2-documents))))))
+      documents)))
 
 ;;; Parsing search queries
 
