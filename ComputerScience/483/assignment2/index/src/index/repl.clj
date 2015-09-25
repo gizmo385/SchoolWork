@@ -81,7 +81,7 @@
 
 (defmethod handle-command "!count" [command index]
   (let [[command & query] (split command #"\s+")]
-    (printf "Your query returned %d results\n."
+    (printf "Your query returned %d results.\n"
             (count (search-index index (join " " query))))))
 
 
