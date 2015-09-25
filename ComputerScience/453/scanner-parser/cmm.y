@@ -49,6 +49,13 @@ prog : decl prog
      | epsilon
 
 decl : type var_decl_list SEMICOLON
+     | type name_args_lists SEMICOLON
+     | VOID name_args_lists SEMICOLON
+     | EXTERN type name_args_lists SEMICOLON
+     | EXTERN VOID name_args_lists SEMICOLON
+
+name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
+                | name_args_lists COMMA ID LEFT_PAREN param_types RIGHT_PAREN
 
 var_decl : ID
          | ID LEFT_SQUARE_BRACKET INTCON RIGHT_SQUARE_BRACKET
@@ -76,9 +83,6 @@ param_types_list : non_void_param_type
 
 func : type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET var_decl_list stmt_list RIGHT_CURLY_BRACKET
      | VOID ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET var_decl_list  stmt_list RIGHT_CURLY_BRACKET
-     | EXTERN type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET var_decl_list stmt_list RIGHT_CURLY_BRACKET
-     | EXTERN VOID ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET var_decl_list  stmt_list RIGHT_CURLY_BRACKET
-
      ;
 
 stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE
