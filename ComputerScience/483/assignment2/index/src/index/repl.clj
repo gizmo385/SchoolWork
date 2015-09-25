@@ -56,7 +56,8 @@
 
     The currently supported operators are:
        Binary AND (term1 AND term2): Returns documents where both terms are present
-       Proximity: (term1 /n term2): Returns documents where term2 is within n tokens of term1.
+       Proximity (term1 /n term2): Returns documents where term2 is within n tokens of term1.
+       Phrase (\"term1 term2 term3\"): Searches for an exact phrase in the text.
 
     Parenthesized queries are also supported. Additionally, there are the following commands:
        !help: Prints this message.
