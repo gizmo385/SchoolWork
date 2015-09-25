@@ -159,11 +159,11 @@
       ((this /1 is) AND (is /1 a) AND (a /1 phrase) AND (phrase /1 query))"
   [terms]
   (as-> terms terms
-    (partition 2 1 terms)
-    (map (fn [[t1 t2]] (list t1 '_1 t2)) terms)
-    (interleave (repeat 'AND) terms)
-    (rest terms)
-    (edn/read-string (str terms))))
+    (partition 2 1 terms) ; "hey a phrase query" --> ((hey a) (a phrase) (phrase query))
+    (map (fn [[t1 t2]] (list t1 '_1 t2)) terms) ; Add proximity operator to intermediate queries
+    (interleave (repeat 'AND) terms) ; Separate subqueries with AND operator
+    (rest terms) ; Drop the leading AND
+    (edn/read-string (str terms)))) ; Read it into a form
 
 (defn- phrase-query
   "Takes a phrase query and reparses it so that it is properly handled by the system."
