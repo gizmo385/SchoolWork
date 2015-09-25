@@ -152,30 +152,28 @@
                      (next term2-documents))))))
       documents)))
 
-(defn phrase-query
-  "Takes a phrase query and reparses it so that it is properly handled by the system.
-
-   This function will take a phrase query like:
+(defn- transform-phrase-query
+  "This function will take a phrase query like:
       'this is a phrase query'
    And restructure it like so:
-      ((this /1 is) AND (is /1 a) AND (a /1 phrase) AND (phrase /1 query))
-   "
+      ((this /1 is) AND (is /1 a) AND (a /1 phrase) AND (phrase /1 query))"
+  [terms]
+  (as-> terms terms
+    (partition 2 1 terms)
+    (map (fn [[t1 t2]] (list t1 '_1 t2)) terms)
+    (interleave (repeat 'AND) terms)
+    (rest terms)
+    (edn/read-string (str terms))))
+
+(defn- phrase-query
+  "Takes a phrase query and reparses it so that it is properly handled by the system."
   [query]
   (let [terms (split query #"\s+")
         term-count (count terms)]
     (cond
-      ;; Simple cases for short phrases (0 or 1)
       (= 1 term-count) (symbol (first terms))
       (zero? term-count) ()
-
-      ;; Longer phrase queries are restructured as a series of proximity queries joined by ANDs
-      :else
-      (as-> terms terms
-        (partition 2 1 terms)
-        (map (fn [[t1 t2]] (list t1 '_1 t2)) terms)
-        (interleave (repeat 'AND) terms)
-        (rest terms)
-        (edn/read-string (str terms))))))
+      :else (transform-phrase-query terms))))
 
 ;;; Parsing search queries
 
