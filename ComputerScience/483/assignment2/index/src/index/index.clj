@@ -27,9 +27,9 @@
       (fmap sort acc))))
 
 (defn- tokenize
-  "Tokenizes a string from a particular document. This will create a map where the string maps to a
-   list of postings, where each posting contains the document id and the positions within the
-   document that the string occurs at.
+  "Tokenizes a string from a particular document. This will create a map where the tokens in the
+   string maps to a list of postings, where each posting contains the document id and the positions
+   within the document that the string occurs at.
 
    Example: For the document 'Doc1 This is a test of this thing' in a document with id 0, then
    the following structure would be returned:
