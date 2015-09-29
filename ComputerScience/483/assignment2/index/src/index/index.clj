@@ -1,8 +1,7 @@
 (ns index.index
   "Functions to the create and search an inverted index structure."
   (:require [clojure.string :refer [split lower-case split-lines] :as s]
-            [clojure.edn :as edn]
-            [clojure.algo.generic.functor :refer [fmap]]))
+            [clojure.edn :as edn]))
 
 ;;; Defining and creating an inverted index
 (defrecord InvertedIndex [documents index])
@@ -22,9 +21,11 @@
   (loop [strings (enumerate (rest (split string #"\s+")))
          acc {}]
     (if-let [[position string] (first strings)]
+      ; Add this position to the list of positions and then recurse to check the next pair
       (recur (rest strings)
              (assoc acc string (cons position (get acc string ()))))
-      (fmap sort acc))))
+      ; Once we've finished, we can just return the map we've created
+      acc)))
 
 (defn- tokenize
   "Tokenizes a string from a particular document. This will create a map where the tokens in the
