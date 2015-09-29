@@ -67,8 +67,8 @@
        !count [query]: Counts the results of the provided query.
     """))
 
-(defmethod handle-command "!docs" [command index]
-  (println (join ", " (sort (vals (:documents index))))))
+(defmethod handle-command "!docs" [command {:keys [documents]}]
+  (println (join ", " (sort (vals documents)))))
 
 (defmethod handle-command "!prompt" [command _]
   (let [[command & prompt] (split command #"\s+")]
