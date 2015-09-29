@@ -84,4 +84,10 @@
     (printf "Your query returned %d results.\n"
             (count (search-index index (join " " query))))))
 
-
+(defmethod handle-command "!time" [command {:keys [documents] :as index}]
+  (let [[command & query] (split command #"\s+")
+        start (System/nanoTime)
+        results (search-index index (join " " query))
+        time-taken (/ (double (- (System/nanoTime) start)) 1000000.0)]
+    (println (join ", " results))
+    (println "This query took " time-taken " msecs.")))
