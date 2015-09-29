@@ -1,4 +1,6 @@
 (ns index.core
+  "This is the main entry point into the program. It provides only the main function, which creates
+   the inverted index based on a supplied document source."
   (:require [index.index :refer [search-index file->index]]
             [index.repl :refer [search-index-loop]]
             [clojure.string :refer [join]]
