@@ -105,11 +105,12 @@
          term2-documents term2-documents]
     ;; If one of the documents lists is empty, then there will be nothing in common
     (if (and term1-documents term2-documents)
-      (let [term1-first (first term1-documents)
-            term2-first (first term2-documents)
-            doc-id-compare (compare (:document-id term1-first) (:document-id term2-first))]
+      (let [term1-occurrence (first term1-documents)
+            term2-occurrence (first term2-documents)
+            doc-id-compare (compare (:document-id term1-occurrence)
+                                    (:document-id term2-occurrence))]
         (cond
-          (= 0 doc-id-compare) (recur (conj documents term1-first)
+          (= 0 doc-id-compare) (recur (conj documents term1-occurrence)
                                       (next term1-documents)
                                       (next term2-documents))
           (< 0 doc-id-compare) (recur documents term1-documents (next term2-documents))
@@ -133,9 +134,9 @@
          term1-documents term1-documents
          term2-documents term2-documents]
     (if (and term1-documents term2-documents)
-      (let [term1-first (first term1-documents)
-            term2-first (first term2-documents)
-            id-compare (compare (:document-id term1-first) (:document-id term2-first))]
+      (let [term1-occurrence (first term1-documents)
+            term2-occurrence (first term2-documents)
+            id-compare (compare (:document-id term1-occurrence) (:document-id term2-occurrence))]
         (cond
           (< 0 id-compare) (recur documents term1-documents (next term2-documents))
           (> 0 id-compare) (recur documents (next term1-documents) term2-documents)
@@ -143,8 +144,10 @@
           ;; Check proximities for identical terms
           (= 0 id-compare)
           (let [proximity (Integer/parseInt (subs (str operator) 1))]
-            (if (check-proximity proximity (:positions term1-first) (:positions term2-first))
-              (recur (conj documents term1-first)
+            (if (check-proximity proximity
+                                 (:positions term1-occurrence)
+                                 (:positions term2-occurrence))
+              (recur (conj documents term1-occurrence)
                      (next term1-documents)
                      (next term2-documents))
               (recur documents
