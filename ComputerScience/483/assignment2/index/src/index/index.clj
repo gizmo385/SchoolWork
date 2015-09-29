@@ -2,7 +2,8 @@
   "Functions to the create and search an inverted index structure."
   (:require [clojure.string :refer [split lower-case split-lines] :as s]
             [clojure.edn :as edn]
-            [clojure.algo.generic.functor :refer [fmap]]))
+            [clojure.algo.generic.functor :refer [fmap]]
+            [clojure.java.io :refer [as-file]]))
 
 ;;; Defining and creating an inverted index
 (defrecord InvertedIndex [documents index])
@@ -73,10 +74,15 @@
 (defn file->index
   "Constructs an inverted index based on the lines in the file supplied"
   [filename]
-  (->> filename
-       slurp
-       split-lines
-       inverted-index))
+  (if (.exists (as-file filename))
+    (->> filename
+         slurp
+         split-lines
+         inverted-index)
+    (binding [*out* *err*]
+      (printf "The file \"%s\" does not exist and cannot be indexed!\n" filename)
+      (flush)
+      (System/exit 1))))
 
 ;;; Searching our inverted index
 (def ^:private operators ["AND" "OR"])
