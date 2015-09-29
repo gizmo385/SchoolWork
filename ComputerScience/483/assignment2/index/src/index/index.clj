@@ -6,7 +6,7 @@
 
 ;;; Defining and creating an inverted index
 (defrecord InvertedIndex [documents index])
-(defrecord Posting [document-id positions])
+(defrecord TermOccurrence [document-id positions])
 
 (defn- enumerate
   "Zips a collection with an zero-index range to create an enumerated list.
@@ -44,7 +44,7 @@
    Note that Doc1 is ignored. The first token in the string is assumed to be the document name."
   [doc-id string]
   (for [[string positions] (gather-positions string)]
-    {string (list (Posting. doc-id positions))}))
+    {string (list (TermOccurrence. doc-id positions))}))
 
 (defn- postings-list
   "Creates a postings list for the documents supplied. This returns a list of individual postings,
