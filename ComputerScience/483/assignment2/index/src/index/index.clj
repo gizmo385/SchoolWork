@@ -121,11 +121,11 @@
          term2-positions term2-positions]
     (if (and term1-positions term2-positions)
       (let [distance (Math/abs (- (first term1-positions) (first term2-positions)))
-            comp-result (compare (first term1-positions) (first term2-positions))]
+            position-comparison (compare (first term1-positions) (first term2-positions))]
         (cond
           (<= distance proximity) true
-          (< 0 comp-result) (recur (next term1-positions) term2-positions)
-          (> 0 comp-result) (recur term1-positions (next term2-positions))))
+          (< 0 position-comparison) (recur (next term1-positions) term2-positions)
+          (> 0 position-comparison) (recur term1-positions (next term2-positions))))
       false)))
 
 (defmethod search-index-op :prox [operator term1-documents term2-documents]
