@@ -65,6 +65,7 @@
        !docs: Prints the names of the documents in the collection.
        !prompt [prompt]: Change the prompt to some specified string.
        !count [query]: Counts the results of the provided query.
+       !time [query]: Determines how long a particular query takes.
     """))
 
 (defmethod handle-command "!docs" [command {:keys [documents]}]
