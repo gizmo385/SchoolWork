@@ -18,6 +18,14 @@
 
 (defmulti handle-command (fn [command index] (first (split command #"\s+"))))
 
+(defn parse-result
+  "Parses a search result to ensure that it is printed by the REPL correctly."
+  [result]
+  (cond
+    (string? result) result
+    (not-empty result) (join ", " result)
+    :else "No results found"))
+
 (defn search-index-loop
   "Starts a prompt that listens for queries and then makes those queries against the supplied
    index."
@@ -29,12 +37,10 @@
     (when (not-empty query-text)
       (if (= (first query-text) \!) ; Check if the query is actually a REPL command
         (handle-command query-text index)
-        (as-> (search-index index query-text) result
-          (cond
-            (string? result) result
-            (not-empty result) (join ", " result)
-            :else "No results found")
-          (println result)))
+        (->> query-text
+             (search-index index)
+             (parse-result)
+             (println)))
       (recur (prompt)))))
 
 ;;; REPL command implementations
@@ -90,5 +96,5 @@
         start (System/nanoTime)
         results (search-index index (join " " query))
         time-taken (/ (double (- (System/nanoTime) start)) 1000000.0)]
-    (println (join ", " results))
+    (println (parse-result results))
     (println "This query took " time-taken " msecs.")))
