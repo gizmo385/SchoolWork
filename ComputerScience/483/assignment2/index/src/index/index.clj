@@ -1,6 +1,6 @@
 (ns index.index
   "Functions to the create and search an inverted index structure."
-  (:require [clojure.string :refer [split lower-case split-lines] :as s]
+  (:require [clojure.string :refer [split lower-case split-lines join] :as s]
             [clojure.edn :as edn]
             [clojure.algo.generic.functor :refer [fmap]]
             [clojure.java.io :refer [as-file]]))
@@ -85,6 +85,7 @@
       (System/exit 1))))
 
 ;;; Searching our inverted index
+(defrecord PositionalResult [posting positions])
 (def ^:private operators ["AND" "OR"])
 
 (defn- operator?
@@ -127,13 +128,15 @@
   (loop [term1-positions term1-positions
          term2-positions term2-positions]
     (if (and term1-positions term2-positions)
-      (let [distance (Math/abs (- (first term1-positions) (first term2-positions)))
-            position-comparison (compare (first term1-positions) (first term2-positions))]
+      (let [first-position (first term1-positions)
+            second-position (first term2-positions)
+            distance (Math/abs (- first-position second-position))
+            position-comparison (compare first-position second-position)]
         (cond
-          (<= distance proximity) true
+          (<= distance proximity) (list first-position second-position)
           (< 0 position-comparison) (recur (next term1-positions) term2-positions)
           (> 0 position-comparison) (recur term1-positions (next term2-positions))))
-      false)))
+      nil)))
 
 (defmethod search-index-op :prox [operator term1-documents term2-documents]
   (loop [documents []
@@ -150,10 +153,10 @@
           ;; Check proximities for identical terms
           (= 0 id-compare)
           (let [proximity (Integer/parseInt (subs (str operator) 1))]
-            (if (check-proximity proximity
-                                 (:positions term1-occurrence)
-                                 (:positions term2-occurrence))
-              (recur (conj documents term1-occurrence)
+            (if-let [positions (check-proximity proximity
+                                                (:positions term1-occurrence)
+                                                (:positions term2-occurrence))]
+              (recur (conj documents (PositionalResult. term1-occurrence positions))
                      (next term1-documents)
                      (next term2-documents))
               (recur documents
@@ -225,6 +228,14 @@
       (edn/read-string query))
     (catch RuntimeException re nil)))
 
+(defn- handle-result [result {:keys [documents]}]
+  (cond
+    (instance? PositionalResult result)
+    (apply format "%s (%d, %d)"
+           (get documents (-> result :posting :document-id))
+           (:positions result))
+    (instance? TermOccurrence result) (get documents (:document-id result))))
+
 (defn search-index
   "Searches the index by combining the supplied terms with a particular operation. This returns a
    list of document ids"
@@ -233,7 +244,7 @@
     ()
     (if-let [parsed-query (read-query query)]
       (try
-        (for [postings (handle-query inverted-index parsed-query)]
-          (get documents (:document-id postings)))
+        (for [result (handle-query inverted-index parsed-query)]
+          (handle-result result inverted-index))
         (catch IllegalArgumentException iae "There was an error while processing your query."))
-      "Error: Unbalanced parenthesis in query")))
+      "Error: Unbalanced elements (parenthesis, quotations, etc) in query")))
