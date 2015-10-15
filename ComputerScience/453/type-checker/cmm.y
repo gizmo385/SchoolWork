@@ -23,7 +23,7 @@ Type baseDeclType;
     char *string;
 }
 
-/*%type<expression> expr optional_expr*/
+%type<expression> expr optional_expr
 /*%type<statementList> stmt_list*/
 /*%type<statement> stmt assg optional_assign*/
 
@@ -46,14 +46,10 @@ Type baseDeclType;
 %token ASSIGN
 
 /* Text tokens */
-/*%token <expression> INTCON*/
-/*%token <expression> CHARCON*/
-/*%token <expression> STRINGCON*/
-%token INTCON
-%token CHARCON
-%token STRINGCON
-%token ID
-/*%type<string> ID*/
+%token <expression> INTCON
+%token <expression> CHARCON
+%token <expression> STRINGCON
+%token <string> ID
 %token TEXT SPACE
 
 /* If/Else Precedence fix */
@@ -101,28 +97,28 @@ stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE
      | error RIGHT_CURLY_BRACKET
      ;
 
-expr : MINUS expr %prec UMINUS
-     | NOT expr %prec UMINUS
-     | expr ADD expr %prec add_sub
-     | expr MINUS expr %prec add_sub
-     | expr AND expr
-     | expr OR expr
-     | expr MUL expr %prec mul_div
-     | expr DIV expr %prec mul_div
-     | expr EQ expr %prec equality_op
-     | expr NEQ expr %prec equality_op
-     | expr GTE expr %prec relop
-     | expr LTE expr %prec relop
-     | expr GT expr %prec relop
-     | expr LT expr %prec relop
+expr : MINUS expr %prec UMINUS                          { $$ = newUnaryExpression(NEG_OP, $2); }
+     | NOT expr %prec UMINUS                            { $$ = newUnaryExpression(NOT_OP, $2); }
+     | expr ADD expr %prec add_sub                      { $$ = newBinaryExpression(ADD_OP, $1, $3); }
+     | expr MINUS expr %prec add_sub                    { $$ = newBinaryExpression(SUB_OP, $1, $3); }
+     | expr AND expr                                    { $$ = newBinaryExpression(AND_OP, $1, $3); }
+     | expr OR expr                                     { $$ = newBinaryExpression(OR_OP, $1, $3); }
+     | expr MUL expr %prec mul_div                      { $$ = newBinaryExpression(MUL_OP, $1, $3); }
+     | expr DIV expr %prec mul_div                      { $$ = newBinaryExpression(DIV_OP, $1, $3); }
+     | expr EQ expr %prec equality_op                   { $$ = newBinaryExpression(EQ_OP, $1, $3); }
+     | expr NEQ expr %prec equality_op                  { $$ = newBinaryExpression(NEQ_OP, $1, $3); }
+     | expr GTE expr %prec relop                        { $$ = newBinaryExpression(GTE_OP, $1, $3); }
+     | expr LTE expr %prec relop                        { $$ = newBinaryExpression(LTE_OP, $1, $3); }
+     | expr GT expr %prec relop                         { $$ = newBinaryExpression(GT_OP, $1, $3); }
+     | expr LT expr %prec relop                         { $$ = newBinaryExpression(LT_OP, $1, $3); }
      | ID LEFT_PAREN expr_list RIGHT_PAREN
      | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
      | ID
-     | LEFT_PAREN expr RIGHT_PAREN
-     | INTCON
-     | CHARCON
-     | STRINGCON
-     | error
+     | LEFT_PAREN expr RIGHT_PAREN                      { $$ = $2; }
+     | INTCON                                           { $$ = newIntConstExpression(atoi(yytext)); }
+     | CHARCON                                          { $$ = newCharConstExpression(yytext[0]); }
+     | STRINGCON                                        { $$ = newCharArrayConstExpression(strdup(yytext)); }
+     | error                                            { $$ = NULL; }
      ;
 
 name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
