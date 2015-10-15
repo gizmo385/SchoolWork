@@ -81,6 +81,8 @@ expr : MINUS expr %prec UMINUS
      | NOT expr %prec UMINUS
      | expr ADD expr %prec add_sub
      | expr MINUS expr %prec add_sub
+     | expr AND expr
+     | expr OR expr
      | expr MUL expr %prec mul_div
      | expr DIV expr %prec mul_div
      | expr EQ expr %prec equality_op
