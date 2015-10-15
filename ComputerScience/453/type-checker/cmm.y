@@ -23,9 +23,9 @@ Type baseDeclType;
     char *string;
 }
 
-%type<expression> expr optional_expr
-%type<statementList> stmt_list
-%type<statement> stmt assg optional_assign
+/*%type<expression> expr optional_expr*/
+/*%type<statementList> stmt_list*/
+/*%type<statement> stmt assg optional_assign*/
 
 /* Language Tokens */
 %token WHILE FOR
@@ -46,11 +46,14 @@ Type baseDeclType;
 %token ASSIGN
 
 /* Text tokens */
-%token <expression> INTCON
-%token <expression> CHARCON
-%token <expression> STRINGCON
+/*%token <expression> INTCON*/
+/*%token <expression> CHARCON*/
+/*%token <expression> STRINGCON*/
+%token INTCON
+%token CHARCON
+%token STRINGCON
 %token ID
-%type<string> ID
+/*%type<string> ID*/
 %token TEXT SPACE
 
 /* If/Else Precedence fix */
@@ -85,69 +88,49 @@ func : type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_va
      | error RIGHT_CURLY_BRACKET
      ;
 
-stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE { $$ = newIfStatement($3, $5); }
-     | IF LEFT_PAREN expr RIGHT_PAREN stmt ELSE stmt { $$ = newIfElseStatement($3, $5, $7); }
-     | WHILE LEFT_PAREN expr RIGHT_PAREN stmt { $$ = newWhileStatement($3, $5); }
-     | FOR LEFT_PAREN optional_assign SEMICOLON optional_expr SEMICOLON optional_assign RIGHT_PAREN stmt {
-        $$ = newForStatement((AssignmentStatement *)$3, $5, (AssignmentStatement *)$7, $9);
-     }
-     | RETURN optional_expr SEMICOLON   { $$ = newReturnStatement($2); }
-     | assg SEMICOLON                   { $$ = $1 }
-     | ID LEFT_PAREN expr_list RIGHT_PAREN SEMICOLON { $$ = NULL; /* TODO */ }
-     | LEFT_CURLY_BRACKET stmt_list RIGHT_CURLY_BRACKET {
-        Statement *stmt = malloc(sizeof(Statement));
-        stmt->stmt_list = $2;
-        stmt->type = ST_LIST;
-
-        $$ = stmt;
-        }
-     | SEMICOLON                        { $$ = NULL; }
-     | error SEMICOLON                  { $$ = NULL; }
-     | error RIGHT_CURLY_BRACKET        { $$ = NULL; }
+stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE
+     | IF LEFT_PAREN expr RIGHT_PAREN stmt ELSE stmt
+     | WHILE LEFT_PAREN expr RIGHT_PAREN stmt
+     | FOR LEFT_PAREN optional_assign SEMICOLON optional_expr SEMICOLON optional_assign RIGHT_PAREN stmt
+     | RETURN optional_expr SEMICOLON
+     | assg SEMICOLON
+     | ID LEFT_PAREN expr_list RIGHT_PAREN SEMICOLON
+     | LEFT_CURLY_BRACKET stmt_list RIGHT_CURLY_BRACKET
+     | SEMICOLON
+     | error SEMICOLON
+     | error RIGHT_CURLY_BRACKET
      ;
 
-expr : MINUS expr %prec UMINUS          { $$ = newUnaryExpression(NEG_OP, $2); }
-     | NOT expr %prec UMINUS            { $$ = newUnaryExpression(NOT_OP, $2); }
-     | expr ADD expr %prec add_sub      { $$ = newBinaryExpression(ADD_OP, $1, $3); }
-     | expr MINUS expr %prec add_sub    { $$ = newBinaryExpression(SUB_OP, $1, $3); }
-     | expr MUL expr %prec mul_div      { $$ = newBinaryExpression(MUL_OP, $1, $3); }
-     | expr DIV expr %prec mul_div      { $$ = newBinaryExpression(DIV_OP, $1, $3); }
-     | expr EQ expr %prec equality_op   { $$ = newBinaryExpression(EQ_OP, $1, $3); }
-     | expr NEQ expr %prec equality_op  { $$ = newBinaryExpression(NEQ_OP, $1, $3); }
-     | expr GTE expr %prec relop        { $$ = newBinaryExpression(GTE_OP, $1, $3); }
-     | expr LTE expr %prec relop        { $$ = newBinaryExpression(LTE_OP, $1, $3); }
-     | expr GT expr %prec relop         { $$ = newBinaryExpression(GT_OP, $1, $3); }
-     | expr LT expr %prec relop         { $$ = newBinaryExpression(LT_OP, $1, $3); }
-     | ID LEFT_PAREN expr_list RIGHT_PAREN  { $$ = NULL; /* TODO*/ }
-     | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET { $$ = NULL; /* TODO*/ }
-     | ID {
-        ScopeVariable *var = findScopeVariable(scope, yylval.string);
-
-        if(var) {
-            $$ = newConstExpression(var->type, var->value);
-        } else {
-            fprintf(stderr, "ERROR: Invalid Identifier: %s\n", yylval.string);
-        }
-     }
-     | LEFT_PAREN expr RIGHT_PAREN      { $$ = $2; }
-     | INTCON                           { $$ = newIntConstExpression(atoi(yytext)); }
-     | CHARCON                          { $$ = newCharConstExpression(yytext[0]); }
-     | STRINGCON                        { $$ = newCharArrayConstExpression(strdup(yytext)); }
-     | error                            { $$ = NULL; }
+expr : MINUS expr %prec UMINUS
+     | NOT expr %prec UMINUS
+     | expr ADD expr %prec add_sub
+     | expr MINUS expr %prec add_sub
+     | expr AND expr
+     | expr OR expr
+     | expr MUL expr %prec mul_div
+     | expr DIV expr %prec mul_div
+     | expr EQ expr %prec equality_op
+     | expr NEQ expr %prec equality_op
+     | expr GTE expr %prec relop
+     | expr LTE expr %prec relop
+     | expr GT expr %prec relop
+     | expr LT expr %prec relop
+     | ID LEFT_PAREN expr_list RIGHT_PAREN
+     | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET
+     | ID
+     | LEFT_PAREN expr RIGHT_PAREN
+     | INTCON
+     | CHARCON
+     | STRINGCON
+     | error
      ;
 
 name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
                 | name_args_lists COMMA ID LEFT_PAREN param_types RIGHT_PAREN
                 ;
 
-var_decl : ID { declareUndeclaredVar(scope, baseDeclType, yylval.string); }
-         | ID LEFT_SQUARE_BRACKET INTCON RIGHT_SQUARE_BRACKET {
-            if(baseDeclType == CHAR_TYPE) {
-                declareUndeclaredVar(scope, CHAR_ARRAY_TYPE, yylval.string);
-            } else if(baseDeclType == INT_TYPE) {
-                declareUndeclaredVar(scope, INT_ARRAY_TYPE, yylval.string);
-            }
-            }
+var_decl : ID
+         | ID LEFT_SQUARE_BRACKET INTCON RIGHT_SQUARE_BRACKET
          ;
 
 var_decl_list : var_decl
@@ -155,12 +138,13 @@ var_decl_list : var_decl
               | epsilon
               ;
 
-type : CHAR                             { baseDeclType = CHAR_TYPE; }
-     | INT                              { baseDeclType = INT_TYPE; }
+type : CHAR
+     | INT
      ;
 
 param_types : VOID
-            | param_types_list
+            | non_void_param_type
+            | param_types_list COMMA non_void_param_type
             ;
 
 non_void_param_type : type ID
@@ -175,21 +159,21 @@ param_types_list : non_void_param_type
 optional_var_decl_list : type var_decl_list SEMICOLON optional_var_decl_list
                        | epsilon
 
-optional_assign: assg                   { $$ = $1; }
-               | error                  { $$ = NULL; }
-               | epsilon                { $$ = NULL; }
+optional_assign: assg
+               | error
+               | epsilon
                ;
 
-optional_expr : expr                    { $$ = $1; }
-              | epsilon                 { $$ = NULL; }
+optional_expr : expr
+              | epsilon
               ;
 
-stmt_list : stmt stmt_list              { $$ = newStatementList($1, $2); }
-          | epsilon                     { $$ = NULL; }
+stmt_list : stmt stmt_list
+          | epsilon
           ;
 
 assg : ID ASSIGN expr
-     | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET ASSIGN expr { $$ = NULL; /* TODO*/ }
+     | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET ASSIGN expr
      ;
 
 expr_list : optional_expr
