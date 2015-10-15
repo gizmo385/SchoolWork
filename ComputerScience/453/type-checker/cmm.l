@@ -66,8 +66,13 @@ int mycolno = 1;
     /* Delimiters */
 ";"                                 { mycolno += strlen(yytext); return SEMICOLON; }
 ","                                 { mycolno += strlen(yytext); return COMMA; }
+
     /* DISCARD COMMENTS */
 "/*"                                { mycolno += strlen(yytext); BEGIN(comment); }
+<comment><<EOF>>                    {
+    fprintf(stderr, "Unexpected end of file while parsing comment on line %d.\n", mylineno);
+    exit(1);
+}
 <comment>[^*\n]*                    { mycolno += strlen(yytext); }
 <comment>"*"+[^*/\n]*               { mycolno += strlen(yytext); }
 <comment>\n                         { mylineno += 1; mycolno = 1;}
