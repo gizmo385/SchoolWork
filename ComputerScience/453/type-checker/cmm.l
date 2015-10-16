@@ -78,7 +78,7 @@ int mycolno = 1;
 ","                                 { mycolno += strlen(yytext); return COMMA; }
 
     /* IDENTIFIERS */
-[a-zA-Z][a-zA-Z0-9\_]*               { mycolno += strlen(yytext); yylval.string = yytext; return ID; }
+[a-zA-Z][a-zA-Z0-9\_]*               { mycolno += strlen(yytext); yylval.string = strdup(yytext); return ID; }
 
     /* WHITESPACE */
 [[:space:]]{-}[\n]+                 { mycolno += strlen(yytext); }
