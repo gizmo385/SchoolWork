@@ -5,6 +5,7 @@
 #include <string.h>
 #include "symtab.h"
 #include "utils.h"
+#include "ast.h"
 #include "globals.h"
 #include "cmm.tab.h"
 
@@ -14,6 +15,7 @@ int mylineno;
 int mycolno;
 bool foundError = false;
 
+Type currentFunctionReturnType;
 Scope *scope;
 Type baseDeclType;
 %}
@@ -22,12 +24,13 @@ Type baseDeclType;
     Expression *expression;
     Statement *statement;
     StatementList *statementList;
+    Type type;
     char *string;
 }
 
 %type<expression> expr optional_expr
-/*%type<statementList> stmt_list*/
-/*%type<statement> stmt assg optional_assign*/
+%type<statement> stmt assg optional_assign func
+%type<type> type
 
 /* Language Tokens */
 %token WHILE FOR
@@ -82,7 +85,9 @@ decl : type var_decl_list SEMICOLON
      ;
 
 func : type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_var_decl_list stmt_list RIGHT_CURLY_BRACKET
+     { currentFunctionReturnType = $1; }
      | VOID ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_var_decl_list  stmt_list RIGHT_CURLY_BRACKET
+     { currentFunctionReturnType = VOID_TYPE; }
      | error RIGHT_CURLY_BRACKET
      ;
 
@@ -145,8 +150,8 @@ var_decl_list : var_decl
               | epsilon
               ;
 
-type : CHAR { baseDeclType = CHAR_TYPE; }
-     | INT { baseDeclType = INT_TYPE; }
+type : CHAR     { baseDeclType = CHAR_TYPE; $$ = CHAR_TYPE; }
+     | INT      { baseDeclType = INT_TYPE;  $$ = INT_TYPE; }
      ;
 
 param_types : VOID
