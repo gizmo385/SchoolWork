@@ -127,14 +127,7 @@ name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
                 | name_args_lists COMMA ID LEFT_PAREN param_types RIGHT_PAREN
                 ;
 
-var_decl : ID {
-            bool success = declareVar(scope, baseDeclType, $1);
-
-            if(! success) {
-                fprintf(stderr, "ERROR: On line %d, %s has already been declared!\n", mylineno, $1);
-                foundError = true;
-            }
-        }
+var_decl : ID { declareVar(scope, baseDeclType, $1); }
          | ID LEFT_SQUARE_BRACKET INTCON RIGHT_SQUARE_BRACKET {
             char *id = $1;
             if(baseDeclType == INT_TYPE) {
