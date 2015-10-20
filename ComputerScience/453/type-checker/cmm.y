@@ -96,12 +96,12 @@ func : type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_va
      | error RIGHT_CURLY_BRACKET
      ;
 
-stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE
-     | IF LEFT_PAREN expr RIGHT_PAREN stmt ELSE stmt
-     | WHILE LEFT_PAREN expr RIGHT_PAREN stmt
+stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE   { $$ = newIfStatement(scope, $3, $5); }
+     | IF LEFT_PAREN expr RIGHT_PAREN stmt ELSE stmt            { $$ = newIfElseStatement(scope, $3, $5, $7); }
+     | WHILE LEFT_PAREN expr RIGHT_PAREN stmt                   { $$ = newWhileStatement(scope, $3, $5); }
      | FOR LEFT_PAREN optional_assign SEMICOLON optional_expr SEMICOLON optional_assign RIGHT_PAREN stmt
-     | RETURN optional_expr SEMICOLON
-     | assg SEMICOLON
+     | RETURN optional_expr SEMICOLON                           { $$ = newReturnStatement(scope, $2); }
+     | assg SEMICOLON                                           { $$ = $1; }
      | ID LEFT_PAREN expr_list RIGHT_PAREN SEMICOLON
      | LEFT_CURLY_BRACKET stmt_list RIGHT_CURLY_BRACKET
      | SEMICOLON
@@ -176,9 +176,9 @@ param_types_list : non_void_param_type
 optional_var_decl_list : type var_decl_list SEMICOLON optional_var_decl_list
                        | epsilon
 
-optional_assign: assg
-               | error
-               | epsilon
+optional_assign: assg                                               { $$ = $1; }
+               | error                                              { $$ = NULL; }
+               | epsilon                                            { $$ = NULL; }
                ;
 
 optional_expr : expr                                                { $$ = $1; }
@@ -189,8 +189,8 @@ stmt_list : stmt stmt_list
           | epsilon
           ;
 
-assg : ID ASSIGN expr
-     | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET ASSIGN expr
+assg : ID ASSIGN expr                                               { $$ = newAssignmentStatement(scope, $1, NULL, $3); }
+     | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET ASSIGN expr { $$ = newAssignmentStatement(scope, $1, $3, $6); }
      ;
 
 expr_list : optional_expr {
