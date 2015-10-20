@@ -18,17 +18,22 @@ bool foundError = false;
 Type currentFunctionReturnType;
 Scope *scope;
 Type baseDeclType;
+
+int diffComp(void *a, void *b);
+
 %}
 
 %union {
     Expression *expression;
     Statement *statement;
     StatementList *statementList;
+    List *expressionList;
     Type type;
     char *string;
 }
 
 %type<expression> expr optional_expr
+%type<expressionList> expr_list
 %type<statement> stmt assg optional_assign func
 %type<type> type
 
@@ -176,8 +181,8 @@ optional_assign: assg
                | epsilon
                ;
 
-optional_expr : expr
-              | epsilon
+optional_expr : expr                                                { $$ = $1; }
+              | epsilon                                             { $$ = NULL; }
               ;
 
 stmt_list : stmt stmt_list
@@ -188,13 +193,35 @@ assg : ID ASSIGN expr
      | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET ASSIGN expr
      ;
 
-expr_list : optional_expr
-          | expr_list COMMA expr
+expr_list : optional_expr {
+            if($1) {
+                List *list = newList(diffComp);
+                listInsert(list, $1);
+
+                $$ = list;
+            } else {
+                $$ = NULL;
+            }
+        }
+          | expr_list COMMA expr {
+            if($1) {
+                List *list = $1;
+                listInsert(list, $3);
+                $$ = list;
+            } else {
+                List *list = newList(diffComp);
+                listInsert(list, $3);
+                $$ = list;
+            }
+        }
 
 epsilon:
        ;
 
 %%
+int diffComp(void *a, void *b) {
+    return -1;
+}
 
 int main(int argc, char **argv){
 #ifdef DEBUG
