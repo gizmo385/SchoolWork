@@ -14,8 +14,9 @@ extern char *yytext;
 int mylineno;
 int mycolno;
 bool foundError = false;
+bool funcTypeSet = false;
 
-Type currentFunctionReturnType;
+Type currentFunctionReturnType = VOID_TYPE;
 Scope *scope;
 Type baseDeclType;
 
@@ -26,16 +27,19 @@ int diffComp(void *a, void *b);
 %union {
     Expression *expression;
     Statement *statement;
-    StatementList *statementList;
-    List *expressionList;
     Type type;
+    FunctionParameter *parameter;
+    FunctionDeclaration *functionDeclaration;
+    VariableDeclaration *variableDeclaration;
     char *string;
 }
 
-%type<expression> expr optional_expr
-%type<expressionList> expr_list
-%type<statement> stmt assg optional_assign func
+%type<expression> expr optional_expr expr_list
+%type<statement> stmt assg optional_assign stmt_list
 %type<type> type
+%type<functionDeclaration> func
+%type<variableDeclaration> optional_var_decl_list var_decl var_decl_list
+%type<parameter> param_types param_types_list non_void_param_type
 
 /* Language Tokens */
 %token WHILE FOR
@@ -90,10 +94,10 @@ decl : type var_decl_list SEMICOLON
      ;
 
 func : type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_var_decl_list stmt_list RIGHT_CURLY_BRACKET
-     { currentFunctionReturnType = $1; }
+     { $$ = newFunction($1, $2, $4, $7, $8); funcTypeSet = false; }
      | VOID ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_var_decl_list  stmt_list RIGHT_CURLY_BRACKET
-     { currentFunctionReturnType = VOID_TYPE; }
-     | error RIGHT_CURLY_BRACKET
+     { $$ = newFunction(VOID_TYPE, $2, $4, $7, $8); funcTypeSet = false; }
+     | error RIGHT_CURLY_BRACKET { $$ = NULL; }
      ;
 
 stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE   { $$ = newIfStatement(scope, $3, $5); }
@@ -137,44 +141,67 @@ name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
                 | name_args_lists COMMA ID LEFT_PAREN param_types RIGHT_PAREN
                 ;
 
-var_decl : ID { declareVar(scope, baseDeclType, $1); }
+var_decl : ID { declareVar(scope, baseDeclType, $1); $$ = newVariable(baseDeclType, $1); }
          | ID LEFT_SQUARE_BRACKET INTCON RIGHT_SQUARE_BRACKET {
-            char *id = $1;
             if(baseDeclType == INT_TYPE) {
-                declareVar(scope, INT_ARRAY_TYPE, id);
+                declareVar(scope, INT_ARRAY_TYPE, $1);
+                $$ = newVariable(INT_ARRAY_TYPE, $1);
             } else if(baseDeclType == CHAR_TYPE) {
-                declareVar(scope, CHAR_ARRAY_TYPE, id);
+                declareVar(scope, CHAR_ARRAY_TYPE, $1);
+                $$ = newVariable(CHAR_ARRAY_TYPE, $1);
             } else {
-                fprintf(stderr, "ERROR: Cannot determine type when declaring %s on line %d!\n", id, mylineno);
+                fprintf(stderr, "ERROR: Cannot determine type when declaring %s on line %d!\n", $1, mylineno);
+                foundError = true;
             }
-        }
+         }
          ;
 
-var_decl_list : var_decl
-              | var_decl_list COMMA var_decl
-              | epsilon
-              ;
+var_decl_list : var_decl                        { $$ = $1; }
+              | var_decl_list COMMA var_decl    { $3->next = $1; $$ = $3; }
+              | epsilon                         { $$ = NULL; }
 
-type : CHAR     { baseDeclType = CHAR_TYPE; $$ = CHAR_TYPE; }
-     | INT      { baseDeclType = INT_TYPE;  $$ = INT_TYPE; }
-     ;
+type : CHAR {
+        if(!funcTypeSet) {
+            currentFunctionReturnType = CHAR_TYPE;
+            funcTypeSet = true;
+        }
+        baseDeclType = CHAR_TYPE; $$ = CHAR_TYPE;
+     }
+     | INT {
+        if(!funcTypeSet) {
+            currentFunctionReturnType = INT_TYPE;
+            funcTypeSet = true;
+        }
+        baseDeclType = INT_TYPE; $$ = INT_TYPE;
+     }     ;
 
-param_types : VOID
-            | non_void_param_type
-            | param_types_list COMMA non_void_param_type
+param_types : VOID                                              { $$ = NULL; }
+            | non_void_param_type                               { $$ = $1; }
+            | param_types_list COMMA non_void_param_type        { $1->next = $3; $$ = $1; }
             ;
 
-non_void_param_type : type ID
-                    | type ID LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET
+non_void_param_type : type ID { $$ = newFunctionParameter($1, $2); }
+                    | type ID LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET {
+                        if($1 == INT_TYPE) {
+                            $$ = newFunctionParameter(INT_ARRAY_TYPE, $2);
+                        } else if($1 == CHAR_TYPE) {
+                            $$ = newFunctionParameter(CHAR_ARRAY_TYPE, $2);
+                        } else {
+                            fprintf(stderr, "Type error, on line %d: Arrays of type %s are not supported.\n",
+                                    mylineno, typeName($1));
+                            foundError = true;
+                        }
+                    }
                     ;
 
-param_types_list : non_void_param_type
-                 | param_types_list COMMA non_void_param_type
-                 | epsilon
+param_types_list : non_void_param_type                          { $$ = $1; }
+                 | param_types_list COMMA non_void_param_type   { $1->next = $3; $$ = $1; }
+                 | epsilon                                      { $$ = NULL; }
                  ;
 
 optional_var_decl_list : type var_decl_list SEMICOLON optional_var_decl_list
-                       | epsilon
+                       { baseDeclType = $1; $2->next = $4; $$ = $2; }
+                       | epsilon { $$ = NULL; }
 
 optional_assign: assg                                               { $$ = $1; }
                | error                                              { $$ = NULL; }
@@ -185,35 +212,16 @@ optional_expr : expr                                                { $$ = $1; }
               | epsilon                                             { $$ = NULL; }
               ;
 
-stmt_list : stmt stmt_list
-          | epsilon
+stmt_list : stmt stmt_list                                          { $1->next = $2; $$ = $1; }
+          | epsilon                                                 { $$ = NULL; }
           ;
 
 assg : ID ASSIGN expr                                               { $$ = newAssignmentStatement(scope, $1, NULL, $3); }
      | ID LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET ASSIGN expr { $$ = newAssignmentStatement(scope, $1, $3, $6); }
      ;
 
-expr_list : optional_expr {
-            if($1) {
-                List *list = newList(diffComp);
-                listInsert(list, $1);
-
-                $$ = list;
-            } else {
-                $$ = NULL;
-            }
-        }
-          | expr_list COMMA expr {
-            if($1) {
-                List *list = $1;
-                listInsert(list, $3);
-                $$ = list;
-            } else {
-                List *list = newList(diffComp);
-                listInsert(list, $3);
-                $$ = list;
-            }
-        }
+expr_list : optional_expr { $$ = $1; }
+          | expr_list COMMA expr { $3->next = $1; $$ = $3; }
 
 epsilon:
        ;
