@@ -107,10 +107,10 @@ stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE   { $$ = newIfStat
      | RETURN optional_expr SEMICOLON                           { $$ = newReturnStatement(scope, $2); }
      | assg SEMICOLON                                           { $$ = $1; }
      | ID LEFT_PAREN expr_list RIGHT_PAREN SEMICOLON
-     | LEFT_CURLY_BRACKET stmt_list RIGHT_CURLY_BRACKET
-     | SEMICOLON
-     | error SEMICOLON
-     | error RIGHT_CURLY_BRACKET
+     | LEFT_CURLY_BRACKET stmt_list RIGHT_CURLY_BRACKET         { $$ = $2; }
+     | SEMICOLON                                                { $$ = NULL; }
+     | error SEMICOLON                                          { $$ = NULL; }
+     | error RIGHT_CURLY_BRACKET                                { $$ = NULL; }
      ;
 
 expr : MINUS expr %prec UMINUS                          { $$ = newUnaryExpression(NEG_OP, $2); }
