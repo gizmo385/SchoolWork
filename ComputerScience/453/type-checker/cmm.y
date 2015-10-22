@@ -221,7 +221,14 @@ optional_expr : expr                                                { $$ = $1; }
               | epsilon                                             { $$ = NULL; }
               ;
 
-stmt_list : stmt stmt_list                                          { $1->next = $2; $$ = $1; }
+stmt_list : stmt stmt_list {
+            if($1) {
+                $1->next = $2;
+                $$ = $1;
+            } else {
+                $$ = NULL;
+            }
+        }
           | epsilon                                                 { $$ = NULL; }
           ;
 
