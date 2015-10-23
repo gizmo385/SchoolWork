@@ -97,10 +97,10 @@ decl : type var_decl_list SEMICOLON {
         globalScope = flattenScope(scope);
         scope = newScope(globalScope); // Clear out the scope the declaration was made in (ew)
     }
-     | type name_args_lists SEMICOLON
-     | VOID name_args_lists SEMICOLON
-     | extern type name_args_lists SEMICOLON { declaredExtern = false; }
-     | extern VOID name_args_lists SEMICOLON { declaredExtern = false; }
+     | type name_args_lists SEMICOLON { scope = newScope(globalScope); }
+     | VOID name_args_lists SEMICOLON { scope = newScope(globalScope); }
+     | extern type name_args_lists SEMICOLON { scope = newScope(globalScope); declaredExtern = false; }
+     | extern VOID name_args_lists SEMICOLON { scope = newScope(globalScope); declaredExtern = false; }
      | error SEMICOLON
      ;
 
@@ -216,22 +216,28 @@ type : CHAR {
             funcTypeSet = true;
         }
         baseDeclType = INT_TYPE; $$ = INT_TYPE;
-     }     ;
+     }
+     ;
 
 param_types : VOID                                              { $$ = NULL; }
             | non_void_param_type                               { $$ = $1; }
             | param_types_list COMMA non_void_param_type        { $1->next = $3; $$ = $1; }
             ;
 
-non_void_param_type : type ID { $$ = newFunctionParameter($1, $2); }
+non_void_param_type : type ID {
+                        declareVar(scope, baseDeclType, $2);
+                        $$ = newFunctionParameter(baseDeclType, $2);
+                    }
                     | type ID LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET {
-                        if($1 == INT_TYPE) {
+                        if(baseDeclType == INT_TYPE) {
+                            declareVar(scope, INT_ARRAY_TYPE, $2);
                             $$ = newFunctionParameter(INT_ARRAY_TYPE, $2);
-                        } else if($1 == CHAR_TYPE) {
+                        } else if(baseDeclType == CHAR_TYPE) {
+                            declareVar(scope, CHAR_ARRAY_TYPE, $2);
                             $$ = newFunctionParameter(CHAR_ARRAY_TYPE, $2);
                         } else {
                             fprintf(stderr, "Type error, on line %d: Arrays of type %s are not supported.\n",
-                                    mylineno, typeName($1));
+                                    mylineno, typeName(baseDeclType));
                             foundError = true;
                         }
                     }
