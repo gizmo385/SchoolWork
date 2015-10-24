@@ -280,7 +280,7 @@ assg : ID ASSIGN expr                                               { $$ = newAs
      ;
 
 expr_list : optional_expr { $$ = $1; }
-          | expr_list COMMA expr { $3->next = $1; $$ = $3; }
+          | expr_list COMMA expr { $1->next = $3; $$ = $1; }
 
 epsilon:
        ;
