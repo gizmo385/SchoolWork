@@ -27,7 +27,7 @@ Type baseDeclType;
 // Helper functions
 int insertAtFront(void *a, void *b);
 int insertAtRear(void *a, void *b);
-bool addFunctionDeclarationToScope(FunctionDeclaration *declaration);
+bool addFunctionDeclarationToScope(Type type, char *identifier, FunctionParameter *parameters);
 
 %}
 
@@ -47,6 +47,7 @@ bool addFunctionDeclarationToScope(FunctionDeclaration *declaration);
 %type<functionDeclaration> func
 %type<variableDeclaration> optional_var_decl_list var_decl var_decl_list
 %type<parameter> param_types param_types_list non_void_param_type
+%type<string> func_header
 
 /* Language Tokens */
 %token WHILE FOR
@@ -115,26 +116,36 @@ decl : type var_decl_list SEMICOLON
 
 extern : EXTERN                                                 { declaredExtern = true; }
 
-func : type ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_var_decl_list stmt_list RIGHT_CURLY_BRACKET
-        {
-            FunctionDeclaration *decl = newFunction(currentFunctionReturnType, $2, $4, $7, $8);
-            scope = newScope(globalScope);
-            addFunctionDeclarationToScope(decl);
-            funcTypeSet = false;
+func_header : type ID LEFT_PAREN param_types RIGHT_PAREN
+                {
+                    addFunctionDeclarationToScope(currentFunctionReturnType, $2, $4);
+                    $$ = $2;
+                }
+            | VOID ID LEFT_PAREN param_types RIGHT_PAREN
+                {
+                    addFunctionDeclarationToScope(VOID_TYPE, $2, $4);
+                    $$ = $2;
+                }
 
-            $$ = decl;
-        }
-     | VOID ID LEFT_PAREN param_types RIGHT_PAREN LEFT_CURLY_BRACKET optional_var_decl_list  stmt_list RIGHT_CURLY_BRACKET
+func : func_header LEFT_CURLY_BRACKET optional_var_decl_list stmt_list RIGHT_CURLY_BRACKET
         {
-            FunctionDeclaration *decl = newFunction(VOID_TYPE, $2, $4, $7, $8);
-            scope = newScope(globalScope);
-            addFunctionDeclarationToScope(decl);
-            funcTypeSet = false;
+            char *identifier = $1;
+            ScopeElement *elem = findScopeElement(globalScope, identifier);
+            if(elem->elementType == SCOPE_FUNC) {
+                ScopeFunction *func = elem->function;
+                List *argumentNames = func->argumentNames;
+                List *argumentTypes = func->argumentTypes;
+                FunctionDeclaration *decl = newFunction(currentFunctionReturnType, identifier,
+                                                        argumentNames, argumentTypes, $3, $4);
+                scope = newScope(globalScope);
+                funcTypeSet = false;
 
-            $$ = decl;
+                $$ = decl;
+            } else {
+                $$ = NULL;
+            }
         }
-     | error RIGHT_CURLY_BRACKET                                { $$ = NULL; }
-     ;
+        ;
 
 stmt : IF LEFT_PAREN expr RIGHT_PAREN stmt %prec WITHOUT_ELSE   { $$ = newIfStatement(scope, $3, $5); }
      | IF LEFT_PAREN expr RIGHT_PAREN stmt ELSE stmt            { $$ = newIfElseStatement(scope, $3, $5, $7); }
@@ -353,31 +364,31 @@ int insertAtRear(void *a, void *b) {
     return -1;
 }
 
-bool addFunctionDeclarationToScope(FunctionDeclaration *declaration) {
-    FunctionParameter *param = declaration->parameters;
+/*bool addFunctionDeclarationToScope(FunctionDeclaration *declaration) {*/
+bool addFunctionDeclarationToScope(Type type, char *identifier, FunctionParameter *parameters) {
     List *names = NULL;
     List *types = NULL;
 
-    if(param) {
+    if(parameters) {
         names = newList(insertAtRear);
         types = newList(insertAtRear);
 
-        while(param) {
-            listInsert(names, param->identifier);
+        while(parameters) {
+            listInsert(names, parameters->identifier);
             Type *typeP = malloc(sizeof(Type));
-            *typeP = param->type;
+            *typeP = parameters->type;
             listInsert(types, typeP);
-            param = param->next;
+            parameters = parameters->next;
         }
 
     }
 
-    bool success = declareFunction(globalScope, declaration->returnType, declaration->functionName,
-                                names, types, declaredExtern, false);
+    bool success = declareFunction(globalScope, type, identifier, names, types, declaredExtern,
+                                    false);
 
     // Mark the function as implemented
     if(success) {
-        ScopeElement *elem = findScopeElement(globalScope, declaration->functionName);
+        ScopeElement *elem = findScopeElement(globalScope, identifier);
         ScopeFunction *func = elem->function;
         func->implemented = true;
     }
