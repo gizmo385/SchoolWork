@@ -199,6 +199,7 @@ name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
 
                         declareFunction(globalScope, currentFunctionReturnType, $1, names, types,
                                         declaredExtern);
+                        scope = newScope(globalScope);
                     }
                 | name_args_lists COMMA ID LEFT_PAREN param_types RIGHT_PAREN
                     {
@@ -219,6 +220,7 @@ name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
 
                         declareFunction(globalScope, currentFunctionReturnType, $3, names, types,
                                         declaredExtern);
+                        scope = newScope(globalScope);
                     }
                 ;
 
