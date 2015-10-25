@@ -198,7 +198,7 @@ name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
                         }
 
                         declareFunction(globalScope, currentFunctionReturnType, $1, names, types,
-                                        declaredExtern);
+                                        declaredExtern, true);
                         scope = newScope(globalScope);
                     }
                 | name_args_lists COMMA ID LEFT_PAREN param_types RIGHT_PAREN
@@ -219,7 +219,7 @@ name_args_lists : ID LEFT_PAREN param_types RIGHT_PAREN
                         }
 
                         declareFunction(globalScope, currentFunctionReturnType, $3, names, types,
-                                        declaredExtern);
+                                        declaredExtern, true);
                         scope = newScope(globalScope);
                     }
                 ;
@@ -373,7 +373,7 @@ bool addFunctionDeclarationToScope(FunctionDeclaration *declaration) {
     }
 
     bool success = declareFunction(globalScope, declaration->returnType, declaration->functionName,
-                                names, types, declaredExtern);
+                                names, types, declaredExtern, false);
 
     // Mark the function as implemented
     if(success) {
