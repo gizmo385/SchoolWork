@@ -6,4 +6,9 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.apache.lucene/lucene-core "5.3.1"]
                  [org.apache.lucene/lucene-analyzers-common "5.3.1"]
-                 [org.apache.lucene/lucene-queryparser "5.3.1"]])
+                 [org.apache.lucene/lucene-queryparser "5.3.1"]]
+  :main ^:skip-aot index.core
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all
+                       :target-path "."}}
+  :uberjar-name "index.jar")
