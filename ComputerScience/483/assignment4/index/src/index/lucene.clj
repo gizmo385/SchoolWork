@@ -1,11 +1,12 @@
 (ns index.lucene
   (:require [clojure.string :refer [join split split-lines]]
-            [clojure.java.io :refer [as-file]])
+            [clojure.java.io :refer [as-file file]])
   (:import [clojure.lang Reflector]
-           [java.io FileReader StringReader]
+           [java.nio.file Paths Files]
+           [java.net URI]
            [org.apache.lucene.analysis.standard StandardAnalyzer]
            [org.apache.lucene.util Version]
-           [org.apache.lucene.store RAMDirectory Directory]
+           [org.apache.lucene.store RAMDirectory FSDirectory Directory]
            [org.apache.lucene.index IndexReader IndexWriter IndexWriterConfig DirectoryReader]
            [org.apache.lucene.queryparser.classic QueryParser]
            [org.apache.lucene.search IndexSearcher Query TopScoreDocCollector ScoreDoc Sort]
@@ -51,7 +52,22 @@
   [data-sources data-parser]
   (map (comp maps->document data-parser) data-sources))
 
+;; Index construction
+(defn memory-index []
+  (RAMDirectory.))
+
+(defn disk-index [filename]
+  (let [path (.toPath (file filename))]
+    (FSDirectory/open path)))
+
+(defn create-index [data-sources data-parser & {:keys [filename]}]
+  (let [index (if filename (disk-index filename) (memory-index))]
+    index))
+
 (comment
+
+  (create-index nil nil)
+
   ;; An example of building documents from a series of filenames
   (build-documents
     ["test2.txt"]
@@ -59,5 +75,4 @@
       (let [f (as-file filename)]
         [{:type :string :name "filename" :contents (.getName f) :store true}
          {:type :string :name "path" :contents (.getPath f) :store true}
-         {:type :text :name "contents" :contents (slurp f) :store false}])))
-  )
+         {:type :text :name "contents" :contents (slurp f) :store false}]))))
