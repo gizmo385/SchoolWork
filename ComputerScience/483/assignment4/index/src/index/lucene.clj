@@ -60,19 +60,25 @@
   (let [path (.toPath (file filename))]
     (FSDirectory/open path)))
 
-(defn create-index [data-sources data-parser & {:keys [filename]}]
+(defn create-index
+  "Creates an index and adds the supplied data sources to the index. An optional filename can be
+   supplied, in which case a disk-based directory will be used. If such a filename is not supplied,
+   then a RAM based directory will be used."
+  [data-sources data-parser & {:keys [filename]}]
   (let [index (if filename (disk-index filename) (memory-index))]
+    (with-open [writer (IndexWriter. index (IndexWriterConfig. text-analyzer))]
+      (doseq [document (build-documents data-sources data-parser)]
+        (.addDocument writer document)))
     index))
 
-(comment
-
-  (create-index nil nil)
-
-  ;; An example of building documents from a series of filenames
-  (build-documents
-    ["test2.txt"]
-    (fn [filename]
-      (let [f (as-file filename)]
-        [{:type :string :name "filename" :contents (.getName f) :store true}
-         {:type :string :name "path" :contents (.getPath f) :store true}
-         {:type :text :name "contents" :contents (slurp f) :store false}]))))
+;; Searching through the index
+(defn search-index
+  "Searches the index and returns the documents that match the search."
+  [index field query]
+  (let [query         (.parse (QueryParser. field text-analyzer) query)
+        reader        (DirectoryReader/open index)
+        searcher      (IndexSearcher. reader)
+        collector     (TopScoreDocCollector/create *hits-per-page*)]
+    (doto searcher
+      (.search query collector))
+    (.scoreDocs (.topDocs collector))))
