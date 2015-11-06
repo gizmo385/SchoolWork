@@ -1,6 +1,7 @@
 (ns index.lucene
   (:require [clojure.string :refer [join split split-lines]]
-            [clojure.java.io :refer [as-file file]])
+            [clojure.java.io :refer [as-file file]]
+            [clojure.pprint :refer [pprint]])
   (:import [clojure.lang Reflector]
            [java.nio.file Paths Files]
            [java.net URI]
@@ -19,6 +20,8 @@
 (def text-analyzer (StandardAnalyzer.))
 (def ^:dynamic *hits-per-page* 10)
 
+(set! *warn-on-reflection* true)
+
 ;; Creating documents
 (def field-classes
   {:string  StringField
@@ -30,10 +33,12 @@
 
 (defn map->field
   "Constructs a document based upon the type supplied."
-  [{:keys [type name contents store?]}]
-  (Reflector/invokeConstructor
-    (get field-classes type)
-    (into-array Object [name contents (if store? Field$Store/YES Field$Store/NO)])))
+  [{:keys [type name contents store] :as m}]
+  (if-let [klass (get field-classes type)]
+    (Reflector/invokeConstructor
+      klass
+      (into-array Object [name contents (if store Field$Store/YES Field$Store/NO)]))
+    (throw (Exception. (format "Can't create field for type %s" type)))))
 
 (defn maps->document
   "Takes a series of maps representing fields in a document and creates a document from them."
@@ -45,12 +50,17 @@
 
 (defn build-documents
   "Builds a list of documents based on a list of data sources and some function that can parse
-   those data sources. The data-parser function should take a data source and return a list of maps
-   which can be supplied to maps->document to build a document.
+   those data sources. The data-parser function should take a data source and return a list of
+   documents, where each document is represented as a list of maps which are the fields in the
+   document.
 
    This function returns a list of documents."
   [data-sources data-parser]
-  (map (comp maps->document data-parser) data-sources))
+  (flatten
+    (for [data-source data-sources]
+      (let [documents (data-parser data-source)]
+        (for [document-maps documents]
+          (maps->document document-maps))))))
 
 ;; Index construction
 (defn memory-index []
@@ -67,18 +77,17 @@
   [data-sources data-parser & {:keys [filename]}]
   (let [index (if filename (disk-index filename) (memory-index))]
     (with-open [writer (IndexWriter. index (IndexWriterConfig. text-analyzer))]
-      (doseq [document (build-documents data-sources data-parser)]
-        (.addDocument writer document)))
+      (.addDocuments writer (build-documents data-sources data-parser)))
     index))
 
 ;; Searching through the index
 (defn search-index
   "Searches the index and returns the documents that match the search."
-  [index field query]
+  [^Directory index field query]
   (let [query         (.parse (QueryParser. field text-analyzer) query)
         reader        (DirectoryReader/open index)
         searcher      (IndexSearcher. reader)
         collector     (TopScoreDocCollector/create *hits-per-page*)]
-    (doto searcher
-      (.search query collector))
-    (.scoreDocs (.topDocs collector))))
+    (.search searcher query collector)
+    (let [results (.scoreDocs (.topDocs collector))]
+      [searcher results])))
