@@ -16,7 +16,6 @@
   (:gen-class))
 
 ;; Some global settings
-(def lucene_version Version/LUCENE_5_3_1)
 (def text-analyzer (StandardAnalyzer.))
 (def ^:dynamic *hits-per-page* 10)
 
