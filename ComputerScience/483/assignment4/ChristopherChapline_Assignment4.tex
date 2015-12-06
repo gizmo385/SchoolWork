@@ -114,19 +114,35 @@ Consider the following set of words and their English classification:\\
     4       & bun   & yes       & $\frac{1}{18}$ \\ \hline
 \end{tabular}
 \subsection*{Part 1}
-To compute the priors and conditionals for this series of documents, we will fill in the following table:\\
+The priors are: $P(\text{English}) = \frac{1}{9}$ and $P(\neg{\text{English}}) = \frac{8}{9}$.
+Calculating probabilities for individual letters leads us to the following table:\\
 \\
-\begin{tabular}{| l | l | l | l | l | l | l |}
+\begin{tabular}{| l | l | l |}
     \hline
-        & prior & b & n & o & u & z \\ \hline
-    b   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
-    n   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
-    o   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
-    u   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
-    z   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
+        & $P(t | \text{English})$   & $P(t | \neg{\text{English}})$ \\ \hline
+    b   & $0.17$             & $0.17$ \\ \hline
+    n   & $0.17$             & $0.01$ \\ \hline
+    o   & $0.33$             & $0.17$ \\ \hline
+    u   & $0.17$             & $0.33$ \\ \hline
+    z   & $0.17$             & $0.33$ \\ \hline
 \end{tabular}
-
 \subsection*{Part 2}
+Now that we have our priors and probabilities, we can determine whether or not "zoo" would be classified as English. There are
+two probabilities that we must consider:
+
+$P(\text{English} | \text{zoo}) \propto
+P(\text{z} | \text{English}) \cdot P(\text{o} | \text{English})^2 \cdot P(\text{English})
+\approx 0.17 \cdot 0.33^2 \cdot 0.11
+= 0.002
+$
+
+$P(\neg\text{English} | \text{zoo}) \propto
+P(\text{z} | \neg\text{English}) \cdot P(\text{o} | \neg\text{English})^2 \cdot P(\neg\text{English})
+\approx 0.33 \cdot 0.17^2 \cdot 0.89
+= 0.008$\\
+\\
+Since the probability $P(\neg\text{English} | \text{zoo})$ is higher than that of $P(\text{English} | \text{zoo})$, we can classify
+zoo as being non-English.
 \section*{Problem 3}
 Consider the following series of documents:\\
 \\
