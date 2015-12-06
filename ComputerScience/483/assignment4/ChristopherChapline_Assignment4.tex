@@ -1,0 +1,195 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\usepackage[a4paper,includeheadfoot,margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Assignment 4}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+We must first create contingency tables for each of the terms in our query:\\
+\\
+Contingency table for "obama": \\
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Documents                   &  Relevant     & Nonrelevant   & Total         \\ \hline
+    "obama" Present $x_t = 1$   &  $s = 1.5$    & 2.5           & $df_t = 4$    \\ \hline
+    "obama" Absent $x_t = 0$    &  0.5          & 0.5           & 1           \\ \hline
+    Total                       &  $S = 2$    & 3               & $N = 5$       \\ \hline
+\end{tabular}\\
+\\
+$p_t = \frac{s}{S} = \frac{\frac{3}{2}}{2} = \frac{3}{4}$ \hfill
+$u_t = \frac{df_t - s}{N - S} = \frac{4 - \frac{3}{2}}{5 - 2} = \frac{5}{6}$
+\vspace{2mm}\\
+$c_t = log \frac{p_t}{1- p_t} - log \frac{u_t}{1 - u_t}
+= log \left(\frac{\frac{3}{4}}{1 - \frac{3}{4}}\right) - log \left(\frac{\frac{5}{6}}{1 - \frac{5}{6}}\right)
+= log(3) - log(5) \approx -0.222$
+\vspace{5mm}\\
+Contingency table for "health": \\
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Documents                   &  Relevant     & Nonrelevant   & Total         \\ \hline
+    "health" Present $x_t = 1$  &  $s = 1.5$    & 1.5           & $df_t = 3$    \\ \hline
+    "health" Absent $x_t = 0$   &  0.5          & 1.5           & 2             \\ \hline
+    Total                       &  $S = 2$      & 3             & $N = 5$       \\ \hline
+\end{tabular}\\
+\\
+$p_t = \frac{s}{S} = \frac{\frac{3}{2}}{2} = \frac{3}{4}$ \hfill
+$u_t = \frac{df_t - s}{N - S} = \frac{3 - \frac{3}{2}}{5 - 2} = \frac{1}{2}$
+\vspace{2mm}\\
+$c_t = log \frac{p_t}{1- p_t} - log \frac{u_t}{1 - u_t}
+= log \left(\frac{\frac{3}{4}}{1 - \frac{3}{4}}\right) - log \left(\frac{\frac{1}{2}}{1 - \frac{1}{2}}\right)
+= log(3) - log(1) \approx 0.477$
+\vspace{5mm}\\
+Contingency table for "plan": \\
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Documents                   &  Relevant     & Nonrelevant   & Total         \\ \hline
+    "plan" Present $x_t = 1$    &  $s = 1.5$    & 1.5           & $df_t = 3$    \\ \hline
+    "plan" Absent $x_t = 0$     &  0.5          & 1.5           & 2             \\ \hline
+    Total                       &  $S = 2$      & 3             & $N = 5$       \\ \hline
+\end{tabular}\\
+$p_t = \frac{s}{S} = \frac{\frac{3}{2}}{2} = \frac{3}{4}$ \hfill
+$u_t = \frac{df_t - s}{N - S} = \frac{3 - \frac{3}{2}}{5 - 2} = \frac{1}{2}$
+\vspace{2mm}\\
+$c_t = log \frac{p_t}{1- p_t} - log \frac{u_t}{1 - u_t}
+= log \frac{\frac{3}{4}}{1- \frac{3}{4}} - log \frac{\frac{1}{2}}{1 - \frac{1}{2}}
+= log(3) - log(1) \approx 0.477$
+\vspace{5mm}\\
+Now that we have calculated the $c_t$ value for each of the terms in our query, we can now calculate the RSV value for each of the documents:\\
+\\
+Doc1: $\sum_{x_t=q_t=1}c_t = -0.222 + 0.477 = 0.255$\\
+\\
+Doc2: $\sum_{x_t=q_t=1}c_t = -0.222 + 0.477 = 0.255$\\
+\\
+Doc3: $\sum_{x_t=q_t=1}c_t = -0.222 + 0.477 + 0.477 = 0.732$\\
+\section*{Problem 2}
+Consider the following set of words and their English classification:\\
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    event   & word  & English?  & probability \\ \hline
+    1       & ozb   & no        & $\frac{4}{9}$ \\ \hline
+    2       & uzu   & no        & $\frac{4}{9}$ \\ \hline
+    3       & zoo   & yes       & $\frac{1}{18}$ \\ \hline
+    4       & bun   & yes       & $\frac{1}{18}$ \\ \hline
+\end{tabular}
+\subsection*{Part 1}
+To compute the priors and conditionals for this series of documents, we will fill in the following table:\\
+\\
+\begin{tabular}{| l | l | l | l | l | l | l |}
+    \hline
+        & prior & b & n & o & u & z \\ \hline
+    b   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
+    n   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
+    o   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
+    u   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
+    z   & 0     & 0 & 0 & 0 & 0 & 0 \\ \hline
+\end{tabular}
+
+\subsection*{Part 2}
+\section*{Problem 3}
+Consider the following series of documents:\\
+\\
+\begin{tabular}{l | l}
+    docID & Document Text \\ \hline
+    1 & click go the shears boys click click click \\ \hline
+    2 & click click \\ \hline
+    3 & metal here \\ \hline
+    4 & metal shears click here \\ \hline
+\end{tabular}\\
+\vspace{5mm}\\
+Computing the probability for a query based upon a document will be done using the following formula:
+
+$P(q | d) = \prod \left( \lambda P(t | M_d) + (1 - \lambda) P(t | M_c)\right)$\\
+\\
+In this formula, $\lambda = 0.5$, $M_d$ is the language model for the document and $M_c$ is the language model for the entire collection.
+To compute these, we need to generate language models across our collection for the terms in each query. Additionally, for each query, we'll
+need to create language models for each document in the collection.\\
+\\
+First we will compute the $M_c$ values for each of the terms in the three queries.\\
+\begin{tabular}{| l | l |}
+    \hline
+    query term  & $M_c$ \\ \hline
+    click       & $P(\text{click} | c) =  0.44$ \\ \hline
+    shears      & $P(\text{shears} | c) =  0.13$ \\ \hline
+\end{tabular}\\
+\\
+Now we will compute the $M_d$ values for each document for each of the terms in the three queries:\\
+\begin{tabular}{| l | l | l | l | l | l |}
+    \hline
+    query term  & $M_{Doc1}$    & $M_{Doc2}$    & $M_{Doc3}$    & $M_{Doc4}$ \\ \hline
+    click       & 0.5           & 1             & 0.00          & 0.25 \\ \hline
+    shears      & 0.13          & 0.00          & 0.00          & 0.25 \\ \hline
+\end{tabular}\\
+\\
+Here are the probabilities for three queries in this language model broken into two tables:\\
+\\
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Query           & $\lambda M_c$ & Doc1                                  & Doc2 \\ \hline
+    click           &  $0.22$       & $0.22 + 0.50(0.50) = 0.47$            & $0.22 + 0.50(1.00) = 0.72$ \\ \hline
+    shears          &  $0.07$       & $0.07 + 0.50(0.13) = 0.14$            & $0.07 + 0.50(0.00) = 0.07$ \\ \hline
+    click shears    &  $0.03$       & $0.03 + 0.50(0.50 \cdot 0.13) = .06$  & $0.03 + 0.50(1.00 * 0.00) = 0.03$ \\ \hline
+\end{tabular}\\
+\vspace{2mm}
+\\
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Query           & $\lambda M_c$ & Doc3                                  & Doc4 \\ \hline
+    click           &  $0.22$       & $0.22 + 0.50(0.00) = 0.22$            & $0.22 + 0.50(0.25) = 0.35$ \\ \hline
+    shears          &  $0.07$       & $0.07 + 0.50(0.00) = 0.07$            & $0.07 + 0.50(0.25) = 0.20$ \\ \hline
+    click shears    &  $0.03$       & $0.03 + 0.50(0.00 \cdot 0.00) = .03$  & $0.03 + 0.50(0.25 * 0.025) = 0.06$ \\ \hline
+\end{tabular}\\
+\\
+Using these values as $P(q | d)$ values, we can rank the documents for each query:
+\begin{itemize}
+    \item "click" - Doc2, Doc1, Doc4, Doc3
+    \item "shears" - Doc4, Doc1, Doc2, Doc3
+    \item "click shears" - Doc1, Doc4, Doc2, Doc3
+\end{itemize}
+\section*{Problem 4}
+\subsection*{Part 1}
+\subsection*{Part 2}
+\subsection*{Part 3}
+
+\end{document}
