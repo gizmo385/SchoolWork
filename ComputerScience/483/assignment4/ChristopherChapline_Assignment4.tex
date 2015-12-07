@@ -142,7 +142,10 @@ P(\text{z} | \neg\text{English}) \cdot P(\text{o} | \neg\text{English})^2 \cdot 
 = 0.008$\\
 \\
 Since the probability $P(\neg\text{English} | \text{zoo})$ is higher than that of $P(\text{English} | \text{zoo})$, we can classify
-zoo as being non-English.
+zoo as being non-English. It is important to understand why this model does not classify the word "zoo" as English despite "zoo" being
+one of the training inputs. First of all, we are computing probabilities in this model using a positional indepdence assumption on letters. This
+means that just because a word is in the training set does not mean it will be classified the same in the model. Furthermore, there are more
+training inputs that are NOT English, meaning that the probability of encountering English in this model is lower.
 \section*{Problem 3}
 Consider the following series of documents:\\
 \\
@@ -204,8 +207,15 @@ Using these values as $P(q | d)$ values, we can rank the documents for each quer
     \item "click shears" - Doc1, Doc4, Doc2, Doc3
 \end{itemize}
 \section*{Problem 4}
-\subsection*{Part 1}
-\subsection*{Part 2}
 \subsection*{Part 3}
-
+For the query "information retrieval", the scores with and without smoothing for the documents from Assignment 3 are:\\
+\\
+\begin{tabular}{| l | l | l | l | l |}
+    \hline
+                & Document #1   & Document #2   & Document #3   & Document #4 \\ \hline
+    Smoothed    & 0.008264      & 0.003906      & 0.0           & N/A \\ \hline
+    Unsmoothed  & 0.005245      & 0.003384      & 0.001615      & N/A \\ \hline
+\end{tabular}\\
+\vspace{3mm}\\
+The smoothing used for this implementation was the linear interpolation model.
 \end{document}
