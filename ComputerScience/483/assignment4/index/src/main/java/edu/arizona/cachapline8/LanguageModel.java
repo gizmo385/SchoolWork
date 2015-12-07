@@ -54,25 +54,30 @@ public class LanguageModel {
     }
 
     public static double handleQueryTermInDocument(String term, String documentName) {
-        Map<String, Integer> termMap = termMaps.getOrDefault(term, new HashMap<String, Integer>());
+        if(termMaps.containsKey(term)) {
+            Map<String, Integer> termMap = termMaps.getOrDefault(term, new HashMap<String, Integer>());
 
-        // Calculate the value for the document
-        int documentFreq = termMap.getOrDefault(documentName, 0);
-        double documentTermValue = documentFreq / documentLengths.getOrDefault(documentName, 1);
+            // Calculate the value for the document
+            int documentFreq = termMap.getOrDefault(documentName, 0);
+            double documentTermValue = (double) documentFreq / documentLengths.get(documentName);
 
-        // Calculate the value for the collection
-        double collectionTermValue = globalTermCounts.getOrDefault(term, 0) / numberOfTokens;
-        collectionTermValue = Math.max(collectionTermValue, 0.01);
+            // Calculate the value for the collection
+            int collectionFreq = globalTermCounts.getOrDefault(term, 0);
+            double collectionTermValue = (double) collectionFreq / numberOfTokens;
 
-        // Smooth the document and collection values
-        return (LAMBDA * documentTermValue) + ((1 - LAMBDA) * collectionTermValue);
+            // Smooth the document and collection values
+            return (LAMBDA * documentTermValue) + ((1 - LAMBDA) * collectionTermValue);
+        } else {
+            return LAMBDA * (1.0 / numberOfTokens);
+        }
     }
 
     public static double handleQueryInDocument(String query, String documentName) {
         double ranking = 1;
 
         for(String term : query.split("\\s+")) {
-            ranking *= handleQueryTermInDocument(term, documentName);
+            double queryTermValue = handleQueryTermInDocument(term, documentName);
+            ranking *= queryTermValue;
         }
 
         return ranking;
