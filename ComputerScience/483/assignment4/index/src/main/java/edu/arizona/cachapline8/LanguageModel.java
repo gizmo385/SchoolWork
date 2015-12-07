@@ -38,10 +38,12 @@ public class LanguageModel {
             for(String term : sentence.lemmas().get()) {
                 // Update the term maps for each term
                 Map<String, Integer> termMap = termMaps.getOrDefault(term, new HashMap<String, Integer>());
-                termMap.put(documentName, termMap.getOrDefault(documentName, 0) + 1);
+                int currentFrequency = termMap.getOrDefault(documentName, 0);
+                termMap.put(documentName, currentFrequency + 1);
                 termMaps.put(term, termMap);
 
-                globalTermCounts.put(term, globalTermCounts.getOrDefault(term, 0) + 1);
+                int currentGlobalCount = globalTermCounts.getOrDefault(term, 0);
+                globalTermCounts.put(term, currentGlobalCount + 1);
 
                 documentLength += 1;
             }
@@ -59,7 +61,8 @@ public class LanguageModel {
         double documentTermValue = documentFreq / documentLengths.getOrDefault(documentName, 1);
 
         // Calculate the value for the collection
-        double collectionTermValue = globalTermCounts.get(term) / numberOfTokens;
+        double collectionTermValue = globalTermCounts.getOrDefault(term, 0) / numberOfTokens;
+        collectionTermValue = Math.max(collectionTermValue, 0.01);
 
         // Smooth the document and collection values
         return (LAMBDA * documentTermValue) + ((1 - LAMBDA) * collectionTermValue);
@@ -105,7 +108,7 @@ public class LanguageModel {
 
         // Print the documents
         for(String documentName : byRank) {
-            System.out.printf("%s (%f)\n", documentName, rankings.getOrDefault(documentName, 0.0));
+            System.out.printf("%s (%f)\n", documentName, rankings.get(documentName));
         }
     }
 
