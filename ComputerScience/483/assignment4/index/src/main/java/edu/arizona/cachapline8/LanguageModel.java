@@ -109,7 +109,7 @@ public class LanguageModel {
 
         // Sort the documents based on the rankings
         List<String> byRank = new ArrayList<>(documents);
-        Collections.sort(byRank, (d1, d2) -> Double.compare(rankings.get(d1), rankings.get(d2)));
+        Collections.sort(byRank, (d1, d2) -> Double.compare(rankings.get(d2), rankings.get(d1)));
 
         // Print the documents
         for(String documentName : byRank) {
