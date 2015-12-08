@@ -44,7 +44,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>edu.arizona.cachapline.Watson</mainClass>
+                    <mainClass>edu.arizona.cachapline8.Watson</mainClass>
                 </configuration>
             </plugin>
             <plugin>
