@@ -8,6 +8,8 @@ import java.util.regex.*;
 import java.util.*;
 
 import org.apache.lucene.analysis.standard.*;
+import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.en.*;
 import org.apache.lucene.util.*;
 import org.apache.lucene.store.*;
 import org.apache.lucene.index.*;
@@ -23,18 +25,18 @@ public class Watson {
     private final static String INDEX_FILENAME = "./watson_directory.dat";
 
     private static List<String> lines = new ArrayList<>();
-    private static List<String> categories = new ArrayList<>();
+    //private static List<String> categories = new ArrayList<>();
     private static String currentArticleTitle = null;
     private static int numberOfArticles = 0;
 
     public static Document createDocument() {
         String contents = lines.stream().collect(Collectors.joining("\n"));
-        String cats = categories.stream().collect(Collectors.joining(" "));
+        //String cats = categories.stream().collect(Collectors.joining(" "));
 
         Document d = new Document();
         d.add(new TextField("article_title", currentArticleTitle, Field.Store.YES));
         d.add(new TextField("contents", contents, Field.Store.NO));
-        d.add(new TextField("categories", cats, Field.Store.NO));
+        //d.add(new TextField("categories", cats, Field.Store.NO));
 
         return d;
     }
@@ -57,12 +59,14 @@ public class Watson {
 
             // Prepare for the next article
             lines.clear();
-            categories.clear();
+            //categories.clear();
             currentArticleTitle = m.group("title");
 
-        } else if(line.startsWith("CATEGORIES: ") ) {
-            categories.add(line.substring(line.indexOf(':') + 1));
-        } else {
+        }
+        //else if(line.startsWith("CATEGORIES: ") ) {
+            //categories.add(line.substring(line.indexOf(':') + 1));
+        //}
+        else {
             // If it isn't a title, add it to the contents for the filename
             lines.add(line.trim());
         }
@@ -79,11 +83,22 @@ public class Watson {
         }
     }
 
+    public static void initForTest(String filename) {
+        try {
+            String questions =  Files.lines(Paths.get(filename)).collect(Collectors.joining("\n"));
+            InputStream questionStream = new ByteArrayInputStream(questions.getBytes());
+            System.setIn(questionStream);
+        } catch(IOException ioe) {
+            System.err.println("Error reading questions from test file.");
+        }
+    }
+
     public static void main(String[] directories) {
         // Set up the directory
-        StandardAnalyzer analyzer = new StandardAnalyzer();
+        //Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new EnglishAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
-
+        //initForTest("questions.txt");
 
         try {
             File indexFile = new File(INDEX_FILENAME);
@@ -115,29 +130,34 @@ public class Watson {
 
 
             // Set up the query parser
-            String[] fields = { "article_title", "contents", "categories" };
-            MultiFieldQueryParser queryParser = new MultiFieldQueryParser(fields, analyzer);
+            //String[] fields = { "article_title", "contents", "categories" };
+            //Map<String, Float> boosts = new HashMap<>();
+            //boosts.put("article_title", 0.5f);
+            //boosts.put("categories", 2f);
+            //MultiFieldQueryParser queryParser = new MultiFieldQueryParser(fields, analyzer, boosts);
+            QueryParser queryParser = new QueryParser("contents", analyzer);
 
             // Read in user queries
             Scanner input = new Scanner(System.in);
             while(true) {
-                System.out.print("Enter the question category: ");
-                String category = input.nextLine();
-                System.out.print("Enter your query: ");
+                //System.out.print("Enter the question category: ");
+                //String category = input.nextLine();
+                System.out.print("Enter your query (exit to quit): ");
                 String query = input.nextLine();
 
                 if("exit".equals(query)) {
                     break;
                 }
 
-                String[] queries = {query, query, category};
+                query = query.toLowerCase().replaceAll("[^\\w\\s\\d]", "");
+                //String[] queries = {query, query, category};
 
                 try {
                     IndexReader reader = DirectoryReader.open(index);
                     IndexSearcher searcher = new IndexSearcher(reader);
-                    searcher.setSimilarity(new BM25Similarity());
+                    //searcher.setSimilarity(new BM25Similarity());
                     TopScoreDocCollector collector = TopScoreDocCollector.create(HITS_PER_PAGE);
-                    Query q = queryParser.parse(queries, fields, analyzer);
+                    Query q = queryParser.parse(query);
                     searcher.search(q, collector);
                     ScoreDoc[] results = collector.topDocs().scoreDocs;
 
