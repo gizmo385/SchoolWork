@@ -83,22 +83,11 @@ public class Watson {
         }
     }
 
-    public static void initForTest(String filename) {
-        try {
-            String questions =  Files.lines(Paths.get(filename)).collect(Collectors.joining("\n"));
-            InputStream questionStream = new ByteArrayInputStream(questions.getBytes());
-            System.setIn(questionStream);
-        } catch(IOException ioe) {
-            System.err.println("Error reading questions from test file.");
-        }
-    }
-
     public static void main(String[] directories) {
         // Set up the directory
         //Analyzer analyzer = new StandardAnalyzer();
         Analyzer analyzer = new EnglishAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        //initForTest("questions.txt");
 
         try {
             File indexFile = new File(INDEX_FILENAME);
