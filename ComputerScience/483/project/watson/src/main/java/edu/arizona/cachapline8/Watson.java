@@ -123,7 +123,7 @@ public class Watson {
                     break;
                 }
 
-                query = query.toLowerCase().replaceAll("[^\\w\\s\\d]", "");
+                query = query.toLowerCase().replaceAll("[^\\w\\s\\d\"]", "");
 
                 try {
                     IndexReader reader = DirectoryReader.open(index);
