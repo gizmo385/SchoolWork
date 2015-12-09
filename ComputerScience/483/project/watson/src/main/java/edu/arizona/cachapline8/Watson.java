@@ -7,6 +7,10 @@ import java.util.function.*;
 import java.util.regex.*;
 import java.util.*;
 
+import edu.arizona.sista.processors.Processor;
+import edu.arizona.sista.processors.Sentence;
+import edu.arizona.sista.processors.fastnlp.FastNLPProcessor;
+
 import org.apache.lucene.analysis.standard.*;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.en.*;
@@ -20,6 +24,7 @@ import org.apache.lucene.search.similarities.*;
 
 public class Watson {
 
+    // Globals
     private final static Pattern articleTitle = Pattern.compile("^\\[\\[(?<title>.+)\\]\\]$");
     private final static int HITS_PER_PAGE = 1;
     private final static String INDEX_FILENAME = "./watson_directory.dat";
@@ -28,9 +33,13 @@ public class Watson {
     private final static float b = 0f;
     private final static float k1 = 2f;
 
+    // Parsing information
     private static List<String> lines = new ArrayList<>();
     private static String currentArticleTitle = null;
     private static int numberOfArticles = 0;
+
+    // Processors
+    private static final Processor proc = new FastNLPProcessor(true, false, false);
 
     public static Document createDocument() {
         String contents = lines.stream().collect(Collectors.joining("\n"));
@@ -42,13 +51,28 @@ public class Watson {
         return d;
     }
 
+    public static String lemmatizeString(String input) {
+        edu.arizona.sista.processors.Document d = proc.mkDocument(input, false);
+        proc.tagPartsOfSpeech(d);
+        proc.lemmatize(d);
+
+        StringBuilder sb = new StringBuilder();
+        for(Sentence s : d.sentences()) {
+            for(String lemma : s.lemmas().get()) {
+                sb.append(lemma).append(" ");
+            }
+        }
+
+        return sb.toString();
+    }
+
     public static void handleLine(IndexWriter writer, String line) {
         Matcher m = articleTitle.matcher(line);
         if(m.matches()) {
             // A document out of the previous article
             if(currentArticleTitle != null) {
                 Document d = createDocument();
-                //System.out.printf("%d: %s\n", numberOfArticles, currentArticleTitle);
+                System.out.printf("%d: %s\n", numberOfArticles, currentArticleTitle);
                 numberOfArticles++;
 
                 try {
@@ -64,7 +88,11 @@ public class Watson {
 
         } else {
             // If it isn't a title, add it to the contents for the filename
-            lines.add(line.trim());
+
+            /* UNCOMMENT THE LINE BELOW TO ENABLE LEMMATIZATION */
+            //line = lemmatizeString(line);
+
+            lines.add(line);
         }
     }
 
