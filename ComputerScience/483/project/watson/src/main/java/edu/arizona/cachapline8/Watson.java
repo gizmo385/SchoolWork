@@ -24,6 +24,10 @@ public class Watson {
     private final static int HITS_PER_PAGE = 1;
     private final static String INDEX_FILENAME = "./watson_directory.dat";
 
+    // BM25 Hyperparameters
+    private final static float b = 0f;
+    private final static float k1 = 2f;
+
     private static List<String> lines = new ArrayList<>();
     private static String currentArticleTitle = null;
     private static int numberOfArticles = 0;
@@ -123,12 +127,13 @@ public class Watson {
                     break;
                 }
 
+                // Remove some unnecessary stuff from the queries.
                 query = query.toLowerCase().replaceAll("[^\\w\\s\\d\"]", "");
 
                 try {
                     IndexReader reader = DirectoryReader.open(index);
                     IndexSearcher searcher = new IndexSearcher(reader);
-                    //searcher.setSimilarity(new BM25Similarity());
+                    searcher.setSimilarity(new BM25Similarity(k1, b));
                     TopScoreDocCollector collector = TopScoreDocCollector.create(HITS_PER_PAGE);
                     Query q = queryParser.parse(query);
                     searcher.search(q, collector);
