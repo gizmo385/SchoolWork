@@ -124,7 +124,9 @@ for the system. These include things like redirects, which have the effect of su
 these are not handled in the system, questions which call specifically for those results will always fail to accurate retrieve
 results. Additionally, articles in the corpus are also related through soft links (the "see also" sections) and categories present
 in some of the articles. These soft links and categories could be used to create a hierarchical structure which could be combined
-with link analysis or a tiered index system to improve the overall performance.\\
+with link analysis or a tiered index system to improve the overall performance. The last element of the Wikipedia structure that
+proved difficult to crack was the inclusion of different scripts, like Russian characters. These characters would register as
+untokenizable by Lucene and caused several issues throughout the project.\\
 \\
 The other major challenge that I faced was effectively tuning the system. When dealing with the BM25 similarity algorithm, tuning the
 hyperparameters $b$ and $k_1$ to perform optimally was a challenge. My results prior to tuning experiments with BM25 were much worse than
@@ -148,7 +150,8 @@ this provides the most straight forward information at a glance at how well the 
 As is shown in the table above, the best performance in the system was achieved by using a tuned Okapi BM25 scoring system when stemming
 was taking place. In that environment, the system was able to correctly answer 27 of the 100 test questions. This is compared to the
 lowest configuration, TF-iDF without any stemming. Results for lemmatization are not reported because lemmatization tests were not run due
-to the required indexing time.
+to the required indexing time. Lemmatization over the lines in the articles was implemented, but the estimated processing time for the index
+was about 8 hours and could not be run.
 
 \section*{Error Analysis}
 
@@ -159,10 +162,10 @@ treaty that the question actually referred to. This seems to be because general 
 due to length. Attempts to correct for this by tuning the BM25 algorithm proved unsuccessful.\\
 \\
 The other large error in my retrieval system had to do with the way that I was parsing articles. I did not make any efforts to establish any
-relationships between articles in the system which were linked in the corpus, either through aliases or direct links. This limits my system
-because it means that certain terms will never be retrieved since the relationships that might be explicit in a query are not translated
-into the index representation. This could be remedied by the addition of fields to my document representation that allowed the system to
-encode and understand links.
+relationships between articles in the system which were linked in the corpus, either through aliases or direct links. Not only did I not
+translate links into the system, I also parsed some things that should not have been parsed as documents. For example, image and file tags
+in the corpus have a similar structure to page titles, meaning that those got parsed as though they were articles. This is obviously not
+optimal and something that definitely should be fixed to improve the reliability of the system.
 
 \subsection*{Effects of Stemming}
 
