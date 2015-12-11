@@ -390,32 +390,84 @@ The process iterates over two steps:
     \item \textbf{Recomputation}: Recompute each centroid as the average of the vectors that were assigned to it in reassignment
 \end{itemize}\\
 \\
-This is guarenteed to converge on the optimal clustering:
+This is guarenteed to converge on a clustering:
 \begin{enumerate}
     \item Let $RSS$ be the sum of all squared distances between document vectors and their closest centroids
     \item $RSS$ decreases during each reassignment step because each vector is moved to a closer centroid
     \item $RSS$ decreases during each recomputation step
-    \item Since there are only a finite number of clusterings, it will eventually converge on the optimal one
-\end{itemize}
+    \item Since there are only a finite number of clusterings, it will eventually converge upon a clustering
+\end{itemize}\\
+\\
+Just because K-Means converges does \textbf{NOT} mean it converges on the \textit{optimal} clustering. A bad starting seed can
+result in a terrible clustering.
 
-\subsection*{K-means++}
+\subsection*{K-Means++}
+K-Means++ is an algorithm to initialize K-Means:
+\begin{enumerate}
+    \item Choose one center uniformly at random from among the data points.
+    \item For each data point x, compute D(x), the distance between x and the nearest center that has already been chosen.
+    \item Choose one new data point at random as a new center, using a weighted probability distribution where a point x is
+        chosen with probability proportional to D(x)2.
+    \item Repeat Steps 2 and 3 until K centers have been chosen.
+    \item Now that the initial centers have been chosen, proceed using standard K-means.
+\end{enumerate}
 \subsection*{Clustering evaluation}
-purity, Rand index, F measure
-\subsection*{Number of clusters}
-\section*{Link Analysis \& Page Rank}
-\subsection*{Anchor text}
-what it is, how to index, how to search
-\subsection*{Google bombs}
-\subsection*{PageRank}
-random walk problem\\
-\\
-how to construct the probability matrix\\
-\\
-teleportation probability\\
-\\
-how to compute the steady state vector using the power method\\
-\\
-issues\\
-\\
+We can measure the \textbf{purity} of a clustering by determining how well we can reproduce the classes:\\
 
+$\textrm{purity}(\Omega, C) = \frac{1}{N} \sum \limits_{k} \textrm{max}_j | \omega_k \bigcap c_j |$\\
+\\
+where $\Omega = { \omega_1, \omega_2, \ldots, \omega_k}$ is the set of clusters and $C = {c_1, c_2, \ldots, c_j}$ is the
+set of classes.\\
+\\
+For each cluster $\omega_k$: Find class $c_j$ with most members $n_{kj}$ in $\omega_k$. Sum all $n_{kj}$ and divide by
+the number of points.\\
+\vspace{2mm} \\
+Another criterion is the Rand Index:\\
+
+$RI = \frac{TP + TN}{TP + FP + FN + TN}$\\
+\\
+and the F measure:
+\begin{enumerate}
+    \item RI assigns the same weight to FPs and FNs.
+    \item In clustering, FNs are often more important (do not want to miss cluster elements).
+    \item The F measure can be used then: $\beta > 1$ to add more weight to recall and penalize FNs more strongly.
+    \item For example, $\beta = 5$
+\end{enumerate}
+
+\subsection*{Number of Clusters}
+A way to determine a valid number of clusters:
+\begin{enumerate}
+    \item Start with 1 cluster (K = 1)
+    \item Keep adding clusters (= keep increasing K)
+    \item Add a penalty for each new cluster
+    \item Then trade off cluster penalties against average squared distance from centroid
+    \item Choose the value of K with the best tradeoff
+\end{enumerate}
+\section*{Link Analysis \& Page Rank}
+\subsection*{Anchor Text}
+Anchor text is the text contained within links on a web page. These links form a directed graph and the links
+can be assumed to be a quality signal. The anchor text in links is also frequently a good summary of
+the page's content.\\
+\\
+We can use the directed graph nature of the web and the "quality signals" of links to rank pages based on how
+many in-links that they have.
+\subsection*{Google Bombs}
+A search with "bad" results due to maliciously manipulated anchor text. These were mostly fixed by an algorithm
+change made by Google in 2007.
+\subsection*{PageRank}
+PageRank essentially makes a random walk through the directed graph of the web by following links and
+occasionally "teleporting". It uses link frequencies to create a probability table for the web.\\
+\\
+The algorithm has a random chance to teleport to a random page in the web. This is a hyperparameter for the
+algorithm.\\
+\\
+To converge the probability vectors for PageRank, we can use the power method:\\
+
+Algorithm: multiply ⃗x by increasing powers of P until convergence.\\
+\\
+Issues:
+\begin{itemize}
+    \item Real surfers are not random surfers.
+    \item PageRank alone frequently causes bad ranks for most pages
+\end{itemize}
 \end{document}
