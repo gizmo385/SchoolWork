@@ -1,0 +1,104 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\usepackage[a4paper,includeheadfoot,margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Assignment 3}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+
+%As we noted on page 34, it follows that if A ⊆ B and B ⊆ A, that
+%A = B. Explain why this is so. Prove that this is so.
+
+The statement that $A \subseteq B$ implies that every element in $A$ is also contained within $B$. Additionally, the statement
+$B \subseteq A$ implies that every element in $B$ is also contained within $A$. If $A$ contains all of the elements in $B$, and
+$B$ contains all of the elements in $A$, then it follows (as night follows day), that $A$ and $B$ must contain the same elements.
+
+\section*{Problem 2}
+
+%The empty set is a proper subset of all sets except one. Which one and
+%why?
+
+The empty set is not a proper subset of itself. The definition of proper subset requires that the second operand contain elements not
+contained within the first operand. This would imply that no set could be a proper subset of itself, because it cannot possibly meet
+the requirement for additional elements to be present. This property holds for the empty set as well.
+
+\section*{Problem 3}
+
+%We gave a number of theorems on page 38. Prove these
+%1. If A ⊆ B then A ∪ C ⊆ B ∪ C
+%2. If A ⊆ B then A ∩ C ⊆ B ∩ C
+%3. If A ⊆ B then C − B ⊆ C − A
+%4. A ∩ (B − A) = ∅
+
+\begin{theorem}
+    If $A \subseteq B$, then $A \bigcup C \subseteq B \bigcup C$.
+\end{theorem}
+
+\begin{proof}
+\end{proof}
+
+\begin{theorem}
+    If $A \subseteq B$, then $A \bigcap C \subseteq B \bigcap C$.
+\end{theorem}
+
+\begin{proof}
+\end{proof}
+
+\begin{theorem}
+    If $A \subseteq B$, then $A - B \subseteq C - A$
+\end{theorem}
+
+\begin{proof}
+\end{proof}
+
+\begin{theorem}
+    $A \bigcap (B - A) = \emptyset$
+\end{theorem}
+
+\begin{proof}
+\end{proof}
+
+\end{document}
