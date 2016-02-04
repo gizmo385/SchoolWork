@@ -78,6 +78,10 @@ the requirement for additional elements to be present. This property holds for t
 \end{theorem}
 
 \begin{proof}
+    The elements from $C$ getting added to both $A$ and $B$ means that we know that the intersection of $A$ and $B$ contains, at the very least,
+    the elements of $C$. Since we already know that $A \subseteq B$, then the addition of the elements from $C$ to both of these sets will mean
+    that $B$ contains at least the elements in $C$ and the elements in $A$. Thus, $A \bigcup C \subseteq B \bigcup C$.
+
 \end{proof}
 
 \begin{theorem}
@@ -85,6 +89,10 @@ the requirement for additional elements to be present. This property holds for t
 \end{theorem}
 
 \begin{proof}
+    If $A \subseteq B$, then we know that $B$ contains all of the elements in $A$. The intersection $A \bigcap C$ must contain only elements
+    elements of $A$. The intersection $B \bigcap C$ must contain any elements in $B$. If any elements are present in $A \bigcap C$, then those
+    elements must also be in $B \bigcap C$ because $B$ contains those elements from $A$ since $A \subseteq B$. Thus, $A \bigcap C \subseteq B \bigcap C$.
+
 \end{proof}
 
 \begin{theorem}
@@ -92,6 +100,10 @@ the requirement for additional elements to be present. This property holds for t
 \end{theorem}
 
 \begin{proof}
+    If $A \subseteq B$, then we know that $B$ contains all of the elements in $A$. Thus, the operation $A - B$ will be $\emptyset$ since $B$ contains
+    everything in $A$. Since $A - B = \emptyset$, we know that $A - B$ is a subset of every set, since $\emptyset$ is a subset of every set. Thus,
+    $A - B \subseteq C - A$.
+
 \end{proof}
 
 \begin{theorem}
@@ -99,6 +111,8 @@ the requirement for additional elements to be present. This property holds for t
 \end{theorem}
 
 \begin{proof}
+    The operation $B - A$ will remove all of the elements of $A$ from $B$. Since $B - A$ will contain none of the elements of $A$, then the intersection
+    of that set with $A$ will be $\emptyset$ since the intersection of disjoint sets is the emptyset. Thus, $A \bigcap (B - A) = \emptyset$.
 \end{proof}
 
 \end{document}
