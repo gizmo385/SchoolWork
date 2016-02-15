@@ -1,0 +1,103 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\usepackage[a4paper,includeheadfoot,margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Assignment 5}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+
+\begin{tabular}{l | l | l | l |}
+    $p$ & $q$ & $(p \rightarrow q)$ & $(p \rightarrow (p \rightarrow q))$ \\ \hline
+    $T$ & $T$ & $T$                 & $T$ \\ \hline
+    $T$ & $F$ & $F$                 & $F$ \\ \hline
+    $F$ & $T$ & $T$                 & $T$ \\ \hline
+    $F$ & $F$ & $T$                 & $T$ \\ \hline
+\end{tabular}\\
+\\
+\vspace{3mm}
+
+\noindent
+\begin{tabular}{l | l | l | l |}
+    $p$ & $(p \rightarrow p)$   & $q$ & $((p \rightarrow p) \rightarrow q)$ \\ \hline
+    $T$ & $T$                   & $T$ & $T$ \\ \hline
+    $T$ & $T$                   & $F$ & $F$ \\ \hline
+    $F$ & $T$                   & $T$ & $T$ \\ \hline
+    $F$ & $T$                   & $F$ & $F$ \\ \hline
+\end{tabular}
+\\
+\vspace{3mm}
+
+\noindent
+\begin{tabular}{l | l | l | l | l |}
+    $p$ & $q$ & $\neg q$    & $\neg \neg q$ & $(p \leftrightarrow \neg \neg q)$ \\ \hline
+    $T$ & $T$ & $F$         & $T$           & $T$ \\ \hline
+    $T$ & $F$ & $T$         & $F$           & $F$ \\ \hline
+    $F$ & $T$ & $F$         & $T$           & $F$ \\ \hline
+    $F$ & $F$ & $T$         & $F$           & $T$ \\ \hline
+\end{tabular}
+\\
+\vspace{3mm}
+
+\noindent
+\begin{tabular}{l | l | l | l |}
+    $p$ & $\neg p$  & $(p \vee \neg p)$ & $\neg (p \vee \neg p)$ \\ \hline
+    $T$ & $F$       & $T$               & $F$ \\ \hline
+    $T$ & $F$       & $T$               & $F$ \\ \hline
+    $F$ & $T$       & $T$               & $F$ \\ \hline
+    $F$ & $T$       & $T$               & $F$ \\ \hline
+\end{tabular}
+
+\section*{Problem 2}
+
+The most obvious WFF that would produce this truth table would be $(p \rightarrow q)$. An
+second WFF which produces the truth table would be $(\neg p \vee q)$.
+
+\section*{Problem 3}
+
+An example of a tautologous WFF would be $(p \vee \neg p)$. In this WFF, regardless of if
+$p$ is true or false, the WFF will be true.
+
+\end{document}
