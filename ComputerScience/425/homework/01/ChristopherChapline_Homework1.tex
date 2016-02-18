@@ -1,0 +1,132 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\usepackage[a4paper,includeheadfoot,margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Homework 1}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Chapter 1}
+\subsection*{Problem 3}
+%3. Calculate the total time required to transfer a 1000-KB file in the following cases, assuming an RTT of 50 ms,
+%a packet size of 1 KB data, and an initial 2 × RTT of “handshaking” before data is sent:
+%(a) The bandwidth is 1.5 Mbps, and data packets can be sent continuously.
+%(b) The bandwidth is 1.5 Mbps, but after we finish sending each data packet we must wait one RTT before sending the next.
+%(c) The bandwidth is “infinite,” meaning that we take transmit time to be zero, and up to 20 packets can be sent per RTT.
+%(d) The bandwidth is infinite, and during the first RTT we can send one packet (2 1 − 1), during the second RTT we can send two packets
+%(2\^2 − 1), during the third we can send four (2\^3 − 1), and so on.
+
+\subsubsection*{Part a}
+The 2 initial RTTs that must be taken will take 100ms. We add this to 8000000/15000000 (packet size/transmit speed). This means that it will take
+roughly 0.63 seconds to transmit the packet.
+
+\subsubsection*{Part b}
+We must find the number of packets that will be sent in the network. With a packet size of 1KB, a 1000KB file will take 1000 packets to send. A
+wait of one RTT after each packet would add an additional 50,000ms to the total time, meaning that the total time will be 50,630ms (or 50.63 seconds).
+
+\subsubsection*{Part c}
+Since we need to send 1000 packets to send a 1000KB file, it will take $\frac{1000}{20} \cdot 50ms = 2500ms$ to send the file.
+
+\subsubsection*{Part d}
+It would take us 9 round trips to send all 1000 packets. With an RTT of 50ms, it would take 450ms to send a 1KB file.
+
+
+\subsection*{Problem 5}
+%Consider a point-to-point link 4 km in length. At what bandwidth would propagation delay (at a speed of 2 × 10 8 m/s)
+%equal transmit delay for 100-byte packets? What about 512-byte packets?
+
+
+\subsection*{Problem 16}
+%Calculate the latency (from first bit sent to last bit received) for the following:
+%(a) 100-Mbps Ethernet with a single store-and-forward switch in the path and a packet size of 12,000 bits. Assume that
+%each link introduces a propagation delay of 10 μs and that the switch begins retransmitting immediately after it has
+%finished receiving the packet.
+%(b) Same as (a) but with three switches.
+%(c) Same as (a), but assume the switch implements “cutthrough” switching; it is able to begin retransmitting the packet
+%after the first 200 bits have been received.
+
+\subsubsection*{Part a}
+\subsubsection*{Part b}
+\subsubsection*{Part c}
+
+\subsection*{Problem 18}
+%Calculate the effective bandwidth for the following cases. For (a) and (b) assume there is a steady supply of data to
+%send; for (c) simply calculate the average over 12 hours.
+%(a) 100-Mbps Ethernet through three store-and-forward switches as in Exercise 16(b). Switches can send on one link
+%while receiving on the other.
+%(b) Same as (a) but with the sender having to wait for a 50-byte acknowledgment packet after sending each 12,000-bit data packet.
+%(c) Overnight (12-hour) shipment of 100 DVDs that hold 4.7 GB each.
+
+\subsubsection*{Part a}
+\subsubsection*{Part b}
+\subsubsection*{Part c}
+
+
+\subsection*{Problem 21(a)}
+%Suppose a host has a 1-MB file that is to be sent to another host. The file takes 1 second of CPU time to compress 50% or
+%2 seconds to compress 60%.  (a) Calculate the bandwidth at which each compression option takes the same total
+%compression + transmission time.
+
+
+\subsection*{Problem 26}
+%For the following, assume that no data compression is done, although in practice this would almost never be the case. For (a)
+%to (c), calculate the bandwidth necessary for transmitting in real time:
+%(a) Video at a resolution of 640 × 480, 3 bytes/pixel, 30 frames/second.
+%(b) Video at a resolution of 160 × 120, 1 byte/pixel, 5 frames/second.
+%(c) CD-ROM music, assuming one CD holds 75 minutes’ worth and takes 650 MB.
+%(d) Assume a fax transmits an 8 × 10-inch black-and-white image at a resolution of 72 pixels per inch. How long would this
+%take over a 14.4-kbps modem?
+
+\subsubsection*{Part a}
+\subsubsection*{Part b}
+\subsubsection*{Part c}
+\subsubsection*{Part d}
+
+
+\section*{Chapter 9}
+\subsection*{Problem 4}
+If you submit an invalid command to SMTP, you get back a status code of 500 and a message
+stating that the command submitted does not work.
+
+\end{document}
