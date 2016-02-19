@@ -119,6 +119,9 @@ propogation delays, meaning a 12kb packet will take $4096\mu s + 40\mu s = 5036\
 
 \subsubsection*{Part b}
 
+If after every packet we send, we must wait for an acknowledgment packet, that will incur another transmit delay and propagation delay,
+meaning each packet will take $5036\mu s + 10\mu s + 1024\mu s = 6070\mu s$. Per second, we could send about 165 packets, each being 12kb.
+This would make the effective bandwidth $12kb \cdot 165 = 15.8Mbps$.
 
 \subsubsection*{Part c}
 
@@ -144,10 +147,16 @@ bandwidth, we get 10, so the bandwidth would need to be 10Mbps.
 %take over a 14.4-kbps modem?
 
 \subsubsection*{Part a}
-\subsubsection*{Part b}
-\subsubsection*{Part c}
-\subsubsection*{Part d}
+You would need to transmit at a bandwidth of 221Mbps to transmit in real time.
 
+\subsubsection*{Part b}
+You would need to transmit at a bandwidth of 0.768Mbps to transmit in real time.
+
+\subsubsection*{Part c}
+You would need to transmit at a bandwidth of 0.14Mbps to transmit in real time.
+
+\subsubsection*{Part d}
+It would take about 3.2 seconds to transmit the fax over a 14.4kbps modem.
 
 \section*{Chapter 9}
 \subsection*{Problem 4}
