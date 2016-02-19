@@ -75,6 +75,8 @@ It would take us 9 round trips to send all 1000 packets. With an RTT of 50ms, it
 \subsection*{Problem 5}
 %Consider a point-to-point link 4 km in length. At what bandwidth would propagation delay (at a speed of 2 × 10 8 m/s)
 %equal transmit delay for 100-byte packets? What about 512-byte packets?
+The propogation delay would be $\frac{4x10^3m}{2x10^8m/s} = 200ms$. For 800 bit packets, it is 800 / 200/ms = 4Mbps. For 512-byte packets,
+it rises to 20.5Mbps.
 
 
 \subsection*{Problem 16}
@@ -87,8 +89,19 @@ It would take us 9 round trips to send all 1000 packets. With an RTT of 50ms, it
 %after the first 200 bits have been received.
 
 \subsubsection*{Part a}
+
+For each switch, it takes $\frac{1Gbps}{12kb} = 12\mu s$ to transmit the 12kb packet. With the additional delay introduced
+by the switch, the link will have a latency of $44\mu s$.
+
 \subsubsection*{Part b}
+
+The 3 links will result in 4 transmit delays ($12\mu s$ each) and 4 propogation delays ($10\mu s$ each), for a total of
+$88\mu s$ of latency.
+
 \subsubsection*{Part c}
+
+Handling the first 200 bits will take $200ns$. This initial processing will replace most of the transmit delays, resulting in a
+total latency of $12\mu s + .6\mu s + 40\mu s = 52.6\mu s$.
 
 \subsection*{Problem 18}
 %Calculate the effective bandwidth for the following cases. For (a) and (b) assume there is a steady supply of data to
@@ -99,8 +112,18 @@ It would take us 9 round trips to send all 1000 packets. With an RTT of 50ms, it
 %(c) Overnight (12-hour) shipment of 100 DVDs that hold 4.7 GB each.
 
 \subsubsection*{Part a}
+
+The transmit delay would be $\frac{12Mbps}{12kb} = 1024\mu s$. Each 12kb packet will suffer from 4 transmit delays and 4
+propogation delays, meaning a 12kb packet will take $4096\mu s + 40\mu s = 5036\mu s$ to send. Per second, it could send about
+199 packets, each being 12kb. This would make the effective bandwidth $12kb \cdot 199 = 19.1Mbps$.
+
 \subsubsection*{Part b}
+
+
 \subsubsection*{Part c}
+
+Those DVDs would hold a total of 470GB, or 3,600,000,000,000 bits, a of data. If they were sent over 12 hours, then the bandwidth
+would be 83,000,000 bits per second, or roughly 83Mbps.
 
 
 \subsection*{Problem 21(a)}
@@ -108,6 +131,8 @@ It would take us 9 round trips to send all 1000 packets. With an RTT of 50ms, it
 %2 seconds to compress 60%.  (a) Calculate the bandwidth at which each compression option takes the same total
 %compression + transmission time.
 
+We can set up an equality that models this situation like so: $1 + 0.5x = 2 + 0.4x$ where $x$ represents the bandwidth. Solving for the
+bandwidth, we get 10, so the bandwidth would need to be 10Mbps.
 
 \subsection*{Problem 26}
 %For the following, assume that no data compression is done, although in practice this would almost never be the case. For (a)
