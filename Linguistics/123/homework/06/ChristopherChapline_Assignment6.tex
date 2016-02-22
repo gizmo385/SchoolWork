@@ -50,10 +50,32 @@
 \section*{Problem 1}
 %Prove ¬r from (r → q), (q → p) and ¬p.
 
+\begin{tabular}{l l | l}
+    1 & $(r \rightarrow q)$ & Premise \\ \hline
+    2 & $(q \rightarrow p)$ & Premise \\ \hline
+    3 & $\neg p$ & Premise \\ \hline
+    4 & $\neg q$ & 2, 3 MT \\ \hline
+    5 & $\neg r$ & 1, 4, MT \\ \hline
+\end{tabular}
+
 \section*{Problem 2}
 % Prove p from ((p ∨ q) ∧ ¬q) using the Laws/Rules.
+\begin{tabular}{l l | l}
+    1 & $((p \vee q) \wedge \neg q)$ & Premise \\ \hline
+    2 & $\neg q$ & 1, Simp. \\ \hline
+    3 & $(p \vee q)$ & Simp. \\ \hline
+    4 & $p$ & 2, 3 D.S. \\ \hline
+\end{tabular}
 
 \section*{Problem 3}
 % Prove the same thing using only a truth table. Explain why this is a proof.
+
+\begin{tabular}{l | l | l | l | l | l |}
+    $p$ & $q$ & $(p \vee q)$ & $\neg q$ & $((p \vee q) \wedge \neg q)$  & $(((p \vee q) \wedge \neg q) \rightarrow p)$ \\ \hline
+    $T$ & $T$ & $T$          & $F$      & $F$                           & $T$ \\ \hline
+    $T$ & $F$ & $T$          & $T$      & $T$                           & $T$ \\ \hline
+    $F$ & $T$ & $T$          & $F$      & $F$                           & $T$ \\ \hline
+    $F$ & $F$ & $F$          & $T$      & $F$                           & $T$ \\ \hline
+\end{tabular}
 
 \end{document}
