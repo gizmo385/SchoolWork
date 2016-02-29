@@ -1,0 +1,93 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\usepackage[a4paper,includeheadfoot,margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Assignment 7}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+Prove $r$ from $(p \wedge \neg p)$.\\
+\\
+\begin{tabular}{l l | l}
+    1 & $(p \wedge \neg p)$ & Premise \\ \hline
+    2 & $\neg r$ & Proof by contradiction \\ \hline
+    3 & $p$ & 1, Simp. \\ \hline
+    4 & $(\neg p \wedge p)$ & 1, Comm. \\ \hline
+    5 & $\neg p$ & 4, Simp. \\ \hline
+    6 & $r$ & 3, 5 Contradiction
+\end{tabular}
+
+\section*{Problem 2}
+Prove $\neg r$ from $(p \wedge \neg p)$.\\
+\\
+\begin{tabular}{l l | l}
+    1 & $(p \wedge \neg p)$ & Premise \\ \hline
+    2 & $r$ & Proof by contradiction \\ \hline
+    3 & $p$ & 1, Simp. \\ \hline
+    4 & $(\neg p \wedge p)$ & 1, Comm. \\ \hline
+    5 & $\neg p$ & 4, Simp. \\ \hline
+    6 & $\neg r$ & 3, 5 Contradiction
+\end{tabular}
+
+\section*{Problem 3}
+Draw a configuration of worlds where $(\neg p \wedge \Box \Diamond p)$ and explain clearly why it works.\\
+\\
+One set of worlds might look like this:\\
+\\
+$W_1 = \{\neg p\}$\\
+\\
+$W_2 = \{p\}$\\
+\\
+In this configuration, one world, $W_1$ satisfies the $\neg p$. The second world, $W_2$ satisfies that it be necessary
+that $p$ is possible.
+
+\section*{Problem 4}
+$(\Box p \rightarrow \Diamond p)$ is a tautology. Explain clearly why.\\
+\\
+If you have a configuration of worlds such that $\Box p$ is true, then each world in the configuration has $p$. Thus,
+$\Diamond p$ would be true for this configuration. If the configuration of worlds does not satisfy $\Box p$, then the
+implication is satisfied regardless of $\Diamond p$.
+
+\end{document}
