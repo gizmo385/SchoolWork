@@ -22,6 +22,3 @@
 [submodule "ComputerScience/335/WumpusProject"]
 	path = ComputerScience/335/WumpusProject
 	url = https://github.com/gizmo385/HuntTheWumpus
-[submodule "ComputerScience/425/NetworkingProject"]
-	path = ComputerScience/425/NetworkingProject
-	url = git@github.com:gizmo385/NetworkingProject.git
