@@ -104,6 +104,16 @@ would be a design choice for your protocol and would thus be certain.
 
 \section*{Chapter 6}
 \subsection*{Problem 16}
+\subsubsection*{Part a}
+Since the send window will double every round trip time, we can express this as $log_2(1 \textrm{MB}/ 1 \textrm{KB})$. Thus,
+it will take roughly 9 round trip times for a slow start to open the send window to 1MB.
+
+\subsubsection*{Part b}
+It would take 16 round trips to transfer the file. There would be 7 RTTs before the slow start made it to 1MB. Then it would have to
+transfer 1MB nine times.
+
+\subsubsection*{Part c}
+The overall link throughput is 100Mbps.
 
 
 \end{document}
