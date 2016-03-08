@@ -67,10 +67,43 @@ then $A$ will win as long as the backoff time for $B$ is either $2 \times T$ or 
 
 \section*{Chapter 3}
 \subsection*{Problem 13}
+The following ports would not be included:
+\begin{enumerate}
+    \item $B2$ to D
+    \item $B5$ to B
+    \item $B6$ to I
+\end{enumerate}
+
+
 \subsection*{Problem 17}
+
+\subsubsection*{Part a}
+Bridges $B1$, $B2$, and $B3$ will learn where X is. Y's interface will see the packet.
+
+\subsubsection*{Part b}
+Bridges $B1$, $B2$, and $B3$ will learn where Z is. Y's interface will not see the packet.
+
+\subsubsection*{Part c}
+Bridge $B1$ will learn where Y is. Z's interface will not see the packet.
+
+\subsubsection*{Part d}
+Bridge $B2$ will learn where W is. Z's interface will not see the packet.
+
+
 \section*{Chapter 5}
 \subsection*{Problem 9}
+\subsubsection*{Part a}
+The \textbf{AdvertisedWindow} field should be 25 bits. The \textbf{SequenceNumber} should be 32 bits to
+prevent wrap around inside of the 30 second segment lifetime.
+
+\subsubsection*{Part b}
+The network speed would depend upon the hardware that you're network is built upon and would be relatively sure. The RTT might
+fluctuate if there are issues with devices in the network (failures or congestion), so that is less certain. The segment lifetime
+would be a design choice for your protocol and would thus be certain.
+
+
 \section*{Chapter 6}
 \subsection*{Problem 16}
+
 
 \end{document}
