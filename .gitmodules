@@ -25,3 +25,6 @@
 [submodule "ComputerScience/425/ProxyProject"]
 	path = ComputerScience/425/ProxyProject
 	url = https://github.com/gizmo385/NetworkingProject.git
+[submodule "ComputerScience/425/RouterProject"]
+	path = ComputerScience/425/RouterProject
+	url = git@github.com:gizmo385/RouterProject.git
