@@ -86,6 +86,93 @@
 
 \section*{Problem 4}
 
+There are a finite number of possible palindromes under $\Sigma = \{a, b\}$. They are: aa,
+bb, abba, baab, aaaa, bbbb. These can be matched with the following FSM:\\
+\\
+\begin{tikzpicture}[scale=0.2]
+    \tikzstyle{every node}+=[inner sep=0pt]
+    \draw [black] (9.5,-40.8) circle (3);
+    \draw (9.5,-40.8) node {$q_1$};
+    \draw [black] (9.5,-17.8) circle (3);
+    \draw (9.5,-17.8) node {$q_5$};
+    \draw [black] (22.5,-17.8) circle (3);
+    \draw (22.5,-17.8) node {$q_6$};
+    \draw [black] (34.4,-17.8) circle (3);
+    \draw (34.4,-17.8) node {$q_7$};
+    \draw [black] (47.4,-17.8) circle (3);
+    \draw (47.4,-17.8) node {$q_8$};
+    \draw [black] (47.4,-17.8) circle (2.4);
+    \draw [black] (34.4,-40.8) circle (3);
+    \draw (34.4,-40.8) node {$q_3$};
+    \draw [black] (48.4,-40.8) circle (3);
+    \draw (48.4,-40.8) node {$q_4$};
+    \draw [black] (48.4,-40.8) circle (2.4);
+    \draw [black] (9.5,-6.3) circle (3);
+    \draw (9.5,-6.3) node {$q_8$};
+    \draw [black] (9.5,-6.3) circle (2.4);
+    \draw [black] (22.5,-40.8) circle (3);
+    \draw (22.5,-40.8) node {$q_2$};
+    \draw [black] (9.5,-52.7) circle (3);
+    \draw (9.5,-52.7) node {$q_9$};
+    \draw [black] (9.5,-52.7) circle (2.4);
+    \draw [black] (22.5,-52.7) circle (3);
+    \draw (22.5,-52.7) node {$q_1_0$};
+    \draw [black] (35.2,-52.7) circle (3);
+    \draw (35.2,-52.7) node {$q_1_1$};
+    \draw [black] (35.2,-52.7) circle (2.4);
+    \draw [black] (22.5,-6.3) circle (3);
+    \draw (22.5,-6.3) node {$q_1_2$};
+    \draw [black] (34.4,-6.3) circle (3);
+    \draw (34.4,-6.3) node {$q_1_3$};
+    \draw [black] (34.4,-6.3) circle (2.4);
+    \draw [black] (9.5,-29) circle (3);
+    \draw (9.5,-29) node {$q_0$};
+    \draw [black] (12.5,-17.8) -- (19.5,-17.8);
+    \fill [black] (19.5,-17.8) -- (18.7,-17.3) -- (18.7,-18.3);
+    \draw (16,-18.3) node [below] {$a$};
+    \draw [black] (25.5,-17.8) -- (31.4,-17.8);
+    \fill [black] (31.4,-17.8) -- (30.6,-17.3) -- (30.6,-18.3);
+    \draw (28.45,-18.3) node [below] {$a$};
+    \draw [black] (37.4,-17.8) -- (44.4,-17.8);
+    \fill [black] (44.4,-17.8) -- (43.6,-17.3) -- (43.6,-18.3);
+    \draw (40.9,-18.3) node [below] {$b$};
+    \draw [black] (12.5,-40.8) -- (19.5,-40.8);
+    \fill [black] (19.5,-40.8) -- (18.7,-40.3) -- (18.7,-41.3);
+    \draw (16,-41.3) node [below] {$b$};
+    \draw [black] (25.5,-40.8) -- (31.4,-40.8);
+    \fill [black] (31.4,-40.8) -- (30.6,-40.3) -- (30.6,-41.3);
+    \draw (28.45,-41.3) node [below] {$b$};
+    \draw [black] (37.4,-40.8) -- (45.4,-40.8);
+    \fill [black] (45.4,-40.8) -- (44.6,-40.3) -- (44.6,-41.3);
+    \draw (41.4,-41.3) node [below] {$a$};
+    \draw [black] (9.5,-14.8) -- (9.5,-9.3);
+    \fill [black] (9.5,-9.3) -- (9,-10.1) -- (10,-10.1);
+    \draw (10,-12.05) node [right] {$b$};
+    \draw [black] (12.5,-52.7) -- (19.5,-52.7);
+    \fill [black] (19.5,-52.7) -- (18.7,-52.2) -- (18.7,-53.2);
+    \draw (16,-53.2) node [below] {$a$};
+    \draw [black] (25.5,-52.7) -- (32.2,-52.7);
+    \fill [black] (32.2,-52.7) -- (31.4,-52.2) -- (31.4,-53.2);
+    \draw (28.85,-53.2) node [below] {$a$};
+    \draw [black] (9.5,-43.8) -- (9.5,-49.7);
+    \fill [black] (9.5,-49.7) -- (10,-48.9) -- (9,-48.9);
+    \draw (9,-46.75) node [left] {$a$};
+    \draw [black] (12.5,-6.3) -- (19.5,-6.3);
+    \fill [black] (19.5,-6.3) -- (18.7,-5.8) -- (18.7,-6.8);
+    \draw (16,-6.8) node [below] {$b$};
+    \draw [black] (25.5,-6.3) -- (31.4,-6.3);
+    \fill [black] (31.4,-6.3) -- (30.6,-5.8) -- (30.6,-6.8);
+    \draw (28.45,-6.8) node [below] {$b$};
+    \draw [black] (9.5,-26) -- (9.5,-20.8);
+    \fill [black] (9.5,-20.8) -- (9,-21.6) -- (10,-21.6);
+    \draw (10,-23.4) node [right] {$b$};
+    \draw [black] (9.5,-32) -- (9.5,-37.8);
+    \fill [black] (9.5,-37.8) -- (10,-37) -- (9,-37);
+    \draw (9,-34.9) node [left] {$a$};
+    \draw [black] (6.1,-29) -- (6.5,-29);
+    \fill [black] (6.5,-29) -- (5.7,-28.5) -- (5.7,-29.5);
+\end{tikzpicture}
+
 \section*{Problem 5}
 
 
