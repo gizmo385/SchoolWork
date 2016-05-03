@@ -1,0 +1,110 @@
+\documentclass{article}%
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{hyperref}%
+\usepackage[a4paper,includeheadfoot,margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=late$x2$.dll}
+%TCIDATA{Version=5.00.0.2552}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{Created=Thursday, August 21, 2008 14:03:59}
+%TCIDATA{LastRevised=Wednesday, October 01, 2014 12:46:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{Language=American English}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\usepackage{fancyhdr}
+\setlength\headheight{26pt}
+\pagestyle{fancy}
+\lhead{{\footnotesize Assignment 4}}
+\rhead{{\footnotesize Christopher Chapline}}
+\begin{document}
+
+\section*{Problem 1}
+
+\subsection*{Part 1}
+There are 7 routes that might be received.
+
+\subsection*{Part 2}
+When sending from $A$ to $B$, the path will be $A \rightarrow P \rightarrow^{4} R \rightarrow^{3} Q \rightarrow B$. When
+sending from $B$ to $A$, the path will be $B \rightarrow Q \rightarrow^{1} A$
+
+\section*{Problem 2}
+\begin{center}
+	\begin{tikzpicture}[scale=0.2]
+		\tikzstyle{every node}+=[inner sep=0pt]
+		\draw [black] (20.1,-28.6) circle (3);
+		\draw (20.1,-28.6) node {$A$};
+		\draw [black] (33.4,-28.6) circle (3);
+		\draw (33.4,-28.6) node {$B$};
+		\draw [black] (33.4,-15.2) circle (3);
+		\draw (33.4,-15.2) node {$C$};
+		\draw [black] (46.7,-15.2) circle (3);
+		\draw (46.7,-15.2) node {$D$};
+		\draw [black] (46.7,-28.6) circle (3);
+		\draw (46.7,-28.6) node {$E$};
+		\draw [black] (62.3,-28.6) circle (3);
+		\draw (62.3,-28.6) node {$F$};
+		\draw [black] (23.1,-28.6) -- (30.4,-28.6);
+		\fill [black] (30.4,-28.6) -- (29.6,-28.1) -- (29.6,-29.1);
+		\draw [black] (30.4,-28.6) -- (23.1,-28.6);
+		\fill [black] (23.1,-28.6) -- (23.9,-29.1) -- (23.9,-28.1);
+		\draw [black] (33.4,-25.6) -- (33.4,-18.2);
+		\fill [black] (33.4,-18.2) -- (32.9,-19) -- (33.9,-19);
+		\draw [black] (33.4,-18.2) -- (33.4,-25.6);
+		\fill [black] (33.4,-25.6) -- (33.9,-24.8) -- (32.9,-24.8);
+		\draw [black] (36.4,-15.2) -- (43.7,-15.2);
+		\fill [black] (43.7,-15.2) -- (42.9,-14.7) -- (42.9,-15.7);
+		\draw [black] (43.7,-15.2) -- (36.4,-15.2);
+		\fill [black] (36.4,-15.2) -- (37.2,-15.7) -- (37.2,-14.7);
+		\draw [black] (46.7,-18.2) -- (46.7,-25.6);
+		\fill [black] (46.7,-25.6) -- (47.2,-24.8) -- (46.2,-24.8);
+		\draw [black] (46.7,-25.6) -- (46.7,-18.2);
+		\fill [black] (46.7,-18.2) -- (46.2,-19) -- (47.2,-19);
+		\draw [black] (49.7,-28.6) -- (59.3,-28.6);
+		\fill [black] (59.3,-28.6) -- (58.5,-28.1) -- (58.5,-29.1);
+		\draw [black] (59.3,-28.6) -- (49.7,-28.6);
+		\fill [black] (49.7,-28.6) -- (50.5,-29.1) -- (50.5,-28.1);
+		\draw [black] (36.4,-28.6) -- (43.7,-28.6);
+		\fill [black] (43.7,-28.6) -- (42.9,-28.1) -- (42.9,-29.1);
+		\draw [black] (43.7,-28.6) -- (36.4,-28.6);
+		\fill [black] (36.4,-28.6) -- (37.2,-29.1) -- (37.2,-28.1);
+	\end{tikzpicture}
+\end{center}\\
+\\
+Such a situation might occur when $A$ is looking to send data to $F$. In the case that a loop is discovered in a path,
+that path will be discarded by BGP in accordance with the RFC.
+
+
+\section*{Problem 9}
+Yes it should. If ISP B has a better route to some host via a different route, it will choose that route. But knowing
+that there are alternate routes in the event of a disconnection is good.
+
+\end{document}
