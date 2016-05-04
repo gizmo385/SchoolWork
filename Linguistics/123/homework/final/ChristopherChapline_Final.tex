@@ -57,6 +57,33 @@
 
 \section*{Problem 2}
 
+%((∀x)F(x) ↔ ¬(∃x)¬F(x))
+
+If we want to convert $((\forall x) F(x) \leftrightarrow \neg(\exists x) \neg F(x))$, then we can
+convert it to it's conjunctive/disjunctive form and examine its truth table. Such an equivalent formula
+would look like this:\\
+\\
+\begin{center}
+    $(F(a) \wedge F(b)) \leftrightarrow \neg(\neg F(a) \vee \neg F(b))$
+\end{center}\\
+\\
+We can show it is tautological by calculating its truth table:\\
+\\
+\begin{tabular}{| l | l | l | l | l | l | l | l |}
+    \hline
+    $F(A)$ & $F(b)$ & $(F(a) \wedge F(b)$ & $\neg F(a)$ & $\neg F(b)$ & $(\neg F(a) \vee \neg F(b))$ &
+    $\neg (\neg F(a) \vee \neg F(b))$ & $(F(a) \wedge F(b)) \leftrightarrow \neg (\neg F(a) \vee \neg F(b))$ \\ \hline
+    $T$ & $T$ & $T$ & $F$ & $F$ & $F$ & $T$ & $T$ \\ \hline
+    $T$ & $F$ & $F$ & $F$ & $T$ & $T$ & $F$ & $T$ \\ \hline
+    $F$ & $T$ & $F$ & $T$ & $F$ & $T$ & $F$ & $T$ \\ \hline
+    $F$ & $F$ & $F$ & $T$ & $T$ & $T$ & $F$ & $T$ \\ \hline
+\end{tabular}\\
+\\
+This truth table shows that the formula is tautological. We also could have shown this by using DeMorgan's Law
+to convert $\neg (\neg F(a) \vee \neg F(b))$ to it's equivalent $(F(a) \wedge F(b))$. Then since both sides
+of the bi-implication were the same, the formula would have been trivially tautological.
+
+
 \section*{Problem 3}
 \begin{tikzpicture}[scale=0.2]
     \tikzstyle{every node}+=[inner sep=0pt]
@@ -175,5 +202,69 @@ bb, abba, baab, aaaa, bbbb. These can be matched with the following FSM:\\
 
 \section*{Problem 5}
 
+A two-stack pushdown automata could be used to recognize the repeating language $L = ww$. The problem
+with matching the repeating language in a standard pushdown automata is the stack has a last-in,
+first-out behavior. With the addition of a second stack, we can reverse the order of the first stack,
+which will allow us to match the symbols in order. This can be achieved by non-deterministically assuming
+that we have reached the middle of the string and reversing the stack and proceeding to match the symbols
+in order.\\
+\\
+This non-determinism can be achieved by running multiple automatas in parallel, each with their own pair
+of stacks.\\
+\\
+Below is an attempt at designing a machine that might be able to accept the language $L = ww$. The
+transitions in the machine are labeled like so: $X : G_1, G_2 : P_1, P_2$ where $X$ is a symbol in $\Sigma$,
+$G_n$ refers to popping the first symbol off of the stack $n$, and $P_n$ refers to pushing a symbol onto the
+stack $n$.\\
+\\
+\begin{center}
+	\begin{tikzpicture}[scale=0.2]
+		\tikzstyle{every node}+=[inner sep=0pt]
+		\draw [black] (13.7,-29.6) circle (3);
+		\draw (13.7,-29.6) node {cons};
+		\draw [black] (35.3,-29.6) circle (3);
+		\draw (35.3,-29.6) node {rev};
+		\draw [black] (55,-29.6) circle (3);
+		\draw (55,-29.6) node {match};
+		\draw [black] (75.5,-29.6) circle (3);
+		\draw (75.5,-29.6) node {fin};
+		\draw [black] (75.5,-29.6) circle (2.4);
+		\draw [black] (12.377,-26.92) arc (234:-54:2.25);
+		\draw (13.7,-22.35) node [above] {$\Sigma\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon\mbox{ }:\mbox{ }\Sigma,\mbox{ }\epsilon$};
+		\fill [black] (15.02,-26.92) -- (15.9,-26.57) -- (15.09,-25.98);
+		\draw [black] (16.7,-29.6) -- (32.3,-29.6);
+		\fill [black] (32.3,-29.6) -- (31.5,-29.1) -- (31.5,-30.1);
+		\draw (24.5,-30.1) node [below] {$\Sigma\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon$};
+		\draw [black] (33.977,-26.92) arc (234:-54:2.25);
+		\draw (35.3,-22.35) node [above] {$\epsilon\mbox{ }:\mbox{ }\Sigma,\mbox{ }\epsilon\mbox{ }:\mbox{ }\epsilon,\mbox{ }\Sigma$};
+		\fill [black] (36.62,-26.92) -- (37.5,-26.57) -- (36.69,-25.98);
+		\draw [black] (6.6,-29.6) -- (10.7,-29.6);
+		\draw (6.1,-29.6) node [left] {start};
+		\fill [black] (10.7,-29.6) -- (9.9,-29.1) -- (9.9,-30.1);
+		\draw [black] (16.7,-29.6) -- (32.3,-29.6);
+		\fill [black] (32.3,-29.6) -- (31.5,-29.1) -- (31.5,-30.1);
+		\draw (24.5,-29.1) node [above] {$\epsilon\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon$};
+		\draw [black] (38.3,-29.6) -- (52,-29.6);
+		\fill [black] (52,-29.6) -- (51.2,-29.1) -- (51.2,-30.1);
+		\draw (45.15,-30.1) node [below] {$\epsilon\mbox{ }:\mbox{ }Z_0,\mbox{ }\epsilon\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon$};
+		\draw [black] (53.677,-26.92) arc (234:-54:2.25);
+		\draw (55,-22.35) node [above] {$\Sigma\mbox{ }:\mbox{ }\epsilon,\mbox{ }\Sigma\mbox{ }:\mbox{ }\epsilon\mbox{ }\epsilon$};
+		\fill [black] (56.32,-26.92) -- (57.2,-26.57) -- (56.39,-25.98);
+		\draw [black] (58,-29.6) -- (72.5,-29.6);
+		\fill [black] (72.5,-29.6) -- (71.7,-29.1) -- (71.7,-30.1);
+		\draw (65.25,-30.1) node [below] {$\epsilon\mbox{ }:\mbox{ }\epsilon,\mbox{ }Z_0\mbox{ }:\mbox{ }\epsilon,\mbox{ }\epsilon$};
+	\end{tikzpicture}
+\end{center} \\
+\\
+States:
+\begin{itemize}
+    \item cons: Consumes symbols in the alphabet $\Sigma$ and pushes those onto the first stack
+    \item rev: Consumes symbols from the first stack and pushes them onto the second stack (reverses stack)
+    \item match: Consumes a symbol from the input and matches it to the symbol on the top of the second stack.
+    \item fin: Final accepting state
+\end{itemize} \\
+\\
+The transition from cons to rev is a pair of non-deterministic transitions that have the effect of "guessing" when we have reached
+the middle of our input string.
 
 \end{document}
